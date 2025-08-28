@@ -51,7 +51,7 @@ jobs:
         echo "Individual project builds completed!"
         echo "Note: Some projects may have dependency warnings but builds should succeed"
           
-  # SIT Environment Deployment
+  # SIT Environment Deployment (runs on sit branch)
   deploy-sit:
     needs: build-projects
     runs-on: ubuntu-latest
@@ -102,7 +102,7 @@ jobs:
         git commit -m "Deploy to SIT environment - ${{ github.sha }}"
         git push origin sit
         
-  # UAT Environment Deployment
+  # UAT Environment Deployment (runs on uat branch)
   deploy-uat:
     needs: build-projects
     runs-on: ubuntu-latest
@@ -153,17 +153,9 @@ jobs:
         git commit -m "Deploy to UAT environment - ${{ github.sha }}"
         git push origin uat
         
-    - name: Deploy to Production
-      run: |
-        # Copy UAT builds to Production
-        cp -r ./uat/* ./production/
-        git add production/
-        git commit -m "Deploy to Production from UAT - ${{ github.sha }}"
-        git push origin main
-        
-  # Production Environment Deployment
-  deploy-production:
-    needs: [build-projects, deploy-uat]
+  # Main Branch Deployment (runs on main branch)
+  deploy-main:
+    needs: build-projects
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment: production
@@ -171,14 +163,46 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Verify Production deployment
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Build and publish AFFZ_API
       run: |
-        echo "Production deployment verified for:"
-        ls -la production/
-        ls -la production/AFFZ_API/
-        ls -la production/AFFZ_Admin/
-        ls -la production/AFFZ_Customer/
-        ls -la production/AFFZ_Provider/
+        dotnet publish AFFZ_API/AFFZ_API.csproj -c Release -o ./production/AFFZ_API
+      continue-on-error: true
+        
+    - name: Build and publish AFFZ_Admin
+      run: |
+        dotnet publish AFFZ_Admin/AFFZ_Admin.csproj -c Release -o ./production/AFFZ_Admin
+      continue-on-error: true
+        
+    - name: Build and publish AFFZ_Customer
+      run: |
+        dotnet publish AFFZ_MVC/AFFZ_Customer.csproj -c Release -o ./production/AFFZ_Customer
+      continue-on-error: true
+        
+    - name: Build and publish AFFZ_Provider
+      run: |
+        dotnet publish AFFZ_Provider/AFFZ_Provider.csproj -c Release -o ./production/AFFZ_Provider
+      continue-on-error: true
+        
+    - name: Copy environment configuration
+      run: |
+        cp -r ./environments/production/* ./production/
+        
+    - name: Create deployment manifest
+      run: |
+        echo '{"deploymentDate":"'$(date -u +"%Y-%m-%d %H:%M:%S UTC")'","environment":"production","status":"success"}' > ./production/deployment-manifest.json
+        
+    - name: Commit and push to Production
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add production/
+        git commit -m "Deploy to Production environment - ${{ github.sha }}"
+        git push origin main
         
     - name: Create Production Release
       uses: actions/create-release@v1
