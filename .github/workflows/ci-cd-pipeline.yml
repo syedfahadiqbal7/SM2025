@@ -88,7 +88,9 @@ jobs:
         
     - name: Copy environment configuration
       run: |
-        cp -r ./environments/sit/* ./sit/
+        if [ -d "./environments/sit" ] && [ "$(ls -A ./environments/sit)" ]; then
+          cp -r ./environments/sit/* ./sit/ 2>/dev/null || true
+        fi
         
     - name: Create deployment manifest
       run: |
@@ -139,7 +141,9 @@ jobs:
         
     - name: Copy environment configuration
       run: |
-        cp -r ./environments/uat/* ./uat/
+        if [ -d "./environments/uat" ] && [ "$(ls -A ./environments/uat)" ]; then
+          cp -r ./environments/uat/* ./uat/ 2>/dev/null || true
+        fi
         
     - name: Create deployment manifest
       run: |
@@ -190,7 +194,9 @@ jobs:
         
     - name: Copy environment configuration
       run: |
-        cp -r ./environments/production/* ./production/
+        if [ -d "./environments/production" ] && [ "$(ls -A ./environments/production)" ]; then
+          cp -r ./environments/production/* ./production/ 2>/dev/null || true
+        fi
         
     - name: Create deployment manifest
       run: |
