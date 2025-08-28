@@ -31,9 +31,7 @@
     <PackageReference Include="Stripe.net" Version="48.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SCAPI.ServiceDefaults\SCAPI.ServiceDefaults.csproj" />
-  </ItemGroup>
+  <!-- SCAPI.ServiceDefaults reference removed for CI/CD compatibility -->
   <ItemGroup>
     <Folder Include="Logs\" />
     <Folder Include="Views\" />

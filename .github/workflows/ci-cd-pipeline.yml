@@ -7,7 +7,7 @@ on:
     branches: [ main, develop, sit, uat ]
 
 env:
-  DOTNET_VERSION: '8.0.x'
+  DOTNET_VERSION: '8.0.413'
 
 jobs:
   # Build Individual Projects

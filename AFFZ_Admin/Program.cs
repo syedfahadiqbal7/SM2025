@@ -1,7 +1,7 @@
 using AFFZ_Admin.Models;
 using AFFZ_Admin.Utils;
 using Microsoft.AspNetCore.Mvc.Razor;
-using SCAPI.ServiceDefaults;
+// using SCAPI.ServiceDefaults; // Removed for CI/CD compatibility
 using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);

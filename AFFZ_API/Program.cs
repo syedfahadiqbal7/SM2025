@@ -8,7 +8,7 @@ using AFFZ_API.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using SCAPI.ServiceDefaults;
+// using SCAPI.ServiceDefaults; // Removed for CI/CD compatibility
 using System.Net;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -16,7 +16,7 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add service defaults
-builder.AddServiceDefaults();
+        // builder.AddServiceDefaults(); // Removed for CI/CD compatibility
 
 // Load shared configuration
 var sharedConfig = new ConfigurationBuilder()
