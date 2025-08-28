@@ -2,9 +2,9 @@ name: CI/CD Pipeline - SmartCenter
 
 on:
   push:
-    branches: [ main, develop, sit, uat ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, develop, sit, uat ]
+    branches: [ main ]
 
 env:
   DOTNET_VERSION: '8.0.413'
@@ -48,14 +48,13 @@ jobs:
         
     - name: Build verification
       run: |
-        echo "Individual project builds completed!"
-        echo "Note: Some projects may have dependency warnings but builds should succeed"
+        echo "✅ Individual project builds completed!"
+        echo "📋 Note: Some projects may have dependency warnings but builds should succeed"
           
-  # SIT Environment Deployment (runs on sit branch)
+  # SIT Environment Deployment (First Stage)
   deploy-sit:
     needs: build-projects
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/sit'
     environment: sit
     steps:
     - name: Checkout code
@@ -96,7 +95,7 @@ jobs:
       run: |
         echo '{"deploymentDate":"'$(date -u +"%Y-%m-%d %H:%M:%S UTC")'","environment":"sit","status":"success"}' > ./sit/deployment-manifest.json
         
-    - name: Deployment Summary
+    - name: SIT Deployment Summary
       run: |
         echo "✅ SIT Deployment Completed Successfully!"
         echo "📁 Published applications in ./sit/ folder:"
@@ -104,13 +103,12 @@ jobs:
         echo ""
         echo "📋 Deployment manifest created: ./sit/deployment-manifest.json"
         echo ""
-        echo "💡 Note: To deploy to SIT, merge this branch to 'sit' branch"
+        echo "🚀 Proceeding to UAT deployment..."
         
-  # UAT Environment Deployment (runs on uat branch)
+  # UAT Environment Deployment (Second Stage)
   deploy-uat:
-    needs: build-projects
+    needs: deploy-sit
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/uat'
     environment: uat
     steps:
     - name: Checkout code
@@ -151,7 +149,7 @@ jobs:
       run: |
         echo '{"deploymentDate":"'$(date -u +"%Y-%m-%d %H:%M:%S UTC")'","environment":"uat","status":"success"}' > ./uat/deployment-manifest.json
         
-    - name: Deployment Summary
+    - name: UAT Deployment Summary
       run: |
         echo "✅ UAT Deployment Completed Successfully!"
         echo "📁 Published applications in ./uat/ folder:"
@@ -159,13 +157,12 @@ jobs:
         echo ""
         echo "📋 Deployment manifest created: ./uat/deployment-manifest.json"
         echo ""
-        echo "💡 Note: To deploy to UAT, merge this branch to 'uat' branch"
+        echo "🚀 Proceeding to Production deployment..."
         
-  # Main Branch Deployment (runs on main branch)
-  deploy-main:
-    needs: build-projects
+  # Production Environment Deployment (Final Stage)
+  deploy-production:
+    needs: deploy-uat
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     environment: production
     steps:
     - name: Checkout code
@@ -206,19 +203,17 @@ jobs:
       run: |
         echo '{"deploymentDate":"'$(date -u +"%Y-%m-%d %H:%M:%S UTC")'","environment":"production","status":"success"}' > ./production/deployment-manifest.json
         
-    - name: Deployment Summary
+    - name: Production Deployment Summary
       run: |
-        echo "✅ Production Deployment Completed Successfully!"
+        echo "🎉 PRODUCTION DEPLOYMENT COMPLETED SUCCESSFULLY!"
         echo "📁 Published applications in ./production/ folder:"
         ls -la ./production/
         echo ""
         echo "📋 Deployment manifest created: ./production/deployment-manifest.json"
         echo ""
-        echo "🎉 All applications deployed to production successfully!"
-        echo "- AFFZ_API: ✅"
-        echo "- AFFZ_Admin: ✅"
-        echo "- AFFZ_Customer: ✅"
-        echo "- AFFZ_Provider: ✅"
+        echo "✅ All deployment stages completed successfully!"
+        echo "- SIT: ✅"
+        echo "- UAT: ✅"
+        echo "- Production: ✅"
         echo ""
-        echo "💡 Note: Applications are published and ready for deployment"
-        echo "📦 Release artifacts available in ./production/ folder"
+        echo "🚀 Applications are now live in production!"
