@@ -141,11 +141,11 @@ temp/
 ehthumbs.db
 Thumbs.db
 
-# Deployment artifacts
-sit/
-uat/
-production/
-deployment-manifest.json
+# Deployment artifacts - Allow these folders to be committed
+# sit/
+# uat/
+# production/
+# deployment-manifest.json
 
 # Test results
 TestResults/
