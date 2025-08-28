@@ -219,19 +219,6 @@ jobs:
         echo "- AFFZ_Admin: ✅"
         echo "- AFFZ_Customer: ✅"
         echo "- AFFZ_Provider: ✅"
-        
-    - name: Create Production Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v${{ github.run_number }}
-        release_name: Production Release v${{ github.run_number }}
-        body: |
-          Production deployment completed successfully
-          - AFFZ_API: ✅
-          - AFFZ_Admin: ✅
-          - AFFZ_Customer: ✅
-          - AFFZ_Provider: ✅
-        draft: false
-        prerelease: false
+        echo ""
+        echo "💡 Note: Applications are published and ready for deployment"
+        echo "📦 Release artifacts available in ./production/ folder"
