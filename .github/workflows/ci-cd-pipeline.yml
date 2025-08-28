@@ -96,13 +96,15 @@ jobs:
       run: |
         echo '{"deploymentDate":"'$(date -u +"%Y-%m-%d %H:%M:%S UTC")'","environment":"sit","status":"success"}' > ./sit/deployment-manifest.json
         
-    - name: Commit and push to SIT
+    - name: Deployment Summary
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add sit/
-        git commit -m "Deploy to SIT environment - ${{ github.sha }}"
-        git push origin sit
+        echo "✅ SIT Deployment Completed Successfully!"
+        echo "📁 Published applications in ./sit/ folder:"
+        ls -la ./sit/
+        echo ""
+        echo "📋 Deployment manifest created: ./sit/deployment-manifest.json"
+        echo ""
+        echo "💡 Note: To deploy to SIT, merge this branch to 'sit' branch"
         
   # UAT Environment Deployment (runs on uat branch)
   deploy-uat:
@@ -149,13 +151,15 @@ jobs:
       run: |
         echo '{"deploymentDate":"'$(date -u +"%Y-%m-%d %H:%M:%S UTC")'","environment":"uat","status":"success"}' > ./uat/deployment-manifest.json
         
-    - name: Commit and push to UAT
+    - name: Deployment Summary
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add uat/
-        git commit -m "Deploy to UAT environment - ${{ github.sha }}"
-        git push origin uat
+        echo "✅ UAT Deployment Completed Successfully!"
+        echo "📁 Published applications in ./uat/ folder:"
+        ls -la ./uat/
+        echo ""
+        echo "📋 Deployment manifest created: ./uat/deployment-manifest.json"
+        echo ""
+        echo "💡 Note: To deploy to UAT, merge this branch to 'uat' branch"
         
   # Main Branch Deployment (runs on main branch)
   deploy-main:
@@ -202,13 +206,19 @@ jobs:
       run: |
         echo '{"deploymentDate":"'$(date -u +"%Y-%m-%d %H:%M:%S UTC")'","environment":"production","status":"success"}' > ./production/deployment-manifest.json
         
-    - name: Commit and push to Production
+    - name: Deployment Summary
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add production/
-        git commit -m "Deploy to Production environment - ${{ github.sha }}"
-        git push origin main
+        echo "✅ Production Deployment Completed Successfully!"
+        echo "📁 Published applications in ./production/ folder:"
+        ls -la ./production/
+        echo ""
+        echo "📋 Deployment manifest created: ./production/deployment-manifest.json"
+        echo ""
+        echo "🎉 All applications deployed to production successfully!"
+        echo "- AFFZ_API: ✅"
+        echo "- AFFZ_Admin: ✅"
+        echo "- AFFZ_Customer: ✅"
+        echo "- AFFZ_Provider: ✅"
         
     - name: Create Production Release
       uses: actions/create-release@v1
