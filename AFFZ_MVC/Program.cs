@@ -11,7 +11,7 @@ using System.Security.Claims;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.AddServiceDefaults();
+// builder.AddServiceDefaults(); // Removed for CI/CD compatibility
 builder.Services.AddControllersWithViews();
 
 // Configure custom view locations

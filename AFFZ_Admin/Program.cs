@@ -6,7 +6,7 @@ using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddServiceDefaults();
+// builder.AddServiceDefaults(); // Removed for CI/CD compatibility
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

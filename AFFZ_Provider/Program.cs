@@ -9,7 +9,7 @@ using System.Net;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.AddServiceDefaults();
+// builder.AddServiceDefaults(); // Removed for CI/CD compatibility
 
 // Add Data Protection
 builder.Services.AddDataProtection();
