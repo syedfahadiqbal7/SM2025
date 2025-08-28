@@ -1,0 +1,71 @@
+﻿@model List<Slab>
+@{
+    ViewData["Title"] = "Slab List";
+}
+
+<div class="page-wrapper page-settings">
+    <div class="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold">Manage Payment Slabs</h4>
+            <div class="btn-group">
+                <a asp-action="SlabCreate" class="btn btn-outline-secondary" title="Add New Slab"><i class="bi bi-gear"></i>Add New Slab</a>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <!-- Success/Error Messages -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                </div>
+            }
+            @if (TempData["FailMessage"] != null)
+            {
+                <div class="alert alert-danger">
+                    <i class="fas fa-times-circle me-2"></i>@TempData["FailMessage"]
+                </div>
+            }
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle">
+                        <thead class="table-primary">
+                        <thead>
+                            <tr>
+                                <th>SlabID</th>
+                                <th>SlabName</th>
+                                <th>Lower Limit</th>
+                                <th>Upper Limit</th>
+                                <th>Fixed</th>
+                                <th>Percentage</th>
+                                <th>Created At</th>
+                                <th>Default</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                @foreach (var item in Model)
+                                {
+                                <tr>
+                                    <td>@item.SlabID</td>
+                                    <th>@item.SlabName</th>
+                                    <td>@item.LowerLimit</td>
+                                    <td>@item.UpperLimit</td>
+                                    <td>@item.Fixed</td>
+                                    <td>@item.Percentage</td>
+                                    <td>@item.CreatedAt</td>
+                                    <td>@item.IsDefaultSlab</td>
+                                    <td>
+                                        <a href="@Url.Action("SlabEdit", "Slab", new { id = item.SlabID })" class="btn btn-primary">Edit</a>
+                                        <a href="@Url.Action("SlabDelete", "Slab", new { id = item.SlabID })" class="btn btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
+                                    </td>
+                                </tr>
+                                }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

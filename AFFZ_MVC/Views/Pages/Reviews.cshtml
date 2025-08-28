@@ -1,0 +1,110 @@
+﻿<div class="col-lg-9">
+    <!-- Reviews Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold text-primary">Reviews</h4>
+        <div class="review-sort d-flex align-items-center">
+            <label for="sortOptions" class="me-2 mb-0 text-muted">Sort:</label>
+            <select class="form-select form-select-sm w-auto" id="sortOptions" onchange="applySortingAndPagination()">
+                <option value="Newest">Newest</option>
+                <option value="Oldest">Oldest</option>
+                <option value="Highest">Highest Rating</option>
+                <option value="Lowest">Lowest Rating</option>
+            </select>
+        </div>
+    </div>
+    <!-- /Reviews Header -->
+
+    <!-- Review List -->
+    @if (ViewBag.MyReviews != null && ViewBag.MyReviews.Count > 0)
+    {
+        <div class="review-list-container">
+            @foreach (var review in ViewBag.MyReviews)
+            {
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="row g-0">
+                        <div class="col-md-3">
+                            <img class="img-fluid rounded-start" src="@review.ServiceImageUrl" alt="Service Image">
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card-body">
+                                <h5 class="card-title text-dark">
+                                    <a href="service-details.html" class="text-decoration-none">@review.Service.serviceName</a>
+                                </h5>
+                                <div class="d-flex align-items-center mb-2">
+                                    <img class="rounded-circle me-2" src="@Url.Action("GetImage", "Login")" alt="User Image" width="40" height="40">
+                                    <span class="fw-semibold text-muted me-auto">@review.CUser.CustomerName</span>
+                                    <span class="text-muted">@review.ReviewDate.ToString("MMMM dd, yyyy hh:mm tt")</span>
+                                </div>
+                                <div class="rating mb-2">
+                                    @for (int i = 0; i < review.Rating; i++)
+                                    {
+                                        <i class="fas fa-star text-warning"></i>
+                                    }
+                                    @for (int i = review.Rating; i < 5; i++)
+                                    {
+                                        <i class="fas fa-star text-secondary"></i>
+                                    }
+                                </div>
+                                <p class="card-text text-muted">@review.ReviewText</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center">
+            No reviews available at the moment.
+        </div>
+    }
+    <!-- /Review List -->
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <div class="review-entries d-flex align-items-center">
+            <span class="me-2">Show</span>
+            <select id="pageSize" class="form-select form-select-sm w-auto" onchange="applySortingAndPagination()">
+                @foreach (var size in new[] { 10, 25, 50, 100 })
+                {
+                    if (ViewBag.PageSize == size)
+                    {
+                        <option value="@size" selected>@size</option>
+                    }
+                    else
+                    {
+                        <option value="@size">@size</option>
+                    }
+                }
+            </select>
+            <span class="ms-2">entries</span>
+        </div>
+        <div class="review-pagination">
+            <ul class="pagination pagination-sm mb-0">
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
+                        <a class="page-link" href="javascript:void(0)" onclick="changePage(@i)">@i</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+    <!-- /Pagination -->
+</div>
+
+<script>
+    function applySortingAndPagination() {
+        const sortOption = document.getElementById('sortOptions').value;
+        const pageSize = document.getElementById('pageSize').value;
+        const currentPage = 1; // Reset to the first page on sorting/page size change
+        window.location.href = `?sort=${sortOption}&pageSize=${pageSize}&page=${currentPage}`;
+    }
+
+    function changePage(page) {
+        const sortOption = document.getElementById('sortOptions').value;
+        const pageSize = document.getElementById('pageSize').value;
+        window.location.href = `?sort=${sortOption}&pageSize=${pageSize}&page=${page}`;
+    }
+</script>

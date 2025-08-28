@@ -1,0 +1,88 @@
+﻿@model AFFZ_Admin.Models.MembershipPlan
+@{
+    ViewData["Title"] = "Edit Membership Plan";
+    var slabs = ViewBag.SlabList as List<AFFZ_Admin.Models.Slab>;  // List of slabs passed from the controller
+}
+
+<div class="page-wrapper page-settings">
+    <div class="content">
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0">Edit Membership Plan</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="MembershipPlanEdit" method="post">
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Plan Name</label>
+                        <input asp-for="Name" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Price" class="form-label">Price</label>
+                        <input asp-for="Price" type="number" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Duration" class="form-label">Duration</label>
+                        <select asp-for="Duration" class="form-select">
+                            <option value="Monthly">Monthly</option>
+                            <option value="Yearly">Yearly</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="SelectedSlabIds" class="form-label">Select Slabs</label>
+                        <select asp-for="SelectedSlabIds" class="form-select" multiple>
+                            @foreach (var slab in slabs)
+                            {
+                                if (@Model.SelectedSlabIds.Contains(slab.SlabID))
+                                {
+                                    <option value="@slab.SlabID" selected="selected">
+                                        @slab.LowerLimit - @slab.UpperLimit (@slab.Fixed or @slab.Percentage%)
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="@slab.SlabID">
+                                        @slab.LowerLimit - @slab.UpperLimit (@slab.Fixed or @slab.Percentage%)
+                                    </option>
+                                }
+                            }
+                        </select>
+                        <small class="text-muted">Hold Ctrl (Windows) or Command (Mac) to select multiple slabs.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ServicesLimit" class="form-label">Services Limit</label>
+                        <input asp-for="ServicesLimit" type="number" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="StaffLimit" class="form-label">Staff Limit</label>
+                        <input asp-for="StaffLimit" type="number" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="AppointmentsLimit" class="form-label">Appointments Limit</label>
+                        <input asp-for="AppointmentsLimit" class="form-control" />
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="Gallery" class="form-check-input" type="checkbox" />
+                        <label asp-for="Gallery" class="form-check-label">Gallery Access</label>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="AdditionalServices" class="form-check-input" type="checkbox" />
+                        <label asp-for="AdditionalServices" class="form-check-label">Additional Services</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                    <a asp-action="MembershipPlanIndex" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

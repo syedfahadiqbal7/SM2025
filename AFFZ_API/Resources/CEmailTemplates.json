@@ -1,0 +1,63 @@
+{
+  "EmailVerification": {
+    "Subject": "Welcome to Smart Center - Verify Your Email",
+    "Body": "<!DOCTYPE html>\n<html>\n<head>\n<style>\nbody { font-family: Arial, sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; }\n.email-container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); padding: 20px; }\n.header { text-align: center; color: #343a40; margin-bottom: 20px; }\n.header h1 { font-size: 24px; }\n.content { color: #555555; line-height: 1.6; }\n.btn { display: inline-block; padding: 10px 20px; margin-top: 20px; background-color: #007bff; color: #ffffff; text-decoration: none; border-radius: 5px; font-size: 16px; }\n.btn:hover { background-color: #0056b3; }\n.footer { margin-top: 20px; text-align: center; font-size: 12px; color: #888888; }\n</style>\n</head>\n<body>\n<div class='email-container'>\n<div class='header'>\n<h1>Welcome to SmartCenter</h1>\n</div>\n<div class='content'>\n<p>Welcome <strong>{{CustomerName}}</strong>,</p>\n<p>Thank you for signing up with <strong>Smart Center</strong>! Please verify your email address by clicking the button below:</p>\n<p style='text-align: center;'><a href='{{VerificationLink}}' class='btn' style='color: white;'>Verify Email</a></p>\n<p>This link will expire in <strong>24 hours</strong>. If you did not request this, please ignore this email.</p>\n</div>\n<div class='footer'>\n<p>&copy; {{CurrentYear}} SmartCenter. All Rights Reserved.</p>\n</div>\n</div>\n</body>\n</html>"
+  },
+
+  "PasswordReset": {
+    "Subject": "Reset Your Password",
+    "Body": "<!DOCTYPE html>\n<html>\n<head>\n<style>\nbody { font-family: Arial, sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; }\n.email-container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); padding: 20px; }\n.header { text-align: center; color: #343a40; margin-bottom: 20px; }\n.header h1 { font-size: 24px; }\n.content { color: #555555; line-height: 1.6; }\n.btn { display: inline-block; padding: 10px 20px; margin-top: 20px; background-color: #007bff; color: #ffffff; text-decoration: none; border-radius: 5px; font-size: 16px; }\n.btn:hover { background-color: #0056b3; }\n.footer { margin-top: 20px; text-align: center; font-size: 12px; color: #888888; }\n</style>\n</head>\n<body>\n<div class='email-container'>\n<div class='header'>\n<h1>Reset Your Password</h1>\n</div>\n<div class='content'>\n<p>Hi <strong>{{CustomerName}}</strong>,</p>\n<p>You have requested to reset your password. Please click the button below to reset your password:</p>\n<p style='text-align: center;'>\n<a href='{{ResetLink}}' class='btn' style='color: white;'>Reset Password</a>\n</p>\n<p>If the button does not work, please use the link below:</p>\n<p><strong><a href='{{ResetLink}}'>{{ResetLink}}</a></strong></p>\n<p>If you didn’t request this, please ignore this email. This link will expire in <strong>1 hour</strong>.</p>\n</div>\n<div class='footer'>\n<p>&copy; {{CurrentYear}} SmartCenter. All Rights Reserved.</p>\n</div>\n</div>\n</body>\n</html>"
+  },
+
+
+  "StatusNotifications": {
+    "1": {
+      "Subject": "Service Status - InProgress",
+      "Body": "<!DOCTYPE html>\n<html>\n<head>\n<style>\nbody { font-family: Arial, sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; }\n.email-container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); padding: 20px; }\n.header { text-align: center; color: #343a40; margin-bottom: 20px; }\n.header h1 { font-size: 24px; }\n.content { color: #555555; line-height: 1.6; }\n.footer { margin-top: 20px; text-align: center; font-size: 12px; color: #888888; }\n</style>\n</head>\n<body>\n<div class='email-container'>\n<div class='header'><h1>Service Status: InProgress</h1></div>\n<div class='content'>\n<p>Hello <strong>{{Name}}</strong>,</p>\n<p>Status Description: <em>User Requested For a Discount</em></p>\n<p>Your discount request has been noted. We will notify you once the merchant responds.</p>\n</div>\n<div class='footer'><p>&copy; {{CurrentYear}} SmartCenter. All Rights Reserved.</p></div>\n</div>\n</body>\n</html>"
+    },
+    "4": {
+      "Subject": "Service Status - InProgress",
+      "Body": "<!DOCTYPE html>\n<html>\n<head>\n<style>body { font-family: Arial, sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; }</style>\n</head>\n<body>\n<div class='email-container'>\n<div class='header'><h1>Service Status: InProgress</h1></div>\n<div class='content'>\n<p>Hello <strong>{{Name}}</strong>,</p>\n<p>Status Description: <em>Merchant Selection Pending From User</em></p>\n<p>You have multiple merchant responses. Please select your preferred merchant to continue the service process.</p>\n</div>\n<div class='footer'><p>&copy; {{CurrentYear}} SmartCenter. All Rights Reserved.</p></div>\n</div>\n</body>\n</html>"
+    },
+    "5": {
+      "Subject": "Service Status - InProgress",
+      "Body": "<!DOCTYPE html>\n<html>\n<head>\n<style>body { font-family: Arial, sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; }</style>\n</head>\n<body>\n<div class='email-container'>\n<div class='header'><h1>Service Status: InProgress</h1></div>\n<div class='content'>\n<p>Hello <strong>{{Name}}</strong>,</p>\n<p>Status Description: <em>User Selected Merchant for Service</em></p>\n<p>You have successfully selected a merchant. The service process can now move forward.</p>\n</div>\n<div class='footer'><p>&copy; {{CurrentYear}} SmartCenter. All Rights Reserved.</p></div>\n</div>\n</body>\n</html>"
+    },
+    "6": {
+      "Subject": "Service Status - InProgress",
+      "Body": "<!DOCTYPE html>\n<html>\n<head>\n<style>body { font-family: Arial, sans-serif; }</style>\n</head>\n<body>\n<div class='email-container'>\n<div class='header'><h1>Service Status: InProgress</h1></div>\n<div class='content'>\n<p>Hello <strong>{{Name}}</strong>,</p>\n<p>Status Description: <em>Service Initiated By User</em></p>\n<p>You have initiated the service. The merchant will review your request and respond with any additional instructions or clarifications.</p>\n</div>\n<div class='footer'><p>&copy; {{CurrentYear}} SmartCenter. All Rights Reserved.</p></div>\n</div>\n</body>\n</html>"
+    },
+    "7": {
+      "Subject": "Service Status - Failed",
+      "Body": "<!DOCTYPE html>\n<html>\n<head>\n<style>body { font-family: Arial, sans-serif; }</style>\n</head>\n<body>\n<div class='email-container'>\n<div class='header'><h1>Service Status: Failed</h1></div>\n<div class='content'>\n<p>Hello <strong>{{Name}}</strong>,</p>\n<p>Status Description: <em>User Cancelled The Request</em></p>\n<p>Your request has been cancelled. No further action is required at this time.</p>\n</div>\n<div class='footer'><p>&copy; {{CurrentYear}} SmartCenter. All Rights Reserved.</p></div>\n</div>\n</body>\n</html>"
+    },
+    "8": {
+      "Subject": "Service Status - Failed",
+      "Body": "<!DOCTYPE html>\n<html>\n<head>\n<style>body { font-family: Arial, sans-serif; }</style>\n</head>\n<body>\n<div class='email-container'>\n<div class='header'><h1>Service Status: Failed</h1></div>\n<div class='content'>\n<p>Hello <strong>{{Name}}</strong>,</p>\n<p>Status Description: <em>User Rejected Merchant</em></p>\n<p>You have chosen to reject the merchant’s response. You can still choose another merchant or close the request.</p>\n</div>\n<div class='footer'><p>&copy; {{CurrentYear}} SmartCenter. All Rights Reserved.</p></div>\n</div>\n</body>\n</html>"
+    },
+    "9": {
+      "Subject": "Service Status - InProgress",
+      "Body": "<!DOCTYPE html>\n<html>\n<head>\n<style>body { font-family: Arial, sans-serif; }</style>\n</head>\n<body>\n<div class='email-container'>\n<div class='header'><h1>Service Status: InProgress</h1></div>\n<div class='content'>\n<p>Hello <strong>{{Name}}</strong>,</p>\n<p>Status Description: <em>Payment Pending</em></p>\n<p>Your service has been initiated and is awaiting payment. Please complete the payment to proceed.</p>\n</div>\n<div class='footer'><p>&copy; {{CurrentYear}} SmartCenter. All Rights Reserved.</p></div>\n</div>\n</body>\n</html>"
+    },
+    "10": {
+      "Subject": "Service Status - InProgress",
+      "Body": "<!DOCTYPE html>\n<html>\n<head>\n<style>body { font-family: Arial, sans-serif; }</style>\n</head>\n<body>\n<div class='email-container'>\n<div class='header'><h1>Service Status: InProgress</h1></div>\n<div class='content'>\n<p>Hello <strong>{{Name}}</strong>,</p>\n<p>Status Description: <em>Payment Failed</em></p>\n<p>Your payment attempt was not successful. Please retry or use a different payment method.</p>\n</div>\n<div class='footer'><p>&copy; {{CurrentYear}} SmartCenter. All Rights Reserved.</p></div>\n</div>\n</body>\n</html>"
+    },
+    "11": {
+      "Subject": "Service Status - InProgress",
+      "Body": "<!DOCTYPE html>\n<html>\n<head>\n<style>body { font-family: Arial, sans-serif; }</style>\n</head>\n<body>\n<div class='email-container'>\n<div class='header'><h1>Service Status: InProgress</h1></div>\n<div class='content'>\n<p>Hello <strong>{{Name}}</strong>,</p>\n<p>Status Description: <em>Payment Done</em></p>\n<p>Your payment has been received. The merchant will now continue with the service.</p>\n</div>\n<div class='footer'><p>&copy; {{CurrentYear}} SmartCenter. All Rights Reserved.</p></div>\n</div>\n</body>\n</html>"
+    },
+    "12": {
+      "Subject": "Service Status - InProgress",
+      "Body": "<!DOCTYPE html>\n<html>\n<head>\n<style>body { font-family: Arial, sans-serif; }</style>\n</head>\n<body>\n<div class='email-container'>\n<div class='header'><h1>Service Status: InProgress</h1></div>\n<div class='content'>\n<p>Hello <strong>{{Name}}</strong>,</p>\n<p>Status Description: <em>Document Upload Pending from User</em></p>\n<p>Please upload the necessary documents to proceed with your service request.</p>\n</div>\n<div class='footer'><p>&copy; {{CurrentYear}} SmartCenter. All Rights Reserved.</p></div>\n</div>\n</body>\n</html>"
+    },
+    "13": {
+      "Subject": "Service Status - InProgress",
+      "Body": "<!DOCTYPE html>\n<html>\n<head>\n<style>body { font-family: Arial, sans-serif; }</style>\n</head>\n<body>\n<div class='email-container'>\n<div class='header'><h1>Service Status: InProgress</h1></div>\n<div class='content'>\n<p>Hello <strong>{{Name}}</strong>,</p>\n<p>Status Description: <em>Document Uploaded by User</em></p>\n<p>You have successfully uploaded the required documents. Please wait while the merchant verifies them.</p>\n</div>\n<div class='footer'><p>&copy; {{CurrentYear}} SmartCenter. All Rights Reserved.</p></div>\n</div>\n</body>\n</html>"
+    },
+    "20": {
+      "Subject": "Service Status - InProgress",
+      "Body": "<!DOCTYPE html>\n<html>\n<head>\n<style>body { font-family: Arial, sans-serif; }</style>\n</head>\n<body>\n<div class='email-container'>\n<div class='header'><h1>Service Status: InProgress</h1></div>\n<div class='content'>\n<p>Hello <strong>{{Name}}</strong>,</p>\n<p>Status Description: <em>User Re-Submitted The Documents</em></p>\n<p>You have re-submitted the required documents. The merchant will review them again shortly.</p>\n</div>\n<div class='footer'><p>&copy; {{CurrentYear}} SmartCenter. All Rights Reserved.</p></div>\n</div>\n</body>\n</html>"
+    }
+  }
+}

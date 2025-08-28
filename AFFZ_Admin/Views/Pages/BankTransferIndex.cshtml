@@ -1,0 +1,262 @@
+﻿@model IEnumerable<AFFZ_Admin.Models.BankTransferAccount>
+@{
+    var merchants = ViewBag.Merchants as List<AFFZ_Admin.Models.Merchant>;
+}
+
+<div class="page-wrapper page-settings">
+    <div class="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold">Bank Transfer Accounts</h4>
+            <div class="btn-group">
+                <a class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#add-account">
+                    <i class="fa fa-plus me-2"></i> Add Account
+                </a>
+            </div>
+        </div>
+        <!-- Bank Transfer Account List -->
+        <div class="row">
+            @foreach (var account in Model)
+            {
+                <div class="col-lg-6 col-sm-12">
+                    <div class="transfer-lists">
+                        <div class="theme-image-content">
+                            <i class="fa fa-check-circle" aria-hidden="true"></i>
+                        </div>
+                        <div class="transfer-liststop">
+                            <div class="transfer-listbank">
+                                <h3>@account.BankName</h3>
+                                <h4>**** **** @account.AccountNumber.Substring(account.AccountNumber.Length - 4)</h4>
+                            </div>
+                            <div class="transfer-listsname">
+                                <h5>Holder Name</h5>
+                                <h6>@account.AccountHolderName</h6>
+                            </div>
+                        </div>
+                        <div class="transfer-listsbottom">
+                            <a href="javascript:void(0);" onclick="editAccount(@account.Id)">
+                                <i class="fe fe-edit me-2"></i> Edit
+                            </a>
+                            <a href="javascript:void(0);" onclick="deleteAccount(@account.Id)">
+                                <i class="fe fe-trash-2 me-2"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!-- Add Bank Account Modal -->
+<div class="modal fade" id="add-account" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addAccountForm">
+                    <select id="merchantId" class="form-control mb-2">
+                        <option value="">--Select Merchant--</option>
+                        @foreach (var merchant in merchants)
+                        {
+                            <option value="@merchant.MerchantId">@merchant.CompanyName</option>
+                        }
+                    </select>
+                    <input type="text" id="bankName" class="form-control mb-2" placeholder="Bank Name">
+                    <input type="text" id="accountHolder" class="form-control mb-2" placeholder="Account Holder Name">
+                    <input type="text" id="accountNumber" class="form-control mb-2" placeholder="Account Number">
+                    <input type="text" id="ibanNumber" class="form-control mb-2" placeholder="IBAN Number">
+                    <input type="text" id="branchName" class="form-control mb-2" placeholder="Branch Name">
+
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" onclick="saveAccount()">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Bank Account Modal -->
+<div class="modal fade" id="edit-account" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editAccountForm">
+                    <input type="hidden" id="EditId">
+                    <input type="text" id="EditBankName" class="form-control mb-2" required>
+                    <select id="EditmerchantId" class="form-control mb-2">
+                        @foreach (var merchant in merchants)
+                        {
+                            <option value="@merchant.MerchantId">@merchant.CompanyName</option>
+                        }
+                    </select>
+                    <input type="text" class="form-control mb-2" id="EditAccountHolderName" required>
+                    <input type="text" class="form-control mb-2" id="EditAccountNumber" required>
+                    <input type="text" class="form-control mb-2" id="EditIBANNumber" required>
+                    <input type="text" class="form-control mb-2" id="EditBranchName" required>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Bank Account Modal -->
+<div class="modal fade" id="delete-account" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Bank Transfer Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete?</p>
+                <button id="confirmDelete" class="btn btn-danger">Yes</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AJAX Script -->
+@section Scripts {
+    <script>
+
+        // Function to fetch and populate Edit Account Modal
+        function editAccount(id) {
+            $.ajax({
+                url: '/BankTransferAdmin/GetBankAccount?id=' + id,
+                type: 'GET',
+                success: function (response) {
+                    if (response) {
+                        console.log(response);
+                        $('#EditId').val(response.id);
+                        $('#EditBankName').val(response.bankName);
+                        $('#EditAccountHolderName').val(response.accountHolderName);
+                        $('#EditAccountNumber').val(response.accountNumber);
+                        $('#EditIBANNumber').val(response.ibannumber);
+                        $('#EditBranchName').val(response.branchName);
+                        $('#edit-account').modal('show');
+                    } else {
+                        alert("Failed to fetch account details.");
+                    }
+                },
+                error: function () {
+                    alert("Error fetching account details.");
+                }
+            });
+        }
+
+        // Function to confirm and delete an account
+        function deleteAccount(id) {
+            $('#confirmDelete').attr('data-id', id);
+            $('#delete-account').modal('show');
+        }
+        $(document).ready(function () {
+
+        
+
+        // Submit Add Account Form
+        $('#addAccountForm').submit(function (e) {
+                e.preventDefault();
+
+                var accountData = {
+                        BankName: $('#bankName').val(),
+                        MerchantId: $('#merchantId').val(),
+                        AccountHolderName: $('#accountHolder').val(),
+                        AccountNumber: $('#accountNumber').val(),
+                        IBANNUMBER: $('#ibanNumber').val(),
+                        BranchName: $('#branchName').val(),
+                        IsActive: true
+                };
+
+                $.ajax({
+                    url: '/BankTransferAdmin/AddBankAccount',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(accountData),
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            location.reload();
+                        } else {
+                            alert("Failed to add account.");
+                        }
+                    },
+                    error: function () {
+                        alert("Error adding account.");
+                    }
+                });
+            });
+
+        // Submit Edit Account Form
+        $('#editAccountForm').submit(function (e) {
+                e.preventDefault();
+
+                var accountData = {
+                    Id: $('#EditId').val(),
+                    BankName: $('#EditBankName').val(),
+                    MerchantId: $('#EditmerchantId').val(),
+                    AccountHolderName: $('#EditAccountHolderName').val(),
+                    AccountNumber: $('#EditAccountNumber').val(),
+                    IBANNUMBER: $('#EditIBANNumber').val(),
+                    BranchName: $('#EditBranchName').val(),
+                    IsActive: true
+                };
+
+                $.ajax({
+                    url: '/BankTransferAdmin/EditBankAccount',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(accountData),
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            location.reload();
+                        } else {
+                            alert("Failed to update account.");
+                        }
+                    },
+                    error: function () {
+                        alert("Error updating account.");
+                    }
+                });
+            });
+
+        // Confirm Delete Account
+        $('#confirmDelete').click(function () {
+                var accountId = $(this).attr('data-id');
+
+                $.ajax({
+                    url: '/BankTransferAdmin/DeleteBankAccount',
+                    type: 'POST',
+                    data: { id: accountId },
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            location.reload();
+                        } else {
+                            alert("Failed to delete account.");
+                        }
+                    },
+                    error: function () {
+                        alert("Error deleting account.");
+                    }
+                });
+            });
+
+        });
+
+        // Global functions to call inside HTML
+        window.editAccount = editAccount;
+        window.deleteAccount = deleteAccount;
+
+    </script>
+}

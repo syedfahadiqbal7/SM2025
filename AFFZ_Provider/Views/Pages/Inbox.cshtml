@@ -1,0 +1,80 @@
+﻿@model IEnumerable<AFFZ_Provider.Models.ChatterMessage>
+@{
+    var paginatedSubCategories = ViewBag.SubCategoriesWithMerchant as List<AFFZ_Provider.Models.ChatterMessage>;
+    ViewData["Title"] = "Index";
+}
+
+<!-- Booking -->
+<div class="page-wrapper">
+    <div class="content container-fluid">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="provider-subtitle">
+                        <h6>Messages</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="provide-table manage-table">
+                    <!-- Display messages -->
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+                    @if (TempData["FailMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["FailMessage"]
+                        </div>
+                    }
+
+                    <a href="@Url.Action("SendMessage", "Chat")" class="btn btn-primary">Send Message</a>
+
+                    <div class="table-responsive">
+                        <table class="table custom-table datatable mb-0" id="data-table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Sender</th>
+                                    <th>Receiver</th>
+                                    <th>Content</th>
+                                    <th>Sent At</th>
+                                    <th>Reply</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (paginatedSubCategories == null)
+                                {
+                                    <p><em>Loading Sub Categories...</em></p>
+                                }
+                                else
+                                {
+                                    @foreach (var message in ViewBag.SubCategoriesWithMerchant)
+                                    {
+                                        <tr>
+                                            <td>@message.SenderId</td>
+                                            <td>@message.ReceiverId</td>
+                                            <td>@message.MessageContent</td>
+                                            <td>@message.MessageTimestamp</td>
+                                            <td>
+
+                                                <a asp-action="SendMessage" class="btn btn-sm btn-warning remove-item-btn" asp-route-SenderId="@message.SenderId"><i class="fa fa-paper-plane align-bottom me-1"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

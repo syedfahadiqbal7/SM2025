@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <title>SmartCenter</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="~/wwwrootFront/assets/img/logo-small.svg">
+    <link rel="stylesheet" href="~/wwwrootFront/assets/js/jquery-ui.css">
+    <script src="~/wwwrootFront/assets/js/jquery-3.6.0.min.js"></script>
+    <script src="~/wwwrootFront/assets/js/jquery-ui.min.js"></script>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/wwwrootFront/assets/css/bootstrap.min.css">
+
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="~/wwwrootFront/assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="~/wwwrootFront/assets/plugins/fontawesome/css/all.min.css">
+
+    <!-- Fearther CSS -->
+    <link rel="stylesheet" href="~/wwwrootFront/assets/css/feather.css">
+
+    <!-- select CSS -->
+    <link rel="stylesheet" href="~/wwwrootFront/assets/plugins/select2/css/select2.min.css">
+
+    <!-- Owl carousel CSS -->
+    <link rel="stylesheet" href="~/wwwrootFront/assets/css/owl.carousel.min.css">
+
+    <!-- Aos CSS -->
+    <link rel="stylesheet" href="~/wwwrootFront/assets/plugins/aos/aos.css">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="~/wwwrootFront/assets/css/style.css">
+</head>
+<body>
+    <header class="header header-one">
+        <div class="container">
+            <partial name="_NavMenu" /> @* " model="@product" /> *@
+        </div>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <partial name="_Footer" />
+
+    <!-- jQuery -->
+    <script src="~/wwwrootFront/assets/js/jquery-3.7.0.min.js"></script>
+    <!-- Bootstrap Core JS -->
+    <script src="~/wwwrootFront/assets/js/bootstrap.bundle.min.js"></script>
+    <!-- Fearther JS -->
+    <script src="~/wwwrootFront/assets/js/feather.min.js"></script>
+    <!-- Owl Carousel JS -->
+    <script src="~/wwwrootFront/assets/js/owl.carousel.min.js"></script>
+    <!-- select JS -->
+    <script src="~/wwwrootFront/assets/plugins/select2/js/select2.min.js"></script>
+    <!-- Aos -->
+    <script src="~/wwwrootFront/assets/plugins/aos/aos.js"></script>
+    <!-- Top JS -->
+    <script src="~/wwwrootFront/assets/js/backToTop.js"></script>
+    <!-- Custom JS -->
+    <script src="~/wwwrootFront/assets/js/script.js"></script>
+    <script src="~/wwwrootFront/assets/plugins/ityped/index.js"></script>
+    <script src="~/wwwrootFront/js/site.js" asp-append-version="true"></script>
+    <!-- Modal Configuration JS -->
+    <script src="~/wwwrootFront/assets/js/modal-config.js"></script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

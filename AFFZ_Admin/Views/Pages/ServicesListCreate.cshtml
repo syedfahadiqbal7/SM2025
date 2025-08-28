@@ -1,0 +1,33 @@
+﻿@model ServicesListViewModel
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<div class="">
+    <div class="content">
+        <!-- Page Header -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form asp-action="ServicesListCreate" method="post" enctype="multipart/form-data">
+                    @Html.ValidationSummary("", new { @class = "text-danger" })
+                    <div class="form-group">
+                        <label>Service Category</label>
+                        <select class="form-select" name="CategoryID" id="CategoryID" asp-items="@ViewBag.ServiceCategoryComboData" required>
+                            <option value="">--Select--</option>
+                        </select>
+                        @* <span asp-validation-for="CategoryID" class="text-danger"></span> *@
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ServiceName"></label>
+                        <input asp-for="ServiceName" class="form-control" required />
+                        <span asp-validation-for="ServiceName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="UploadedImage">Upload Image</label>
+                        <input asp-for="UploadedImage" class="form-control-file" type="file" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a asp-action="ServicesListIndex" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,122 @@
+﻿		<!-- Header -->
+		<header class="header">
+			<div class="container">
+				<nav class="navbar navbar-expand-lg header-nav">
+					<div class="navbar-header">
+						<a id="mobile_btn" href="javascript:void(0);">
+							<span class="bar-icon">
+								<span></span>
+								<span></span>
+								<span></span>
+							</span>
+						</a>
+						<a href="/Dashboard" class="navbar-brand logo">
+							<img src="/assets/img/logo.png" class="img-fluid" alt="Logo">
+						</a>
+						<a href="/Dashboard" class="navbar-brand logo-small">
+							<img src="/assets/img/logo-small.png" class="img-fluid" alt="Logo">
+						</a>
+					</div>
+					@* <div class="main-menu-wrapper">
+						<div class="menu-header">
+							<a href="/Dashboard" class="menu-logo">
+								<img src="/assets/img/logo.svg" class="img-fluid" alt="Logo">
+							</a>
+							<a id="menu_close" class="menu-close" href="javascript:void(0);"> <i class="fas fa-times"></i></a>
+						</div>
+						<ul class="main-nav">
+
+							<li class="login-link">
+								<a href="choose-signup.html">Register</a>
+							</li>
+							<li class="login-link">
+								<a href="login.html">Login</a>
+							</li>
+						</ul>
+					</div> *@
+					<ul class="nav header-navbar-rht noti-pop-detail">
+						<!-- Chat -->
+						<li class="nav-item logged-item msg-nav">
+							<a href="/UserChats" class="nav-link">
+								<img src="/assets/img/icons/message-icon.svg" alt="Message Icon">
+							</a>
+						</li>
+						<!-- /Chat -->
+						<!-- Notifications -->
+						<li class="nav-item dropdown logged-item noti-nav noti-wrapper">
+							<a href="#" class="dropdown-toggle nav-link notify-link" data-bs-toggle="dropdown">
+								<span class="noti-message">@Model.Count</span>
+								<img src="/assets/img/icons/bell-icon.svg" alt="Bell">
+							</a>
+							<div class="dropdown-menu notify-blk notifications" style="overflow-y: scroll;">
+								<div class="topnav-dropdown-header">
+									<div>
+										<p class="notification-title">Notifications <span>@Model.Count</span></p>
+									</div>
+									<a href="javascript:void(0)" class="clear-noti" onclick="markAllAsRead()">Mark all as read</a>
+								</div>
+								<div class="noti-content">
+									<ul class="notification-list">
+										@foreach (var notification in Model)
+										{
+											<li class="notification-message">
+												<a href="notification.html">
+													<div class="media noti-img d-flex">
+														<div class="media-body flex-grow-1">
+															<p class="noti-details">@notification.Message</p>
+															<p class="noti-time"><span class="notification-time">@notification.CreatedDate.ToString("g")</span></p>
+														</div>
+													</div>
+												</a>
+											</li>
+										}
+									</ul>
+								</div>
+								<div class="topnav-dropdown-footer">
+									<a href="notification.html">View All Notifications</a>
+								</div>
+							</div>
+						</li>
+						<!-- /Notifications -->
+						<!-- User Menu -->
+						<li class="nav-item dropdown has-arrow account-item">
+							<a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+								<div class="user-infos">
+									<span class="user-img">
+										@* <img src="/assets/img/profiles/user.png" class="rounded-circle" alt="User Image"> *@
+										<img src="@Url.Action("GetImage", "Login", new { userId = "5" })" class="rounded-circle" alt="User Image">
+									</span>
+									<div class="user-info">
+										<h6>Fahad</h6>
+									</div>
+								</div>
+							</a>
+							<div class="dropdown-menu dropdown-menu-end emp">
+								<a class="dropdown-item" href="/Profile">
+									<i class="feather-user me-2"></i> Profile
+								</a>
+								<a class="dropdown-item" onclick="@Url.Action("Logout", "Login")">
+									<i class="feather-log-out me-2"></i> Logout
+								</a>
+							</div>
+						</li>
+						<!-- /User Menu -->
+					</ul>
+				</nav>
+			</div>
+		</header>
+		<!-- /Header -->
+
+		<div class="content">
+			<div class="container">
+
+				@RenderBody()
+
+			</div>
+		</div>
+
+		<!-- Cursor -->
+		<div class="mouse-cursor cursor-outer"></div>
+		<div class="mouse-cursor cursor-inner"></div>
+		<!-- /Cursor -->
+

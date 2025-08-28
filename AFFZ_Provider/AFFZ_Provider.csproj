@@ -1,0 +1,437 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+	  <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Views\Components\Menu\**" />
+    <Content Remove="Views\Components\Menu\**" />
+    <EmbeddedResource Remove="Views\Components\Menu\**" />
+    <None Remove="Views\Components\Menu\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\js\reset-password.js" />
+    <Content Remove="wwwroot\js\signup.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Utils\reset.password.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Views\Components\Menu\Default.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\assets\css\bootstrap.css.map" />
+    <None Include="wwwroot\assets\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\assets\fonts\Feather.svg" />
+    <None Include="wwwroot\assets\img\appstore.svg" />
+    <None Include="wwwroot\assets\img\googleplay.svg" />
+    <None Include="wwwroot\assets\img\icons\about-icon-01.svg" />
+    <None Include="wwwroot\assets\img\icons\about-icon-02.svg" />
+    <None Include="wwwroot\assets\img\icons\about-icon-03.svg" />
+    <None Include="wwwroot\assets\img\icons\about-icon-04.svg" />
+    <None Include="wwwroot\assets\img\icons\address-service.svg" />
+    <None Include="wwwroot\assets\img\icons\appointment-confirm-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\appstore-eight.svg" />
+    <None Include="wwwroot\assets\img\icons\appstore-seven.svg" />
+    <None Include="wwwroot\assets\img\icons\appstore-six.svg" />
+    <None Include="wwwroot\assets\img\icons\arrow-circle-right.svg" />
+    <None Include="wwwroot\assets\img\icons\arrow-circle-right1.svg" />
+    <None Include="wwwroot\assets\img\icons\arrow-down.svg" />
+    <None Include="wwwroot\assets\img\icons\arrow-eight-1.svg" />
+    <None Include="wwwroot\assets\img\icons\arrow-eight-2.svg" />
+    <None Include="wwwroot\assets\img\icons\arrow-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\arrow-nine.svg" />
+    <None Include="wwwroot\assets\img\icons\arrow-right-01.svg" />
+    <None Include="wwwroot\assets\img\icons\bal-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\ball-nine.svg" />
+    <None Include="wwwroot\assets\img\icons\banner-arrow.svg" />
+    <None Include="wwwroot\assets\img\icons\banner-nine-dot.svg" />
+    <None Include="wwwroot\assets\img\icons\banner-nine-icon-1.svg" />
+    <None Include="wwwroot\assets\img\icons\banner-nine-icon-2.svg" />
+    <None Include="wwwroot\assets\img\icons\bell-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\book-done.svg" />
+    <None Include="wwwroot\assets\img\icons\booking-info-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\brief-appointment.svg" />
+    <None Include="wwwroot\assets\img\icons\calendar-book.svg" />
+    <None Include="wwwroot\assets\img\icons\calendar-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\calendar-subs.svg" />
+    <None Include="wwwroot\assets\img\icons\calendar.svg" />
+    <None Include="wwwroot\assets\img\icons\call-calling.svg" />
+    <None Include="wwwroot\assets\img\icons\car-service-icon-1.svg" />
+    <None Include="wwwroot\assets\img\icons\car-service-icon-2.svg" />
+    <None Include="wwwroot\assets\img\icons\car-service-icon-3.svg" />
+    <None Include="wwwroot\assets\img\icons\car-wash-header-1.svg" />
+    <None Include="wwwroot\assets\img\icons\car-wash-header-2.svg" />
+    <None Include="wwwroot\assets\img\icons\car-wash.svg" />
+    <None Include="wwwroot\assets\img\icons\card-tick.svg" />
+    <None Include="wwwroot\assets\img\icons\card.svg" />
+    <None Include="wwwroot\assets\img\icons\carpet.svg" />
+    <None Include="wwwroot\assets\img\icons\cash-on-delivery-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\categories-1.svg" />
+    <None Include="wwwroot\assets\img\icons\categories-10.svg" />
+    <None Include="wwwroot\assets\img\icons\categories-11.svg" />
+    <None Include="wwwroot\assets\img\icons\categories-12.svg" />
+    <None Include="wwwroot\assets\img\icons\categories-2.svg" />
+    <None Include="wwwroot\assets\img\icons\categories-3.svg" />
+    <None Include="wwwroot\assets\img\icons\categories-4.svg" />
+    <None Include="wwwroot\assets\img\icons\categories-5.svg" />
+    <None Include="wwwroot\assets\img\icons\categories-6.svg" />
+    <None Include="wwwroot\assets\img\icons\categories-7.svg" />
+    <None Include="wwwroot\assets\img\icons\categories-8.svg" />
+    <None Include="wwwroot\assets\img\icons\categories-9.svg" />
+    <None Include="wwwroot\assets\img\icons\category-01.svg" />
+    <None Include="wwwroot\assets\img\icons\category-02.svg" />
+    <None Include="wwwroot\assets\img\icons\category-03.svg" />
+    <None Include="wwwroot\assets\img\icons\category-04.svg" />
+    <None Include="wwwroot\assets\img\icons\category-05.svg" />
+    <None Include="wwwroot\assets\img\icons\category-06.svg" />
+    <None Include="wwwroot\assets\img\icons\category-07.svg" />
+    <None Include="wwwroot\assets\img\icons\category-08.svg" />
+    <None Include="wwwroot\assets\img\icons\category-09.svg" />
+    <None Include="wwwroot\assets\img\icons\cdn-globe.svg" />
+    <None Include="wwwroot\assets\img\icons\charges-1.svg" />
+    <None Include="wwwroot\assets\img\icons\charges-2.svg" />
+    <None Include="wwwroot\assets\img\icons\charges-3.svg" />
+    <None Include="wwwroot\assets\img\icons\chart-dashboard.svg" />
+    <None Include="wwwroot\assets\img\icons\check-icon-02.svg" />
+    <None Include="wwwroot\assets\img\icons\check-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\check-profile.svg" />
+    <None Include="wwwroot\assets\img\icons\check.svg" />
+    <None Include="wwwroot\assets\img\icons\choose-icon-01.svg" />
+    <None Include="wwwroot\assets\img\icons\choose-icon-02.svg" />
+    <None Include="wwwroot\assets\img\icons\choose-icon-03.svg" />
+    <None Include="wwwroot\assets\img\icons\choose-icon-1.svg" />
+    <None Include="wwwroot\assets\img\icons\choose-icon-2.svg" />
+    <None Include="wwwroot\assets\img\icons\choose-icon-3.svg" />
+    <None Include="wwwroot\assets\img\icons\choose-icon-4.svg" />
+    <None Include="wwwroot\assets\img\icons\choose-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\circle-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\cleaner-detergent.svg" />
+    <None Include="wwwroot\assets\img\icons\cleaner-six.svg" />
+    <None Include="wwwroot\assets\img\icons\cleaning-mop.svg" />
+    <None Include="wwwroot\assets\img\icons\clock-avaliable.svg" />
+    <None Include="wwwroot\assets\img\icons\close-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\coin-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\computer.svg" />
+    <None Include="wwwroot\assets\img\icons\construction.svg" />
+    <None Include="wwwroot\assets\img\icons\coupon-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\cus-credit-card.svg" />
+    <None Include="wwwroot\assets\img\icons\cus-file.svg" />
+    <None Include="wwwroot\assets\img\icons\cus-money.svg" />
+    <None Include="wwwroot\assets\img\icons\cus-wallet.svg" />
+    <None Include="wwwroot\assets\img\icons\cus-withdraw.svg" />
+    <None Include="wwwroot\assets\img\icons\customer-quote.svg" />
+    <None Include="wwwroot\assets\img\icons\dash-icon-01.svg" />
+    <None Include="wwwroot\assets\img\icons\dash-icon-02.svg" />
+    <None Include="wwwroot\assets\img\icons\dash-icon-03.svg" />
+    <None Include="wwwroot\assets\img\icons\dash-icon-04.svg" />
+    <None Include="wwwroot\assets\img\icons\debitcard-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\document-pdf.svg" />
+    <None Include="wwwroot\assets\img\icons\dog-face-eight.svg" />
+    <None Include="wwwroot\assets\img\icons\dog-feet.svg" />
+    <None Include="wwwroot\assets\img\icons\dog.svg" />
+    <None Include="wwwroot\assets\img\icons\down-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\dropdown-nine.svg" />
+    <None Include="wwwroot\assets\img\icons\dropdown.svg" />
+    <None Include="wwwroot\assets\img\icons\eight-dog-feet.svg" />
+    <None Include="wwwroot\assets\img\icons\email-otp.svg" />
+    <None Include="wwwroot\assets\img\icons\facebook-nine.svg" />
+    <None Include="wwwroot\assets\img\icons\fb.svg" />
+    <None Include="wwwroot\assets\img\icons\feature-icon-01.svg" />
+    <None Include="wwwroot\assets\img\icons\feature-icon-02.svg" />
+    <None Include="wwwroot\assets\img\icons\feature-icon-03.svg" />
+    <None Include="wwwroot\assets\img\icons\feature-icon-04.svg" />
+    <None Include="wwwroot\assets\img\icons\feature-icon-05.svg" />
+    <None Include="wwwroot\assets\img\icons\feature-icon-06.svg" />
+    <None Include="wwwroot\assets\img\icons\feature-icon-07.svg" />
+    <None Include="wwwroot\assets\img\icons\feature-icon-08.svg" />
+    <None Include="wwwroot\assets\img\icons\feature-icon-09.svg" />
+    <None Include="wwwroot\assets\img\icons\feature-icon-10.svg" />
+    <None Include="wwwroot\assets\img\icons\feature-icon-11.svg" />
+    <None Include="wwwroot\assets\img\icons\feature-icon-12.svg" />
+    <None Include="wwwroot\assets\img\icons\feature-icon-13.svg" />
+    <None Include="wwwroot\assets\img\icons\feature-icon-14.svg" />
+    <None Include="wwwroot\assets\img\icons\figma-nine.svg" />
+    <None Include="wwwroot\assets\img\icons\file-pdf.svg" />
+    <None Include="wwwroot\assets\img\icons\filter-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\find-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\Fries.svg" />
+    <None Include="wwwroot\assets\img\icons\gallery.svg" />
+    <None Include="wwwroot\assets\img\icons\global-nine.svg" />
+    <None Include="wwwroot\assets\img\icons\global.svg" />
+    <None Include="wwwroot\assets\img\icons\google.svg" />
+    <None Include="wwwroot\assets\img\icons\googleplay-eight.svg" />
+    <None Include="wwwroot\assets\img\icons\googleplay-seven.svg" />
+    <None Include="wwwroot\assets\img\icons\googleplay-six.svg" />
+    <None Include="wwwroot\assets\img\icons\gui-calendar-planner-eight.svg" />
+    <None Include="wwwroot\assets\img\icons\gui-calendar-planner.svg" />
+    <None Include="wwwroot\assets\img\icons\hash-payment.svg" />
+    <None Include="wwwroot\assets\img\icons\install-icon-01.svg" />
+    <None Include="wwwroot\assets\img\icons\install-icon-02.svg" />
+    <None Include="wwwroot\assets\img\icons\install-icon-03.svg" />
+    <None Include="wwwroot\assets\img\icons\install-icon-04.svg" />
+    <None Include="wwwroot\assets\img\icons\install-icon-05.svg" />
+    <None Include="wwwroot\assets\img\icons\key-change.svg" />
+    <None Include="wwwroot\assets\img\icons\like-svg.svg" />
+    <None Include="wwwroot\assets\img\icons\location-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\location.svg" />
+    <None Include="wwwroot\assets\img\icons\lock-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\logo-01.svg" />
+    <None Include="wwwroot\assets\img\icons\logo-02.svg" />
+    <None Include="wwwroot\assets\img\icons\logo-03.svg" />
+    <None Include="wwwroot\assets\img\icons\logo-04.svg" />
+    <None Include="wwwroot\assets\img\icons\logo-05.svg" />
+    <None Include="wwwroot\assets\img\icons\logo-06.svg" />
+    <None Include="wwwroot\assets\img\icons\mail-envelope.svg" />
+    <None Include="wwwroot\assets\img\icons\mail-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\map-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\Mastercard.svg" />
+    <None Include="wwwroot\assets\img\icons\message-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\message.svg" />
+    <None Include="wwwroot\assets\img\icons\mini-pink-feet.svg" />
+    <None Include="wwwroot\assets\img\icons\mobile-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\modal-calender-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\money-cash.svg" />
+    <None Include="wwwroot\assets\img\icons\money-recive.svg" />
+    <None Include="wwwroot\assets\img\icons\money-wallet.svg" />
+    <None Include="wwwroot\assets\img\icons\monitor-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\msg-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\offer-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\painting.svg" />
+    <None Include="wwwroot\assets\img\icons\pay-per-eight.svg" />
+    <None Include="wwwroot\assets\img\icons\payment-gateway-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\paypal-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\phone-call.svg" />
+    <None Include="wwwroot\assets\img\icons\phone-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\phone-otp.svg" />
+    <None Include="wwwroot\assets\img\icons\pink-dog-feet.svg" />
+    <None Include="wwwroot\assets\img\icons\place-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\pointer-eight.svg" />
+    <None Include="wwwroot\assets\img\icons\pricing-seven-1.svg" />
+    <None Include="wwwroot\assets\img\icons\pricing-seven-2.svg" />
+    <None Include="wwwroot\assets\img\icons\pricing-seven-3.svg" />
+    <None Include="wwwroot\assets\img\icons\pro-chart-01.svg" />
+    <None Include="wwwroot\assets\img\icons\pro-chart-02.svg" />
+    <None Include="wwwroot\assets\img\icons\pro-chart-03.svg" />
+    <None Include="wwwroot\assets\img\icons\pro-chart-04.svg" />
+    <None Include="wwwroot\assets\img\icons\pro-icon-01.svg" />
+    <None Include="wwwroot\assets\img\icons\pro-icon-02.svg" />
+    <None Include="wwwroot\assets\img\icons\pro-icon-03.svg" />
+    <None Include="wwwroot\assets\img\icons\pro-icon-04.svg" />
+    <None Include="wwwroot\assets\img\icons\qr-code-eight.svg" />
+    <None Include="wwwroot\assets\img\icons\quality-cleaning.svg" />
+    <None Include="wwwroot\assets\img\icons\quote.svg" />
+    <None Include="wwwroot\assets\img\icons\red-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\reply-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\reviews-quote.svg" />
+    <None Include="wwwroot\assets\img\icons\saloon-service-1.svg" />
+    <None Include="wwwroot\assets\img\icons\saloon-service-2.svg" />
+    <None Include="wwwroot\assets\img\icons\saloon-service-3.svg" />
+    <None Include="wwwroot\assets\img\icons\saloon-service-4.svg" />
+    <None Include="wwwroot\assets\img\icons\satisfied-1.svg" />
+    <None Include="wwwroot\assets\img\icons\satisfied-2.svg" />
+    <None Include="wwwroot\assets\img\icons\satisfied-3.svg" />
+    <None Include="wwwroot\assets\img\icons\satisfied-4.svg" />
+    <None Include="wwwroot\assets\img\icons\satisfied-5.svg" />
+    <None Include="wwwroot\assets\img\icons\satisfied-6.svg" />
+    <None Include="wwwroot\assets\img\icons\satisfied-7.svg" />
+    <None Include="wwwroot\assets\img\icons\satisfied-8.svg" />
+    <None Include="wwwroot\assets\img\icons\saved-card-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\scan-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\scan-six.svg" />
+    <None Include="wwwroot\assets\img\icons\scissor-white.svg" />
+    <None Include="wwwroot\assets\img\icons\scissor.svg" />
+    <None Include="wwwroot\assets\img\icons\search.svg" />
+    <None Include="wwwroot\assets\img\icons\select-service-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\send-icon-01.svg" />
+    <None Include="wwwroot\assets\img\icons\send-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\server.svg" />
+    <None Include="wwwroot\assets\img\icons\service-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\sms.svg" />
+    <None Include="wwwroot\assets\img\icons\star-review.svg" />
+    <None Include="wwwroot\assets\img\icons\suitcase.svg" />
+    <None Include="wwwroot\assets\img\icons\technical-support.svg" />
+    <None Include="wwwroot\assets\img\icons\test-quote.svg" />
+    <None Include="wwwroot\assets\img\icons\tick-circle.svg" />
+    <None Include="wwwroot\assets\img\icons\trans-icon-01.svg" />
+    <None Include="wwwroot\assets\img\icons\trans-icon-02.svg" />
+    <None Include="wwwroot\assets\img\icons\trans-icon-03.svg" />
+    <None Include="wwwroot\assets\img\icons\trash-alt.svg" />
+    <None Include="wwwroot\assets\img\icons\trash-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\trophy.svg" />
+    <None Include="wwwroot\assets\img\icons\undo-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\university-payout.svg" />
+    <None Include="wwwroot\assets\img\icons\up-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\upload-icon-02.svg" />
+    <None Include="wwwroot\assets\img\icons\upload-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\user-edit.svg" />
+    <None Include="wwwroot\assets\img\icons\user-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\user-icon01.svg" />
+    <None Include="wwwroot\assets\img\icons\user-profile.svg" />
+    <None Include="wwwroot\assets\img\icons\vacuum-cleaner.svg" />
+    <None Include="wwwroot\assets\img\icons\Vector-1.svg" />
+    <None Include="wwwroot\assets\img\icons\visa.svg" />
+    <None Include="wwwroot\assets\img\icons\wallet-add.svg" />
+    <None Include="wwwroot\assets\img\icons\wallet-amt.svg" />
+    <None Include="wwwroot\assets\img\icons\wallet-icon-01.svg" />
+    <None Include="wwwroot\assets\img\icons\wallet-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\wallet-money.svg" />
+    <None Include="wwwroot\assets\img\icons\wallet.svg" />
+    <None Include="wwwroot\assets\img\icons\whatsapp-nine.svg" />
+    <None Include="wwwroot\assets\img\icons\win.svg" />
+    <None Include="wwwroot\assets\img\icons\window-cleaner-detergent-1.svg" />
+    <None Include="wwwroot\assets\img\icons\window-cleaner-detergent.svg" />
+    <None Include="wwwroot\assets\img\icons\work-icon-01.svg" />
+    <None Include="wwwroot\assets\img\icons\work-icon-02.svg" />
+    <None Include="wwwroot\assets\img\icons\work-icon-03.svg" />
+    <None Include="wwwroot\assets\img\icons\work-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\work-seven-1.svg" />
+    <None Include="wwwroot\assets\img\icons\work-seven-2.svg" />
+    <None Include="wwwroot\assets\img\icons\work-seven-3.svg" />
+    <None Include="wwwroot\assets\img\icons\working-1.svg" />
+    <None Include="wwwroot\assets\img\icons\working-2.svg" />
+    <None Include="wwwroot\assets\img\icons\working-3.svg" />
+    <None Include="wwwroot\assets\img\icons\working-4.svg" />
+    <None Include="wwwroot\assets\img\icons\x-icon.svg" />
+    <None Include="wwwroot\assets\img\icons\youtube-nine.svg" />
+    <None Include="wwwroot\assets\img\logo-02.svg" />
+    <None Include="wwwroot\assets\img\logo.svg" />
+    <None Include="wwwroot\assets\img\partner\partner1.svg" />
+    <None Include="wwwroot\assets\img\partner\partner2.svg" />
+    <None Include="wwwroot\assets\img\partner\partner3.svg" />
+    <None Include="wwwroot\assets\img\partner\partner4.svg" />
+    <None Include="wwwroot\assets\img\partner\partner5.svg" />
+    <None Include="wwwroot\assets\img\partner\partner6.svg" />
+    <None Include="wwwroot\assets\img\__logo.svg" />
+    <None Include="wwwroot\assets\js\backToTop.js" />
+    <None Include="wwwroot\assets\js\bootstrap-datetimepicker.min.js" />
+    <None Include="wwwroot\assets\js\bootstrap.bundle.js" />
+    <None Include="wwwroot\assets\js\bootstrap.bundle.js.map" />
+    <None Include="wwwroot\assets\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\assets\js\bootstrap.bundle.min.js.map" />
+    <None Include="wwwroot\assets\js\calander.js" />
+    <None Include="wwwroot\assets\js\feather.min.js" />
+    <None Include="wwwroot\assets\js\feather.min.js.map" />
+    <None Include="wwwroot\assets\js\jquery-3.7.0.min.js" />
+    <None Include="wwwroot\assets\js\jquery-3.7.0.min.map" />
+    <None Include="wwwroot\assets\js\jquery.counterup.min.js" />
+    <None Include="wwwroot\assets\js\jquery.waypoints.js" />
+    <None Include="wwwroot\assets\js\moment.min.js" />
+    <None Include="wwwroot\assets\js\owl.carousel.min.js" />
+    <None Include="wwwroot\assets\js\script.js" />
+    <None Include="wwwroot\assets\js\slick.js" />
+    <None Include="wwwroot\assets\js\validation.js" />
+    <None Include="wwwroot\assets\plugins\aos\aos.js" />
+    <None Include="wwwroot\assets\plugins\bootstrap-tagsinput\js\bootstrap-tagsinput.js" />
+    <None Include="wwwroot\assets\plugins\ckeditor\ckeditor.js" />
+    <None Include="wwwroot\assets\plugins\datatables\datatables.js" />
+    <None Include="wwwroot\assets\plugins\datatables\datatables.min.js" />
+    <None Include="wwwroot\assets\plugins\datatables\jquery.dataTables.min.js" />
+    <None Include="wwwroot\assets\plugins\fancybox\jquery.fancybox.js" />
+    <None Include="wwwroot\assets\plugins\fancybox\jquery.fancybox.min.js" />
+    <None Include="wwwroot\assets\plugins\fontawesome\js\all.js" />
+    <None Include="wwwroot\assets\plugins\fontawesome\js\all.min.js" />
+    <None Include="wwwroot\assets\plugins\fontawesome\js\brands.js" />
+    <None Include="wwwroot\assets\plugins\fontawesome\js\brands.min.js" />
+    <None Include="wwwroot\assets\plugins\fontawesome\js\conflict-detection.js" />
+    <None Include="wwwroot\assets\plugins\fontawesome\js\conflict-detection.min.js" />
+    <None Include="wwwroot\assets\plugins\fontawesome\js\fontawesome.js" />
+    <None Include="wwwroot\assets\plugins\fontawesome\js\fontawesome.min.js" />
+    <None Include="wwwroot\assets\plugins\fontawesome\js\regular.js" />
+    <None Include="wwwroot\assets\plugins\fontawesome\js\regular.min.js" />
+    <None Include="wwwroot\assets\plugins\fontawesome\js\solid.js" />
+    <None Include="wwwroot\assets\plugins\fontawesome\js\solid.min.js" />
+    <None Include="wwwroot\assets\plugins\fontawesome\js\v4-shims.js" />
+    <None Include="wwwroot\assets\plugins\fontawesome\js\v4-shims.min.js" />
+    <None Include="wwwroot\assets\plugins\fontawesome\webfonts\fa-brands-400.svg" />
+    <None Include="wwwroot\assets\plugins\fontawesome\webfonts\fa-brands-400.woff2" />
+    <None Include="wwwroot\assets\plugins\fontawesome\webfonts\fa-regular-400.svg" />
+    <None Include="wwwroot\assets\plugins\fontawesome\webfonts\fa-regular-400.woff2" />
+    <None Include="wwwroot\assets\plugins\fontawesome\webfonts\fa-solid-900.svg" />
+    <None Include="wwwroot\assets\plugins\fontawesome\webfonts\fa-solid-900.woff2" />
+    <None Include="wwwroot\assets\plugins\fontawesome\webfonts\fa-v4compatibility.woff2" />
+    <None Include="wwwroot\assets\plugins\fullcalendar\fonts\bootstrap-icons.woff2" />
+    <None Include="wwwroot\assets\plugins\fullcalendar\main.min.js" />
+    <None Include="wwwroot\assets\plugins\intltelinput\js\data.js" />
+    <None Include="wwwroot\assets\plugins\intltelinput\js\data.min.js" />
+    <None Include="wwwroot\assets\plugins\intltelinput\js\intlTelInput-jquery.js" />
+    <None Include="wwwroot\assets\plugins\intltelinput\js\intlTelInput-jquery.min.js" />
+    <None Include="wwwroot\assets\plugins\intltelinput\js\intlTelInput.js" />
+    <None Include="wwwroot\assets\plugins\intltelinput\js\intlTelInput.min.js" />
+    <None Include="wwwroot\assets\plugins\intltelinput\js\utils.js" />
+    <None Include="wwwroot\assets\plugins\ion-rangeslider\js\custom-rangeslider.js" />
+    <None Include="wwwroot\assets\plugins\ion-rangeslider\js\ion.rangeSlider.js" />
+    <None Include="wwwroot\assets\plugins\ion-rangeslider\js\ion.rangeSlider.min.js" />
+    <None Include="wwwroot\assets\plugins\select2\js\custom-select.js" />
+    <None Include="wwwroot\assets\plugins\select2\js\select2.full.js" />
+    <None Include="wwwroot\assets\plugins\select2\js\select2.full.min.js" />
+    <None Include="wwwroot\assets\plugins\select2\js\select2.js" />
+    <None Include="wwwroot\assets\plugins\select2\js\select2.min.js" />
+    <None Include="wwwroot\assets\plugins\slimscroll\jquery.slimscroll.js" />
+    <None Include="wwwroot\assets\plugins\slimscroll\jquery.slimscroll.min.js" />
+    <None Include="wwwroot\assets\plugins\sweetalert\sweetalert2.all.min.js" />
+    <None Include="wwwroot\assets\plugins\sweetalert\sweetalerts.min.js" />
+    <None Include="wwwroot\assets\plugins\theia-sticky-sidebar\maps\ResizeSensor.js.map" />
+    <None Include="wwwroot\assets\plugins\theia-sticky-sidebar\maps\ResizeSensor.min.js.map" />
+    <None Include="wwwroot\assets\plugins\theia-sticky-sidebar\maps\theia-sticky-sidebar.js.map" />
+    <None Include="wwwroot\assets\plugins\theia-sticky-sidebar\maps\theia-sticky-sidebar.min.js.map" />
+    <None Include="wwwroot\assets\plugins\theia-sticky-sidebar\ResizeSensor.js" />
+    <None Include="wwwroot\assets\plugins\theia-sticky-sidebar\ResizeSensor.min.js" />
+    <None Include="wwwroot\assets\plugins\theia-sticky-sidebar\theia-sticky-sidebar.js" />
+    <None Include="wwwroot\assets\plugins\theia-sticky-sidebar\theia-sticky-sidebar.min.js" />
+    <None Include="wwwroot\js\reset-password.js" />
+    <None Include="wwwroot\js\signup.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="8.0.7" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
+    <PackageReference Include="Stripe.net" Version="47.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SCAPI.ServiceDefaults\SCAPI.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\Pages\GetUsersWithDocuments.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Pages\Inbox.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Pages\_CatServiceDetails.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Logs\" />
+  </ItemGroup>
+<ItemGroup>
+  <PackageReference Include="System.IO" Version="4.3.0" />
+  <PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0" />
+  <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
+  <PackageReference Include="System.Runtime.Handles" Version="4.3.0" />
+  <PackageReference Include="System.Text.Encoding.Extensions" Version="4.3.0" />
+  <PackageReference Include="System.Threading" Version="4.3.0" />
+  <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
+</ItemGroup>
+
+</Project>

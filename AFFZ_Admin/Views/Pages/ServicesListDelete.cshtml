@@ -1,0 +1,19 @@
+﻿@model ServicesListViewModel
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<div class="">
+    <div class="content">
+
+        <!-- Customer Table -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form asp-action="ServicesListDeleteConfirmed" method="post">
+                    <input type="hidden" asp-for="ServiceListID" />
+                    <p>Are you sure you want to delete the service "<strong>@Model.ServiceName</strong>"?</p>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <a asp-action="ServicesListIndex" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

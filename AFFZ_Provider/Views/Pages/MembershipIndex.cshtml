@@ -1,0 +1,62 @@
+﻿@using AFFZ_Provider.Models
+@model List<MembershipPlan>
+
+
+<div class="page-wrapper">
+    <div class="content container-fluid">
+
+        <!-- Page Header -->
+        <div class="page-header d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="page-title text-primary">Membership Plans</h1>
+            </div>
+        </div>
+        @if (Model.Count == 0)
+        {
+            <p>No membership plans available.</p>
+        }
+        else
+        {
+            <div class="row gy-4">
+                <div class="row">
+                    @foreach (var plan in Model)
+                    {
+                        <div class="col-md-4 d-flex">
+                            <div class="price-card flex-fill">
+                                <div class="price-head">
+                                    <div class="price-level">
+                                        <h6>@plan.Name</h6>
+                                        <span class="badge-active">Action</span>
+                                    </div>
+                                    <h1>$@plan.Price<span>/ @plan.Duration</span></h1>
+                                </div>
+                                <div class="price-body">
+                                    <ul>
+                                        <li>@plan.ServicesLimit Services</li>
+                                        <li>@plan.StaffLimit Staff</li>
+                                        <li>@plan.AppointmentsLimit Appointments</li>
+                                        <li>@(plan.Gallery ? "Gallery Included" : "No Gallery")</li>
+                                        <li>@(plan.AdditionalServices ? "Includes Additional Services" : "No Additional Services")</li>
+                                    </ul>
+                                    <div class="text-center">
+                                        @if (Convert.ToInt32(ViewBag.MembershipId) == plan.Id)
+                                        {
+                                            <span class="btn btn-selected" style="box-shadow: aliceblue;border: 1px solid pink;">Your Current Plan</span>
+                                        }
+                                        else
+                                        {
+                                            <a class="btn btn-choose" asp-action="PaymentGateway" asp-route-price="@plan.Price" asp-route-Duration="@plan.Duration" asp-route-Servicename="@plan.Name" asp-route-MembershipId="@plan.Id" style="margin-right: 10px;">Choose</a>
+                                        }
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- /Coupons Table -->
+    </div>
+</div>

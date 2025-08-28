@@ -1,0 +1,165 @@
+﻿<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+@model IEnumerable<AFFZ_Admin.Controllers.ServiceWithCategoryBinding>
+<div class="page-wrapper page-settings">
+    <div class="content">
+        <!-- Customer Table -->
+        <div class="">
+
+            <div class="content-page-header content-page-headersplit mb-0">
+                <h5 style="color:#000">Services</h5>
+                <div class="list-btn">
+                    <ul>
+                        <li>
+                            <div class="filter-sorting">
+                                <ul>
+                                    <li>
+                                        <a href="javascript:void(0);" class="filter-sets"><img src="assets/img/icons/filter1.svg" class="me-2" alt="img">Filter</a>
+                                    </li>
+                                    <li>
+                                        <span><img src="assets/img/icons/sort.svg" class="me-2" alt="img"></span>
+                                        <div class="review-sort">
+                                            <select class="select">
+                                                <option>A -> Z</option>
+                                                <option>Z -> A</option>
+                                            </select>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal" id="openAddServiceModal">
+                                <i class="fa fa-plus me-2"></i>Add Service
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table datatable table-hover table-striped align-middle">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>#</th>
+                                <th>Service ID</th>
+                                <th>Service Image</th>
+                                <th>Service Name</th>
+                                <th>Category Name</th>
+                                <th class ="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var service in Model)
+                            {
+                                <tr>
+                                    <td></td>
+                                    <td>@service.ServiceListID</td>
+                                    <td>
+                                        <div class="table-imgname">
+                                            <img src="@service.ServiceImage" class="me-2" alt="img">
+                                            <span>@service.ServiceName</span>
+                                        </div>
+                                    </td>
+                                    <td>@service.ServiceName</td>
+                                    <td>@service.CategoryName</td>
+                                    <td class="text-center">
+                                        <div class="table-actions d-flex">
+                                            @* <a asp-action="ServicesListEdit" asp-route-id="@service.ServiceListID" class="btn delete-table me-2"><i class="fe fe-edit"></i></a> *@
+                                            <a href="javascript:void(0);" class="btn delete-table me-2 edit-service-link" data-bs-toggle="modal" data-bs-target="#editServiceModal" data-id="@service.ServiceListID" class="edit-service-link">
+                                                <i class="fe fe-edit"></i>
+                                            </a>
+                                            @* <a asp-action="ServicesListDelete" asp-route-id="@service.ServiceListID" class="btn delete-table"><i class="fe fe-trash-2"></i></a> *@
+                                            <a href="javascript:void(0);" class="btn delete-table delete-service-link" data-bs-toggle="modal" data-bs-target="#deleteServiceModal" data-id="@service.ServiceListID" class="delete-service-link">
+                                                <i class="fe fe-trash-2"></i>
+                                            </a>
+                                        </div>
+                                        
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .modal-title {
+        color: black;
+    }
+</style>
+<!-- Add Service Modal -->
+<div class="modal fade" id="addServiceModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" >Add Service</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="addServiceContent"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Service Modal -->
+<div class="modal fade" id="editServiceModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Service</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="editServiceContent"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Service Modal -->
+<div class="modal fade" id="deleteServiceModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Service</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="deleteServiceContent"></div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+        // Load Add Service Form
+            $('#openAddServiceModal').on('click',function () {
+            $.get('/ServicesList/ServicesListCreate', function (data) {
+                $('#addServiceContent').html(data);
+            });
+        });
+
+        // Load Edit Service Form
+        $(document).on('click', '.edit-service-link', function () {
+            var id = $(this).data('id');
+            console.log("Editing ID:", id); // Debugging
+            $.get('/ServicesList/ServicesListEdit/' + id, function (data) {
+                $('#editServiceContent').html(data);
+            });
+        });
+
+        // Load Delete Service Form
+                $(document).on('click', '.delete-service-link', function () {
+            var id = $(this).data('id');
+            $.get('/ServicesList/ServicesListDelete?id=' + id, function (data) {
+                $('#deleteServiceContent').html(data);
+            });
+        });
+    });
+
+</script>
+}

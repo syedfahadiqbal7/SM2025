@@ -1,0 +1,462 @@
+﻿@using AFFZ_Provider.Utils
+@inject NotificationService NotificationService
+@{
+    var myPaymentHistory = ViewBag.GetRecentTransactions as List<AFFZ_Provider.Controllers.GetRecentTransaction> ?? new List<AFFZ_Provider.Controllers.GetRecentTransaction>();
+    var MiniDashboard = ViewBag.MiniDashBoardData as AFFZ_Provider.Controllers.MiniDashBoardData;
+    var MiniStats = ViewBag.MiniDashboardStats as AFFZ_Provider.Controllers.MiniDashboardStatsViewModel;
+    var TopServices = ViewBag.TopServices as List<AFFZ_Provider.Models.ServiceReviewViewModel> ?? new List<AFFZ_Provider.Models.ServiceReviewViewModel>();
+    var Bookings = ViewBag.UsersWithDocuments as List<AFFZ_Provider.Controllers.RequestForDisCountToUserViewModel> ?? new List<AFFZ_Provider.Controllers.RequestForDisCountToUserViewModel>();
+    var Review = ViewBag.DashboardReview as AFFZ_Provider.Models.ReviewViewModel;
+    var IsActive = await NotificationService.GetProviderIsActive();
+    var adminurl = await NotificationService.GetadminLink();
+}
+
+@* <!-- Bootstrap 5 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+<!-- Font Awesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" />
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css" /> *@
+
+<style>
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    .card-header {
+        border-bottom: none;
+        font-weight: 600;
+        background-color: #f8f9fa;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .badge-count {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
+        border-radius: 12px;
+    }
+
+    .modal-content {
+        border-radius: 10px;
+    }
+
+    .metric-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+</style>
+<div class="page-wrapper">
+    <div class="container-fluid py-4">
+        <!-- Mini Dashboard -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-tachometer-alt me-2"></i>Mini Dashboard</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2 mb-3">
+                                <a href="/UserRequestToMerchant/CheckReqest" class="btn btn-primary btn-status btn-block">
+                                    Discount Requests <span class="badge bg-light text-dark badge-count">@MiniStats?.RequestsReceived</span>
+                                </a>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <a href="/Eligibility/ManageRequests" class="btn btn-warning btn-status btn-block">
+                                    Eligibility Requests <span class="badge bg-light text-dark badge-count">@MiniStats?.EligibilityRequests</span>
+                                </a>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <a href="/MerchantResponseToUser/GetUsersWithDocuments?statusid=13" class="btn btn-info btn-status btn-block">
+                                    Doc Verification <span class="badge bg-light text-dark badge-count">@MiniStats?.DocumentVerification</span>
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="/MerchantResponseToUser/GetUsersWithDocuments?statusid=14" class="btn btn-success btn-status btn-block">
+                                    Start Pending Service <span class="badge bg-light text-dark badge-count">@MiniStats?.DocsVerifiedWaiting</span>
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="/MerchantResponseToUser/GetUsersWithDocuments?statusid=16" class="btn btn-danger btn-status btn-block">
+                                    Service Started <span class="badge bg-light text-dark badge-count">@MiniStats?.CustomersServiceStarted</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service Metrics -->
+        <div class="row mb-4">
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-body d-flex align-items-center">
+                        <span class="metric-icon bg-success text-white me-3"><i class="fas fa-check-circle"></i></span>
+                        <div>
+                            <p class="mb-1 text-muted text-uppercase">Successful Service</p>
+                            <h4 class="mb-0">@MiniDashboard.TotalSuccessRequests</h4>
+                            <!--p class="fs-6 text-danger"><i class="fas fa-arrow-down me-1"></i>12% from Last Week</p-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-body d-flex align-items-center">
+                        <span class="metric-icon bg-info text-white me-3"><i class="fas fa-spinner"></i></span>
+                        <div>
+                            <p class="mb-1 text-muted text-uppercase">Service In Progress</p>
+                            <h4 class="mb-0">@MiniDashboard.TotalInProgressRequests</h4>
+                            <!--p class="fs-6 text-muted">0% from Last Week</p-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-body d-flex align-items-center">
+                        <span class="metric-icon bg-danger text-white me-3"><i class="fas fa-times-circle"></i></span>
+                        <div>
+                            <p class="mb-1 text-muted text-uppercase">Service Cancelled</p>
+                            <h4 class="mb-0">@MiniDashboard.TotalFailedRequests</h4>
+                            <!--p class="fs-6 text-muted">0% from Last Week</p-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-body d-flex align-items-center">
+                        <span class="metric-icon bg-dark text-white me-3"><i class="fas fa-users"></i></span>
+                        <div>
+                            <p class="mb-1 text-muted text-uppercase">Total Users Served</p>
+                            <h4 class="mb-0">@MiniDashboard.TotalUsersServed</h4>
+                            <!--p class="fs-6 text-success"><i class="fas fa-arrow-up me-1"></i>12% from Last Week</p-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-body d-flex align-items-center">
+                        <span class="metric-icon bg-dark text-white me-3"><i class="fas fa-dollar-sign"></i></span>
+                        <div>
+                            <p class="mb-1 text-muted text-uppercase">Total Income Till Now</p>
+                            <h4 class="mb-0">AED @ViewBag.GetTotalRevenue</h4>
+                            <!--p class="fs-6 text-success"><i class="fas fa-arrow-up me-1"></i>12% from Last Month</p-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-body d-flex align-items-center">
+                        <span class="metric-icon bg-dark text-white me-3"><i class="fas fa-briefcase"></i></span>
+                        <div>
+                            <p class="mb-1 text-muted text-uppercase"><a href="/ReviewsClient/ProviderReviews" class="">Total Registered Services</a></p>
+                            <h4 class="mb-0">@ViewBag.TotalService</h4>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User and Income Metrics -->
+        
+
+        <!-- Top Services -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div-- class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-star me-2"></i>Top Services</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (TopServices.Any())
+                        {
+                            foreach (var service in TopServices)
+                            {
+                                <div class="d-flex align-items-center mb-3">
+                                    <!--img src="assets/img/services/service-56.jpg" class="avatar me-3" alt="@service.ServiceName" /-->
+                                    <div class="flex-grow-1">
+                                        <a href="/ReviewsClient/ProviderReviews?serviceId=@service.ServiceId" class="fw-semibold">
+                                            @service.ServiceName
+                                        </a>
+                                        <div class="d-flex fs-6 text-muted">
+                                            <span class="me-3">
+                                                <i class="fas fa-comment-dots me-1"></i>
+                                                @service.TotalReviews @((service.TotalReviews == 1) ? "Review" : "Reviews")
+                                            </span>
+                                            <span class="me-3">
+                                                <i class="fas fa-star-half-alt text-warning me-1"></i>
+                                                Avg: @service.AverageRating.ToString("F1")
+                                            </span>
+                                            <span>
+                                                <i class="fas fa-star text-warning"></i>
+                                                @service.AverageRating.ToString("F1")
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <a href="/ReviewsClient/ProviderReviews?serviceId=@service.ServiceId" class="text-muted">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-muted">No services found.</p>
+                        }
+                    </div>
+
+                    <!--div class="card-footer text-end">
+                        <a href="/ReviewsClient/ProviderReviews" class="btn btn-outline-primary btn-sm">View All</a>
+                    </div-->
+                </div>
+            <div class="col-md-6">
+                <div-- class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-comment-dots me-2"></i>Reviews</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Review != null)
+                        {
+                            <div class="d-flex align-items-start">
+                            <img src="@adminurl@Review.ServiceImageUrl" class="avatar me-3" alt="@Review.SID" />
+                                <div class="flex-grow-1">
+                                    <a href="/ReviewsClient/ProviderReviews" class="fw-semibold">@Review.SID</a>
+                                    <p class="fs-6 text-muted mb-1"><i class="fas fa-clock me-1"></i>@Review.ReviewDate.ToString("MMM dd, yyyy hh:mm tt")</p>
+                                    <p class="fs-6 text-muted mb-1"><i class="fas fa-user me-1"></i>Reviewed By: @Review.CustomerName</p>
+                                    <div class="d-flex align-items-center">
+                                        @for (var i = 0; i < Review.Rating; i++)
+                                        {
+                                            <i class="fas fa-star text-warning me-1"></i>
+                                        }
+                                        @for (var i = Review.Rating; i < 5; i++)
+                                        {
+                                            <i class="fas fa-star text-muted me-1"></i>
+                                        }
+                                        <span class="ms-1">(@Review.Rating)</span>
+                                    </div>
+                                </div>
+                                <a href="/ReviewsClient/ProviderReviews" class="text-muted"><i class="fas fa-chevron-right"></i></a>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No reviews available.</p>
+                        }
+                    </div>
+                    <!--div class="card-footer text-end">
+                        <a href="/ReviewsClient/ProviderReviews" class="btn btn-outline-primary btn-sm">View All</a>
+                    </div-->
+                </div>
+            </div>
+        </div>
+
+        <!-- Bookings -->
+        @* <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-book me-2"></i>Bookings</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Bookings != null && Bookings.Any())
+                        {
+                            foreach (var booking in Bookings)
+                            {
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="assets/img/services/service-63.jpg" class="avatar me-3" alt="@booking.ServiceName" />
+                                    <div class="flex-grow-1">
+                                        <a href="/MerchantResponseToUser/GetUsersWithDocuments" class="fw-semibold">@booking.ServiceName</a>
+                                        <p class="fs-6 text-muted mb-1"><i class="fas fa-dollar-sign me-1"></i>Price: AED-@booking.ServicePrice</p>
+                                        <p class="fs-6 text-muted mb-1"><i class="fas fa-money-bill me-1"></i>Paid: AED-@booking.FINALPRICE</p>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <img src="assets/img/user/user-01.jpg" class="avatar me-2" alt="User" />
+                                        <a href="/MerchantResponseToUser/GetUsersWithDocuments" class="text-muted"><i class="fas fa-chevron-right"></i></a>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-muted">No bookings available.</p>
+                        }
+                    </div>
+                    <div class="card-footer text-end">
+                        <a href="/MerchantResponseToUser/GetUsersWithDocuments" class="btn btn-outline-primary btn-sm">View All</a>
+                    </div>
+                </div>
+            </div>
+        </div> *@
+
+        <!-- Recent Transactions -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-credit-card me-2"></i>Recent Transactions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="transactionsTable" class="table table-striped table-hover" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Date</th>
+                                        <th>Customer Name</th>
+                                        <th>Service</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (myPaymentHistory != null)
+                                    {
+                                        foreach (var item in myPaymentHistory)
+                                        {
+                                            <tr>
+                                                <td></td>
+                                                <td>@item.Date</td>
+                                                <td>@item.CustomerName</td>
+                                                <td>@item.ServiceName</td>
+                                                <td>@item.AmountToPay</td>
+                                                <td>
+                                                    <span class="badge @(item.Status ? "bg-success" : "bg-warning")">
+                                                        @(item.Status ? "Done" : "Pending")
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Account Modal -->
+    <div class="modal fade" id="del-account" tabindex="-1" aria-labelledby="delAccountLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0 bg-danger-subtle">
+                        <h5 class="modal-title" id="delAccountLabel">Delete Account</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/login">
+                            <p>Are you sure you want to delete this account? To delete your account, type your password.</p>
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control pass-input" placeholder="*************" />
+                                    <span class="input-group-text toggle-password"><i class="fas fa-eye-slash"></i></span>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-danger">Delete Account</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activation Modal -->
+    <div class="modal fade" id="activationModal" tabindex="-1" aria-labelledby="activationModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning-subtle">
+                        <h5 class="modal-title text-danger" id="activationModalLabel">
+                            <i class="fas fa-exclamation-triangle text-warning me-2"></i>Account Not Activated
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Your account is not yet activated. Please click <a href="/Profile">here</a> to complete the required steps to activate your account and access all features.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="goToProfileButton" class="btn btn-primary">Go to Profile</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Scripts -->
+@* <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.min.js"></script> *@
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize DataTable
+            $('#transactionsTable').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                pageLength: 10
+            });
+
+            // Activation modal logic
+            var ShowPopup = '@IsActive';
+            if (window.innerWidth <= 768 && ShowPopup == "In Active") {
+                var activationModal = new bootstrap.Modal(document.getElementById('activationModal'), {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                activationModal.show();
+                document.getElementById('goToProfileButton').addEventListener('click', function () {
+                    window.location.href = '/Profile';
+                });
+            }
+
+            // Password toggle
+            $('.toggle-password').click(function () {
+                var input = $(this).siblings('.pass-input');
+                var icon = $(this).find('i');
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                } else {
+                    input.attr('type', 'password');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                }
+            });
+        });
+
+        function redirectToProfile() {
+            window.location.href = '/Profile';
+        }
+    </script>
+}

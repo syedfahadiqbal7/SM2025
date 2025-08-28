@@ -1,0 +1,159 @@
+﻿@{
+    var paginatedSubCategories = ViewBag.SubCategoriesWithMerchant as List<AFFZ_Customer.Controllers.CatWithMerchant>;
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-wrapper">
+
+
+
+    <div class="bg-img">
+        <img img src="~/assets/img/bg/work-bg-03.png" alt="img" class="bgimg1">
+        <img img src="~/assets/img/bg/work-bg-03.png" alt="img" class="bgimg2">
+        <img img src="~/assets/img/bg/feature-bg-03.png" alt="img" class="bgimg3">
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-bar">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-12">
+                    <h2 class="breadcrumb-title">Find a Professional</h2>
+                    <nav aria-label="breadcrumb" class="page-breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Find a Professional</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Breadcrumb -->
+
+    <div class="content">
+        <div class="container">
+
+            <div class="row">
+                <!-- /Filter -->
+                <!-- Service -->
+                <div class="col-lg-12 col-sm-12">
+                    <div class="row sorting-div">
+                        <div class="col-lg-4 col-sm-12 ">
+                            <div class="count-search">
+                                <div asp-validation-summary="ModelOnly" class="text-success"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8 col-sm-12 d-flex justify-content-end ">
+                            <div class="sortbyset">
+                                <h4>Sort</h4>
+                                <div class="sorting-select">
+                                    <select class="form-control select">
+                                        <option>Price Low to High</option>
+                                        <option>Price High to Low</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            @if (paginatedSubCategories == null)
+                            {
+                                <p><em>Loading Sub Categories...</em></p>
+                            }
+                            else
+                            {
+
+                                @foreach (var _subcat in paginatedSubCategories)
+                                {
+                                    <!-- Service List -->
+                                    <div class="service-list">
+                                        <div class="service-cont">
+                                            <div class="service-cont-img">
+                                                <a href="#service-details.html">
+                                                    <img class="img-fluid serv-img" alt="Service Image" img src="~/assets/img/services/service-04.jpg">
+                                                </a>
+                                                <div class="fav-item">
+                                                    <a href="javascript:void(0)" class="fav-icon">
+                                                        <i class="feather-heart"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="service-cont-info">
+                                                <a href="categories.html">
+                                                    <span class="item-cat">@_subcat.SERVICENAME</span>
+                                                </a>
+                                                <h3 class="title">
+                                                    <a href="#service-details.html">@_subcat.MERCHANTNAME</a>
+                                                </h3>
+                                                <p><i class="feather-map-pin"></i>@_subcat.MERCHANTLOCATION</p>
+                                                <div class="service-pro-img">
+                                                    <img img src="~/assets/img/profiles/avatar-01.jpg" alt="user">
+                                                    <span><i class="fas fa-star filled"></i>4.9</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="service-action">
+                                            <h6>AED@_subcat.PRICE @*<span class="old-price">AED@_subcat.PRICE</span>*@</h6>
+                                            <a asp-action="RequestForDiscount" class="btn btn-secondary" asp-route-id="@_subcat.MID~@_subcat.SID">Request For Discount</a>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    @* <div class="row">
+                    <div class="col-sm-12">
+                    <div class="blog-pagination rev-page">
+                    <nav>
+                    <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                    <a class="page-link page-prev" href="#" tabindex="-1"><i class="fa-solid fa-arrow-left me-1"></i> PREV</a>
+                    </li>
+                    <li class="page-item active">
+                    <a class="page-link" href="#">1</a>
+                    </li>
+                    <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item">
+                    <a class="page-link" href="#">3</a>
+                    </li>
+                    <li class="page-item">
+                    <a class="page-link page-next" href="#">NEXT <i class="fa-solid fa-arrow-right ms-1"></i></a>
+                    </li>
+                    </ul>
+                    </nav>
+                    </div>
+                    </div>
+                    </div> *@
+                    <!-- /Pagination -->
+
+                </div>
+                <!-- /Service -->
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Cursor -->
+    <div class="mouse-cursor cursor-outer"></div>
+    <div class="mouse-cursor cursor-inner"></div>
+    <!-- /Cursor -->
+
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var responseMessage = "@ViewBag.SaveResponse";
+            if (responseMessage != "") {
+                // Show popup with the response message
+                alert(responseMessage);
+            }
+        });
+    </script>
+}

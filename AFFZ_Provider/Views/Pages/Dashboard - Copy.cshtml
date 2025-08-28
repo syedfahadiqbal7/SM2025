@@ -1,0 +1,548 @@
+﻿@using AFFZ_Provider.Utils
+@inject NotificationService NotificationService
+@{
+    var myPaymentHistory = ViewBag.GetRecentTransactions as List<AFFZ_Provider.Controllers.PaymentHistoryWithCustomer>;
+    var MiniDashboard = ViewBag.MiniDashBoardData as AFFZ_Provider.Controllers.MiniDashBoardData;
+    var MiniStats = ViewBag.MiniDashboardStats as AFFZ_Provider.Controllers.MiniDashboardStatsViewModel;
+    var TopServices = ViewBag.TopServices as List<AFFZ_Provider.Models.ServiceReviewViewModel>;
+    var Bookings = ViewBag.UsersWithDocuments as List<AFFZ_Provider.Controllers.RequestForDisCountToUserViewModel>;
+    var Review = ViewBag.DashboardReview as AFFZ_Provider.Models.ReviewViewModel;
+    var IsActive = await NotificationService.GetProviderIsActive();
+}
+<link rel="stylesheet" href="assets/css/admin.css">
+<style>
+    .prov-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+       
+        color: #FFF;
+        font-size: 20px;
+    }
+    .rounded {
+        border-radius: 4px !important;
+    }
+    .bg-info {
+        background-color: #5625E8 !important;
+        border: 1px solid #5625E8 !important;
+        color: #FFF;
+    }
+    .prov-icon i {
+        font-size: 24px;
+    }
+    .btn {
+        padding: 10px 20px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+    .ti {
+        font-family: "tabler-icons" !important;
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    .btn:hover {
+        background-color: #5625E8 !important;
+        color: #FFF;
+    }
+    .prov-icon.d-flex.justify-content-center.align-items-center {
+        color: #fff;
+    }
+    .bg-success {
+        background: linear-gradient(90deg, #28a745, #34d058);
+    }
+    .bg-info {
+        background: linear-gradient(90deg, #17a2b8, #1cc9e4);
+    }
+    .bg-danger {
+        background: linear-gradient(90deg, #dc3545, #f54260);
+    }
+    .card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .table tr:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+    }
+
+    .avatar {
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+    }
+
+    p {
+        margin-bottom: 0px;
+    }
+
+    .fs-12 {
+        font-size: 12px;
+    }
+
+    .modal-content {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        background-color: #f8d7da;
+        border-bottom: 1px solid #f5c2c7;
+    }
+
+    .modal-title {
+        font-size: 1.25rem;
+    }
+
+    .modal-body {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    .modal-footer .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+    /* Responsive Design */
+
+    /* Ensure no overlap */
+</style>
+
+<link href="~/assets/plugins/tabler-icons/tabler-icons.css" rel="stylesheet" />
+<div class="page-wrapper">
+    <div class="content container-fluid  pb-0">
+        <div class="row justify-content-center">
+            <!-- Mini Dashboard Buttons Section -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-white bg-primary">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div>
+                                <h5 class="card-title">Requests Received</h5>
+                                <p class="card-text display-6 fw-bold">@MiniStats?.RequestsReceived</p>
+                            </div>
+                            <i class="ti ti-mail-opened display-4"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-warning">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div>
+                                <h5 class="card-title">Eligibility Requests</h5>
+                                <p class="card-text display-6 fw-bold">@MiniStats?.EligibilityRequests</p>
+                            </div>
+                            <i class="ti ti-user-check display-4"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-danger">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div>
+                                <h5 class="card-title">Doc Verification</h5>
+                                <p class="card-text display-6 fw-bold">@MiniStats?.DocumentVerification</p>
+                            </div>
+                            <i class="ti ti-file-search display-4"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-success">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div>
+                                <h5 class="card-title">Verified & Waiting</h5>
+                                <p class="card-text display-6 fw-bold">@MiniStats?.DocsVerifiedWaiting</p>
+                            </div>
+                            <i class="ti ti-clock-hour-4 display-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xxl-3 col-md-6">
+                <div class="row flex-fill">
+
+                    <div class="col-12">
+                        <div class="card prov-widget">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="mb-2">
+                                        <p class="mb-1 text-success text-uppercase">Service Completed</p>
+                                        <h5><span class="counter animated fadeInDownBig">@MiniDashboard.TotalSuccessRequests</span>+</h5>
+                                    </div>
+                                    <span class="prov-icon bg-success d-flex justify-content-center align-items-center">
+                                        <i class="ti ti-calendar-check"></i>
+                                    </span>
+                                </div>
+                                <p class="fs-12"><span class="text-danger me-2">12% <i class="ti ti-arrow-badge-down-filled"></i></span>from Last Week</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="card prov-widget">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="mb-2">
+                                        <p class="mb-1 text-info text-uppercase">Service In Progress</p>
+                                        <h5><span class="counter animated fadeInDownBig">@MiniDashboard.TotalInProgressRequests</span>+</h5>
+                                    </div>
+                                    <span class="prov-icon bg-info d-flex justify-content-center align-items-center">
+                                        <i class="ti ti-progress-check"></i>
+                                    </span>
+                                </div>
+                                <p class="fs-12"><span class="text-danger me-2">0%</span>from Last Week</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="card prov-widget">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="mb-2">
+                                        <p class="mb-1 text-danger text-uppercase">Service Cancelled</p>
+                                        <h5><span class="counter animated fadeInDownBig">@MiniDashboard.TotalFailedRequests</span>+</h5>
+                                    </div>
+                                    <span class="prov-icon bg-danger d-flex justify-content-center align-items-center">
+                                        <i class="ti ti-device-mobile-cancel"></i>
+                                    </span>
+                                </div>
+                                <p class="fs-12"><span class="text-danger me-2">0%</span>from Last Week</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xxl-3 col-md-6">
+                <div class="col-12">
+                    <div class="card prov-widget">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="mb-2">
+                                    <p class="mb-1 text-dark text-uppercase">USER SERVED</p>
+                                    <h5><span class="counter animated fadeInDownBig">@MiniDashboard.TotalUsersServed</span>+</h5>
+                                </div>
+                                <span class="prov-icon bg-dark d-flex justify-content-center align-items-center">
+                                    <i class="ti ti-user-shield"></i>
+                                </span>
+                            </div>
+                            <p class="fs-12"><span class="text-success me-2">12% <i class="ti ti-arrow-badge-up-filled"></i></span>from Last Week</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card prov-widget">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="mb-2">
+                                    <p class="mb-1 text-dark text-uppercase">Total Income</p>
+                                    <h5><span class="counter animated fadeInDownBig">AED @ViewBag.GetTotalRevenue</span>+</h5>
+                                </div>
+                                <span class="prov-icon bg-dark d-flex justify-content-center align-items-center">
+                                    <i class="ti ti-chart-bar"></i>
+                                </span>
+                            </div>
+                            <p class="fs-12"><span class="text-success me-2">12% <i class="ti ti-arrow-badge-up-filled"></i></span>from Last Month</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card prov-widget">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="mb-2">
+                                    <p class="mb-1 text-dark text-uppercase">Total Registerd Service</p>
+                                    <h5><span class="counter animated fadeInDownBig"> @ViewBag.TotalService</span></h5>
+                                </div>
+                                <span class="d-flex justify-content-center align-items-center">
+                                    <a href="ReviewsClient/ProviderReviews" class="btn border">View All</a>
+                                </span>
+                            </div>
+                            <p class="fs-12"><span class="text-success me-2">&nbsp;</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-xxl-6 col-md-6 d-flex">
+                <div class="card flex-fill TopService">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h6>Top Services</h6>
+                            <a href="ReviewsClient/ProviderReviews" class="btn border">View All</a>
+                        </div>
+                        @if (TopServices != null && TopServices.Any())
+                        {
+                            foreach (var service in TopServices)
+                            {
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="d-flex">
+                                        <a href="ReviewsClient/ProviderReviews" class="avatar avatar-lg me-2">
+                                            <img src="assets/img/services/service-56.jpg" class="rounded-circle" alt="Img">
+                                        </a>
+                                        <div>
+                                            <a href="ReviewsClient/ProviderReviews" class="fw-medium mb-0">@service.ServiceName</a>
+                                            <div class="fs-12 d-flex align-items-center gap-2">
+                                                <span class="pe-2 border-end">@service.TotalReviews Reviews</span>
+                                                <span class="pe-2 border-end">Avg. Rating: @service.AverageRating.ToString("F1")</span>
+                                                <span><i class="ti ti-star-filled text-warning me-1"></i>@service.AverageRating.ToString("F1")</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a href="ReviewsClient/ProviderReviews">
+                                        <i class="ti ti-chevron-right"></i>
+                                    </a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>No services found.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6 d-flex overflow-hidden">
+                <div class="card flex-fill">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h6>Bookings</h6>
+                            <a href="javascript:void(0);" class="btn border">View All</a>
+                        </div>
+
+                        @if (Bookings != null && Bookings.Any())
+                        {
+                            foreach (var booking in Bookings)
+                            {
+                                <div class="book-crd">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center flex-wrap row-gap-2">
+                                                <div class="d-flex">
+                                                    <a href="MerchantResponseToUser/GetUsersWithDocuments" class="avatar avatar-lg flex-shrink-0 me-2">
+                                                        <img src="assets/img/services/service-63.jpg" class="rounded-circle" alt="@booking.ServiceName">
+                                                    </a>
+                                                    <div>
+                                                        <a href="MerchantResponseToUser/GetUsersWithDocuments" class="fw-medium">@booking.ServiceName</a>
+                                                        <span class="fs-12 d-block">
+                                                            <i class="ti ti-clock"></i> $@booking.ServicePrice
+                                                        </span>
+                                                        <span class="fs-12 d-block">
+                                                            <i class="ti ti-money"></i> Paid: $@booking.FINALPRICE
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                    <a href="javascript:void(0);" class="avatar avatar-sm me-2">
+                                                        <img src="assets/img/user/user-01.jpg" class="rounded-circle">
+                                                    </a>
+                                                    <a href="MerchantResponseToUser/GetUsersWithDocuments">
+                                                        <i class="ti ti-chevron-right"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>No bookings available.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6 d-flex overflow-hidden">
+                <div class="card flex-fill">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h6>Reviews</h6>
+                            <a href="javascript:void(0);" class="btn border">View All</a>
+                        </div>
+
+                        @if (Review != null)
+                        {
+                            <div class="book-crd">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center flex-wrap row-gap-2">
+                                                <div class="d-flex">
+                                                    <a href="ReviewsClient/ProviderReviews" class="avatar avatar-lg flex-shrink-0 me-2">
+                                                    <img src="assets/img/services/service-63.jpg" class="rounded-circle" alt="@Review.SID">
+                                                    </a>
+                                                    <div>
+                                                    <a href="ReviewsClient/ProviderReviews" class="fw-medium">@Review.SID</a>
+                                                        <span class="fs-12 d-block">
+                                                        <i class="ti ti-clock"></i> $@Review.ReviewDate.ToString("MMM dd, yyyy hh:mm tt")
+                                                        </span>
+                                                        <span class="fs-12 d-block">
+                                                        <i class="ti ti-money"></i> Reviewed By : @Review.CustomerName
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                @for (var i = 0; i < Review.Rating; i++)
+                                                {
+                                                    <i class="fas fa-star filled"></i>
+                                                }
+                                                @for (var i = Review.Rating; i < 5; i++)
+                                                {
+                                                    <i class="fas fa-star"></i>
+                                                }
+                                                (@Review.Rating)
+                                                    <a href="ReviewsClient/ProviderReviews">
+                                                        <i class="ti ti-chevron-right"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        }
+                        else
+                        {
+                            <p>No bookings available.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h6 class="subhead-title">Recent Booking</h6>
+
+                    <!-- Booking List -->
+                    <div class="booking-list">
+
+                        <div class="row" style="width: 100%;">
+
+                            <div class="table-responsive datatable-nofooter">
+                                <table class="table datatable">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Date</th>
+                                            <th>Customer Name</th>
+                                            <th>Service</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (myPaymentHistory != null)
+                                        {
+                                            @foreach (var item in myPaymentHistory)
+                                            {
+                                                <tr>
+                                                    <td>@item.ID</td>
+                                                    <td>@item.PAYMENTDATETIME</td>
+                                                    <td>@item.CustomerName</td>
+                                                    <td>@item.SERVICEID</td>
+                                                    <td>@item.AMOUNT</td>
+                                                    <td><h6 class="badge-pending">@(item.ISPAYMENTSUCCESS == 1 ? "Done" : "Pending")</h6></td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    @*  <div class="view-history">
+                    <a href="provider-booking.html" class="btn btn-primary">View All History</a>
+                </div> *@
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Delete Account -->
+<div class="modal fade custom-modal" id="del-account" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0 justify-content-between">
+                <h5 class="modal-title">Delete Account</h5>
+                <button type="button" class="close-btn" data-bs-dismiss="modal" aria-label="Close"><i class="feather-x"></i></button>
+            </div>
+            <div class="modal-body pt-0">
+                <div class="write-review">
+                    <form action="login.html">
+                        <p>Are you sure you want to delete this account? To delete your account, Type your password.</p>
+                        <div class="form-group">
+                            <label class="col-form-label">Password</label>
+                            <div class="pass-group">
+                                <input type="password" class="form-control pass-input" placeholder="*************">
+                                <span class="toggle-password feather-eye-off"></span>
+                            </div>
+                        </div>
+                        <div class="modal-submit text-end">
+                            <a href="#" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</a>
+                            <button type="submit" class="btn btn-danger">Delete Account</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="activationModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">
+                    <i class="fa-solid fa-triangle-exclamation text-warning me-2"></i>
+                    Account Not Activated
+                </h5>
+            </div>
+            <div class="modal-body">
+                Your account is not yet activated. Please click
+                <a href="/Profile">Here</a> to complete the required steps to activate your account and access all features.
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="goToProfileButton" class="btn btn-primary">Go to Profile</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+         document.addEventListener('DOMContentLoaded', function () {
+        // Detect screen size and show modal for mobile or tablet devices
+        var ShowPopup='@IsActive';
+
+        if (window.innerWidth <= 768 && ShowPopup == "In Active") {
+            var activationModal = new bootstrap.Modal(document.getElementById('activationModal'), {
+                backdrop: 'static', // Disable background close
+                keyboard: false // Disable keyboard close
+            });
+            activationModal.show();
+
+            // Set redirection on button click
+            document.getElementById('goToProfileButton').addEventListener('click', function () {
+                window.location.href = '/Profile';
+            });
+        }
+    });
+
+
+    // Redirect function
+    function redirectToProfile() {
+        window.location.href = '/Profile';
+    }
+</script>

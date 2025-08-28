@@ -1,0 +1,29 @@
+﻿@model IEnumerable<AFFZ_Customer.Models.Notification>
+
+<div class="col-lg-9">
+
+    <ul class="notification-list">
+        @foreach (var notification in Model)
+        {
+            string style = notification.IsRead ? "font-weight:100" : "";
+            <li class="notification-message alert alert-primary mb-2" role="alert">
+                <a href="javascript:void(0)" onclick="markAsReadAndRedirect(@notification.Id, '@notification.RedirectToActionUrl',this)">
+
+                    <div class="media noti-img  d-flex">
+                        <span class="avatar avatar-sm flex-shrink-0">
+                            <img class="avatar-img rounded-circle" alt="user" src="/assets/img/provider/provider-01.jpg">
+                        </span>
+                        <div class="media-body flex-grow-1">
+                            <p class="noti-details">
+                                <span class="noti-title" style="@style">@notification.Message</span>
+                            </p>
+                            <p class="noti-time">
+                                <span class="notification-time">@notification.CreatedDate.ToString("g")</span>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </li>
+        }
+    </ul>
+</div>

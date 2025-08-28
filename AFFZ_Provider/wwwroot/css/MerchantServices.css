@@ -1,0 +1,38 @@
+﻿.page-header {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.custom-table th, .custom-table td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.table-responsive {
+    margin-bottom: 20px;
+}
+
+.pagination {
+    margin: 20px 0;
+}
+
+.modal-lg {
+    max-width: 90%;
+}
+
+.btn {
+    margin-right: 5px;
+}
+
+@media (max-width: 768px) {
+    .provider-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}

@@ -1,0 +1,81 @@
+﻿@model IEnumerable<AFFZ_Customer.Models.ChatterMessage>
+@{
+    var paginatedSubCategories = ViewBag.SubCategoriesWithMerchant as List<AFFZ_Customer.Models.ChatterMessage>;
+    ViewData["Title"] = "Index";
+    var groupedMessages = paginatedSubCategories
+        .OrderBy(m => m.MessageTimestamp)
+        .GroupBy(m => new { m.SenderId, m.ReceiverId })
+        .ToList();
+    ViewData["Title"] = "Inbox";
+}
+
+<div class="col-lg-9">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["FailMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["FailMessage"]
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-12">
+            <h6 class="user-title">Messages</h6>
+            <a href="@Url.Action("SendMessage", "Chat")" class="btn btn-primary">Send Message</a>
+
+            <div class="threaded-messages">
+                @foreach (var group in groupedMessages)
+                {
+                    <div class="message-thread">
+                        <div class="thread-header">
+                            <strong>@group.Key.SenderId</strong> to <strong>@group.Key.ReceiverId</strong>
+                        </div>
+                        <div class="thread-body">
+                            @foreach (var message in group)
+                            {
+                                <div class="message">
+                                    <p>@message.MessageContent</p>
+                                    <small>@message.MessageTimestamp</small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .threaded-messages {
+        margin-top: 20px;
+    }
+
+    .message-thread {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 20px;
+        background-color: #f9f9f9;
+    }
+
+    .thread-header {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .message {
+        margin-bottom: 10px;
+    }
+
+    .message p {
+        margin: 0;
+    }
+
+    .message small {
+        color: #888;
+    }
+</style>

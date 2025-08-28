@@ -1,0 +1,169 @@
+﻿
+
+<div class="page-wrapper page-settings verify-request">
+    <div class="content">
+        <div class="content-page-header content-page-headersplit">
+            <h5>Verification Requests</h5>
+        </div>
+        <div class="row">
+            <div class="col-12 ">
+                <div class="table-resposnive">
+                    <table class="table datatable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>User Name</th>
+                                <th>Document type</th>
+                                <th>Document Name</th>
+                                <th>Download</th>
+                                <th>Reject Reason</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2</td>
+                                <td>
+                                    <span>Adrrian</span>
+                                </td>
+                                <td>
+                                    <span>Passport</span>
+                                </td>
+                                <td>
+                                    <a href="#"><span>Passport.pdf</span></a>
+                                </td>
+                                <td>
+                                    <div class="table-download">
+                                        <i class="fa-solid fa-download"></i>
+                                    </div>
+                                </td>
+                                <td>Just For Another Testing <br> Purpose..</td>
+                                <td>
+                                    <a href="#" class=" btn btn-rejected" data-bs-toggle="modal"
+                                       data-bs-target="#successmodal">
+                                        Rejected
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>
+                                    <span>Richard</span>
+                                </td>
+                                <td>
+                                    <span>Passport</span>
+                                </td>
+                                <td>
+                                    <a href="#"><span>Passport.pdf</span></a>
+                                </td>
+                                <td>
+                                    <div class="table-download">
+                                        <i class="fa-solid fa-download"></i>
+                                    </div>
+                                </td>
+                                <td></td>
+                                <td>
+                                    <a href="#" class=" btn btn-verified">
+                                        Verified
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>
+                                    <span>Andrew</span>
+                                </td>
+                                <td>
+                                    <span>Driving Licence</span>
+                                </td>
+                                <td>
+                                    <a href="#"><span> DrivingLicence.pdf</span></a>
+                                </td>
+                                <td>
+                                    <div class="table-download">
+                                        <i class="fa-solid fa-download"></i>
+                                    </div>
+                                </td>
+                                <td></td>
+                                <td>
+                                    <div class="table-select">
+                                        <div class="form-group mb-0">
+                                            <select class="select">
+                                                <option>Select Status</option>
+                                                <option> Pending</option>
+                                                <option> Inprogress</option>
+                                                <option>Completed</option>
+                                                <option>cancelled</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>
+                                    <span>Richard</span>
+                                </td>
+                                <td>
+                                    <span>Passport</span>
+                                </td>
+                                <td>
+                                    <a href="#"><span>Passport.pdf</span></a>
+                                </td>
+                                <td>
+                                    <div class="table-download">
+                                        <i class="fa-solid fa-download"></i>
+                                    </div>
+                                </td>
+                                <td></td>
+                                <td>
+                                    <div class="table-select">
+                                        <div class="form-group mb-0">
+                                            <select class="select">
+                                                <option>Select Status</option>
+                                                <option> Pending</option>
+                                                <option> Inprogress</option>
+                                                <option>Completed</option>
+                                                <option>cancelled</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Succss -->
+<div class="modal fade service-models" id="successmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered ">
+        <div class="modal-content">
+            <form action="verification-request.html">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Reject Reason</h5>
+                    <button type="button" class="btn-close close-modal" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="fe fe-x"></i>
+                    </button>
+                </div>
+                <div class="modal-body py-0">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <textarea rows="6" class="form-control" placeholder="Enter Reason"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer pt-0">
+                    <button type="submit" class="btn btn-primary w-100">Submit</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+<!-- Modal Succss -->

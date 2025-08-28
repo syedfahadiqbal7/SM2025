@@ -1,0 +1,228 @@
+﻿@model AFFZ_Provider.Controllers.FileUploadViewModel
+
+@{
+    var paginatedSubCategories = ViewBag.SaveResponse as AFFZ_Provider.Controllers.FileUploadViewModel;
+    ViewData["Title"] = "ReViewDocuments";
+    int allFilesVerified = 0;
+}
+<div class="page-wrapper">
+    <div class="content container-fluid">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="provider-subtitle">
+                        <h6>User File List For Service @ViewBag.ServiceName</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="provide-table manage-table">
+                    <!-- Display messages -->
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+                    @if (TempData["FailMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["FailMessage"]
+                        </div>
+                    }
+                    <div class="table-responsive">
+                        <table class="table custom-table datatable mb-0" id="data-table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>#</th>
+                                   
+                                    <th>File Name</th>
+                                    <th>File Type</th>
+                                    <th>File Size</th>
+                                    <th>Download</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (paginatedSubCategories.UploadedFiles == null)
+                                {
+                                    <p><em>Loading Sub Categories...</em></p>
+                                }
+                                else
+                                {
+
+                                    @foreach (var file in paginatedSubCategories.UploadedFiles)
+                                    {
+                                        <tr>
+                                            <td></td>
+                                       
+                                            <td>
+                                                <a href="javascript:void(0);" onclick="showImagePopup('@file.FileName', '@file.FolderName')">
+                                                    @file.FileName
+                                                </a>
+                                            </td>
+                                            <td>@file.ContentType</td>
+                                            <td>@file.FileSize</td>
+                                            <td>@file.Status</td>
+                                            <td>
+                                                @if (@file.Status == "Resend")
+                                                {
+                                                    <label class="btn btn-warning">Request To Upload file Again</label>
+                                                }
+                                                else
+                                                {
+                                                    @if (@file.Status != "Verified")
+                                                    {
+                                                        allFilesVerified = 0;
+                                                        //string documentId, string documentName, int RFDFU, string userId
+                                                        <form asp-controller="MerchantResponseToUser" asp-action="VerifyDocument" method="post" style="display:inline;" class="formVerify">
+                                                            <input type="hidden" name="documentId" value="@file.UFID" />
+                                                            <input type="hidden" name="userId" value="@ViewBag.UserId" />
+                                                            <input type="hidden" name="serviceId" value="@ViewBag.ServiceId" />
+                                                            <input type="hidden" name="RFDFU" value="@file.RFDFU" />
+                                                            <input type="hidden" name="documentName" value="@file.FileName" />
+                                                            <input type="hidden" name="quantity" value="@ViewBag.quantity" />
+                                                            <button type="submit" class="btn btn-success">Verify</button>
+                                                        </form>
+                                                        <form asp-controller="MerchantResponseToUser" asp-action="ResendDocument" method="post" style="display:inline;" class="formResend">
+                                                            <input type="hidden" name="documentId" value="@file.UFID" />
+                                                            <input type="hidden" name="userId" value="@ViewBag.UserId" />
+                                                            <input type="hidden" name="RFDFU" value="@file.RFDFU" />
+                                                            <input type="hidden" name="documentName" value="@file.FileName" />
+                                                            <input type="hidden" name="quantity" value="@ViewBag.quantity" />
+                                                            <button type="submit" class="btn btn-warning">Resend</button>
+                                                        </form>
+                                                        <a asp-action="DownloadFile" asp-route-fileName="@file.FileName" asp-route-folderName="@file.FolderName" class="btn btn-sm badge-success">Download</a>
+                                                    }
+                                                    @if (@file.Status == "Verified")
+                                                    {
+                                                        allFilesVerified = 1;
+
+                                                        <a asp-action="DownloadFile" asp-route-fileName="@file.FileName" asp-route-folderName="@file.FolderName" class="btn btn-sm badge-success">Download</a>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                        @* <button class="btn btn-primary" onclick="checkDocumentsAndShowModal('@allFilesVerified','@ViewBag.UserId','@ViewBag.RFDFU')">Start Process</button> *@
+                      
+                        <a asp-action="GetUsersWithDocuments" asp-controller="MerchantResponseToUser" class="btn btn-secondary">Go Back</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div id="tablelength"></div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="table-ingopage">
+                            <div id="tableinfo"></div>
+                            <div id="tablepagination"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Image Modal -->
+<div class="modal fade custom-modal" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content doctor-profile">
+            <div class="modal-header border-bottom-0 justify-content-between">
+                <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
+                <button type="button" class="close-btn" data-bs-dismiss="modal" aria-label="Close"><i class="feather-x"></i></button>
+            </div>
+            <div class="modal-body pt-0">
+                <img id="modalImage" src="" alt="Image" class="img-fluid" />
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Partial for Status Update -->
+<div id="statusModal" class="modal fade custom-modal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content doctor-profile">
+            <div class="modal-header border-bottom-0 justify-content-between">
+                <h5 class="modal-title">Update Service Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body  pt-0">
+                <form id="statusUpdateForm" method="post" asp-controller="MerchantResponseToUser" asp-action="ProcessToApplyForServiceStatus">
+                    <input type="hidden" name="RFDFU" id="_RFDFU" />
+                    <input type="hidden" name="UserId" id="_UserId" />
+                    <div class="form-group">
+                        <label for="statusDropdown">Status</label>
+
+                        <select class="form-select" name="CurrentStatus" id="statusDropdown" asp-items="@ViewBag.StatusList" required>
+                            <option value="">--Select--</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+<script>
+        function checkDocumentsAndShowModal(fileverified, user, rfdfu) {
+            // Here, you can verify if all documents are confirmed before showing modal.
+            console.log(fileverified)
+            console.log(user)
+            console.log(rfdfu)
+            if (fileverified == 1) {
+                document.getElementById("_UserId").value = user;
+                document.getElementById("_RFDFU").value = rfdfu;
+                //$('#_UserId').value(user);
+                //$('#_RFDFU').value(rfdfu);
+                $('#statusModal').modal('show');
+            }
+            else {
+                alert("Process can be started after all the documents are verified.");
+            }
+        }
+    function showImagePopup(fileName, folderName) {
+        // Construct the full image URL
+        //var imageUrl = '@Url.Content("~/uploads/")' + folderName + '/' + fileName;
+            const url = '@ViewBag.UserUrl';
+            var imageUrl = url+'/uploads/' + folderName + '/' + fileName;
+
+        // Set the src attribute of the image in the modal
+        $('#modalImage').attr('src', imageUrl);
+
+        // Show the modal
+        $('#imageModal').modal('show');
+    }
+          document.addEventListener('DOMContentLoaded', function() {
+                var formVerify = document.querySelector('.formVerify');
+                var formResend = document.querySelector('.formResend');
+                var submitVerifyButton = formVerify.querySelector('button[type="submit"]');
+                var submitResendButton = formResend.querySelector('button[type="submit"]');
+
+                formVerify.addEventListener('submit', function() {
+                // Disable the submit button
+                submitVerifyButton.disabled = true;
+                // Optionally, change button text to indicate processing
+                submitVerifyButton.innerHTML = 'Verifying... <i class="fas fa-spinner fa-spin"></i>';
+                });
+                formResend.addEventListener('submit', function() {
+                // Disable the submit button
+                submitResendButton.disabled = true;
+                // Optionally, change button text to indicate processing
+                submitResendButton.innerHTML = 'Resending... <i class="fas fa-spinner fa-spin"></i>';
+                });
+        });
+</script>
+}
+@if (TempData["SaveResponse"] != null)
+{
+    <div class="alert alert-info mt-3">@TempData["SaveResponse"]</div>
+}

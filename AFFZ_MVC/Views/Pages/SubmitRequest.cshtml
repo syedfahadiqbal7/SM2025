@@ -1,0 +1,54 @@
+﻿@model AFFZ_Customer.Controllers.EligibilityRequestDTO
+
+
+<form id="eligibilityForm" method="post">
+
+    <input type="hidden" name="Nationality" id="Nationality" value="@Model.Nationality">
+    <input type="hidden" name="ServiceID" id="ServiceID" value="@Model.ServiceID">
+    <input type="hidden" name="MerchantId" id="MerchantId" value="@Model.MerchantId">
+    <p style="font-size: 12px;color: red;">Every country has different requirements, and it is important to know whether your passport allows. Submit below form to check the eligibility for <b>@ViewBag.ServiceName</b></p>
+    <div class="row">
+        <label for="Nationality">Select the nationality of the person for whom you need the service:</label>
+        <select class="form-select" name="requestorNationality" id="requestorNationality" onchange="CountryChange()" required>
+            <option value="">-- Select Country --</option>
+            @foreach (var country in ViewBag.CountryList as List<string>)
+            {
+                <option value="@country">@country</option>
+            }
+        </select>
+    </div>
+    <div class="row">
+        <label for="RequestDetails">Provide Details or Ask a Question</label>
+        <textarea asp-for="RequestDetails" class="form-control" required></textarea>
+    </div>
+    <div class="row mt-3">
+        <button type="button" id="submitEligibilityFormSubmit" class="btn btn-primary">Submit</button>
+    </div>
+    <p style="font-size: 10px;color: red;">Note: Eligibility processing may take up to 24 hours. Please stay online or monitor your email for updates on your request.</p>
+</form>
+<script>
+        $(document).on('click', '#submitEligibilityFormSubmit', function () {
+        var formData = $('#eligibilityForm').serialize();
+        var submitButton = document.getElementById('submitEligibilityFormSubmit');
+        // Disable the submit button
+        submitButton.disabled = true;
+        // Optionally, change button text to indicate processing
+        submitButton.innerHTML = 'Submitting Request... <i class="fas fa-spinner fa-spin"></i>';
+        $.ajax({
+            url: '/Eligibility/SubmitRequest',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                console.log(response);
+                location.reload();
+            },
+            error: function () {
+                alert("An error occurred while submitting the request. Please try again later.");
+            }
+        });
+    });
+    function CountryChange()
+    {
+       $("#Nationality").val($("#requestorNationality").val());
+    }
+</script>

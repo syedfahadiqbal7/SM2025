@@ -1,0 +1,345 @@
+﻿@model AFFZ_Provider.Models.Service
+@{
+
+}
+
+<h2>Modify Service</h2>
+<link href="~/assets/js/multi.js/multi.min.css" rel="stylesheet" />
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var _ServiceNameDropdown = document.getElementById("ServiceName");
+        var _CategoryIDDropdown = document.getElementById("CategoryID");
+        var servicePriceInput = document.getElementById("ServicePrice");
+        var amountPaidToAdminInput = document.getElementById("ServiceAmountPaidToAdmin");
+        var form = document.querySelector("form");
+
+        // Enable or disable dropdowns based on the initial value of the branch dropdown
+        _ServiceNameDropdown.addEventListener("change", function () {
+            var ServId = this.value;
+            if (ServId) {
+                // Enable the other dropdowns
+
+                // Reload the page with the selected branch as a query parameter
+                var CatId = _CategoryIDDropdown.value;
+                window.location.href = '@Url.Action("MerchantServiceCreate", "MerchantService")?ServiceName=' + ServId + '&CategoryID=' + CatId;
+            }
+        });
+
+        // Add JavaScript validation to ensure service price is greater than or equal to amount paid to admin
+        form.addEventListener("submit", function (event) {
+            var servicePrice = parseFloat(servicePriceInput.value);
+            var amountPaidToAdmin = parseFloat(amountPaidToAdminInput.value);
+
+            if (isNaN(servicePrice) || isNaN(amountPaidToAdmin)) {
+                alert("Please enter valid numeric values for Service Price and Amount Paid to Admin.");
+                event.preventDefault();
+                return;
+            }
+
+            if (servicePrice < amountPaidToAdmin) {
+                alert("Service Price cannot be less than Amount Paid to Admin.");
+                event.preventDefault();
+                return;
+            }
+
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+                alert("Please correct the errors in the form before submitting.");
+            }
+        });
+    });
+</script>
+<div class="page-wrapper" style="padding-top: 5px;">
+    <div class="content">
+        <div class="row">
+
+            <div class="col-lg-12 m-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-sm-0 float-start">@ViewData["Title"]</h4>
+                        <a asp-action="MerchantServiceIndex" class="btn btn-info btn-sm waves-effect waves-light float-end">Back to List</a>
+                    </div><!-- end card header -->
+                    <div class="card-body">
+                        @using (Html.BeginForm("MerchantServiceEdit", null, FormMethod.Post, new { @class = "form", @novalidate = "novalidate" }))
+                        {
+                            @Html.ValidationSummary("", new { @class = "text-danger" })
+                            @Html.Hidden("id", Model.ServiceId)
+                            ;
+                            @Html.HiddenFor(x => x.ServiceId, Model.ServiceId)
+                            ;
+                            <!-- Service Information -->
+                            <fieldset id="first-field">
+                                <div class="container-service space-service">
+                                    <div class="sub-title">
+                                        <h6>Edit - Service </h6>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Service Category</label>
+                                                <select class="form-select" name="CategoryID" id="CategoryID" asp-items="@ViewBag.ServiceCategoryComboData" required>
+                                                    <option value="">--Select--</option>
+                                                </select>
+                                                @Html.ValidationMessageFor(model => model.CategoryID, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Service Title</label>
+                                                <select class="form-select" name="SID" id="SID" asp-items="@ViewBag.ServiceListComboData" required>
+                                                    <option value="">--Select--</option>
+                                                </select>
+                                                @Html.ValidationMessageFor(model => model.SID, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group price">
+                                                <label>Price <span>Set 0 for free</span></label>
+                                                <input asp-for="ServicePrice" class="form-control" id="ServicePrice" required />
+                                                @Html.ValidationMessageFor(model => model.ServicePrice, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Deduction Type</label>
+                                                <div>
+                                                    <input type="hidden" name="DeductionType" value="@ViewBag.ProviderSlabSelectedModel" />
+                                                    <input type="radio" id="deductionFix" name="DeductionType" value="Fix" @(ViewBag.ProviderSlabSelectedModel == "Fix" ?"checked":"") disabled />
+                                                    <label for="deductionFix">Fix</label>
+                                                    <input type="radio" id="deductionPercentage" name="DeductionType" value="Percentage" @(ViewBag.ProviderSlabSelectedModel == "Percentage" ?"checked":"") disabled />
+                                                    <label for="deductionPercentage">Percentage</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group price">
+                                                <label>Pay System Admin<span>Set 0 for free</span></label>
+                                                <input asp-for="DeductionValue" class="form-control" id="DeductionValue" required />
+                                                @Html.ValidationMessageFor(model => model.DeductionValue, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        
+                                     </div>
+                                    <div class="row">
+                                       <div class="col-md-6">
+                                            <div class="form-group price">
+                                                <label>Amount Merchant Will Get</label>
+                                                <input asp-for="ServiceAmountPaidToAdmin" id="ServiceAmountPaidToAdmin" class="form-control" required readonly />
+                                                @if (ViewBag.AmountChangeRequested == true)
+                                                {
+                                                    <span class="text-success mt-3 d-block">Request Sent</span>
+                                                }
+                                                else
+                                                {
+                                                    <button type="button" id="requestAmountChangeBtn" class="btn btn-warning mt-3">Request Amount Change</button>
+                                                }
+                                                @Html.ValidationMessageFor(model => model.ServiceAmountPaidToAdmin, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="RequiresEligibility">
+                                                    <input asp-for="Eligibility" type="checkbox" />
+                                                    Do Service Requires Eligibility Verification?
+                                                </label>
+                                                @Html.ValidationMessageFor(model => model.Eligibility, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Select Documents</label>
+                                                @* @Html.DropDownList("SelectedDocumentIds", (IEnumerable<SelectListItem>)ViewBag.DocumentListComboData, " ", new { @class = "form-select", @required = "required", @multiple = "multiple", @name = "SelectedDocumentIds", @id = "multiselect-basic" }) *@
+
+                                                <select id="multiselect-basic" name="SelectedDocumentIds" class="form-select" multiple="multiple" asp-items="@ViewBag.DocumentListComboData">
+                                                </select>
+                                                @Html.ValidationMessageFor(model => model.SelectedDocumentIds, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="bottom-btn">
+                                            <div class="field-btns">
+                                                <button class="btn btn-primary" type="submit">Submit <i class="fas fa-save"></i></button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <!-- /Service Information -->
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Request Amount Change Modal -->
+<div class="modal fade" id="amountChangeModal" tabindex="-1" aria-labelledby="amountChangeModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-white">
+                <h5 class="modal-title" id="amountChangeModalLabel">Request Amount Change</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="requestedAmountInput">Enter Desired Amount:</label>
+                    <input type="number" id="requestedAmountInput" class="form-control" placeholder="Enter your desired amount" required />
+                </div>
+                <p class="mt-3 text-muted" style="font-size: 12px;">
+                    <strong>Note:</strong> Your request will be reviewed by the Admin. If approved, you will receive confirmation; otherwise, you will be notified of the rejection. You can contact the admin via <a href="mailto:admin@smartcenter.com">admin@smartcenter.com</a> or mobile number <strong>0551783398</strong>.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="submitAmountChangeRequest">Submit Request</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/assets/js/multi.js/multi.min.js"></script>
+    <script>
+        var multiSelectBasic = document.getElementById("multiselect-basic");
+        multi(multiSelectBasic, {
+            "enable_search": true,
+            //"search_placeholder": "Search...",
+            //"non_selected_header": "All Documents",
+            //"selected_header": "Selected Documents",
+            "limit": -1,
+            "limit_reached": function() { },
+            "hide_empty_groups": false,
+            });
+            document.addEventListener("DOMContentLoaded", function () {
+            const deductionTypeRadios = document.getElementsByName("DeductionType");
+            const deductionValueInput = document.getElementById("DeductionValue");
+            const servicePriceInput = document.getElementById("ServicePrice");
+            const amountPaidToAdminInput = document.getElementById("ServiceAmountPaidToAdmin");
+
+            // Calculate the amount to pay to the admin based on deduction type
+            function updateDeduction() {
+                const selectedType = [...deductionTypeRadios].find(radio => radio.checked)?.value;
+                const servicePrice = parseFloat(servicePriceInput.value) || 0;
+                const deductionValue = parseFloat(deductionValueInput.value) || 0;
+                if (selectedType === "Fix") {
+                    amountPaidToAdminInput.value = Math.round(servicePrice - deductionValue);
+                } 
+                else if (selectedType === "Percentage") 
+                {
+                    const deduction = (servicePrice * deductionValue) / 100;
+                    amountPaidToAdminInput.value = Math.round(servicePrice - deduction);
+                }
+            }
+
+            // Attach event listeners to recalculate on input change
+            deductionTypeRadios.forEach(radio => radio.addEventListener("change", updateDeduction));
+            deductionValueInput.addEventListener("input", updateDeduction);
+            servicePriceInput.addEventListener("input", updateDeduction);
+        });
+        $(document).ready(function () {
+            const servicePriceInput = $("#ServicePrice");
+            const deductionTypeRadios = $("input[name='DeductionType']");
+            const deductionValueInput = $("#DeductionValue");
+            const requestedAmountInput = $("#requestedAmountInput");
+            const membershipDiscount = 0; // Initialize discount (will be updated dynamically)
+            let applicableSlab = null;
+            // Fetch applicable slab for the entered service price
+            servicePriceInput.on("input", function () {
+                const servicePrice = parseFloat($(this).val()) || 0;
+
+                if (servicePrice > 0) {
+                    $.getJSON(`/MerchantService/GetApplicableSlab?amount=${servicePrice}`, function (data) {
+                        console.log(data);
+                        applicableSlab = data;
+                        calculateAmount(servicePrice);
+                    }).fail(function () {
+                        alert("Failed to fetch applicable slab.");
+                    });
+                }
+            });
+            // Calculate the final amount based on deduction type and slab
+            function calculateAmount(servicePrice) {
+                let finalAmount = servicePrice;
+                console.log(applicableSlab.fixed);
+                if (applicableSlab) 
+                {
+                    if (deductionTypeRadios.filter(":checked").val() === "Fix") 
+                    {
+                        finalAmount -= applicableSlab.fixed;
+                    } 
+                    else if (deductionTypeRadios.filter(":checked").val() === "Percentage") 
+                    {
+                        finalAmount -= (servicePrice * applicableSlab.percentage) / 100;
+                    }
+                }
+                if (membershipDiscount > 0) 
+                {
+                    finalAmount -= (finalAmount * membershipDiscount) / 100;
+                }
+
+                $("#ServiceAmountPaidToAdmin").val(Math.round(finalAmount));
+                $("#DeductionValue").val(Math.round(applicableSlab.fixed));
+
+            }
+            // Request Amount Change Button Handler
+            $("#requestAmountChangeBtn").on("click", function () {
+                requestedAmountInput.val(''); // Reset the input value in the modal
+                $("#amountChangeModal").modal("show");
+            });
+            // Handle the modal submit button
+            $("#submitAmountChangeRequest").on("click", function () {
+                const requestedAmount = parseFloat(requestedAmountInput.val());
+                const serviceId = $("#id").val();
+                const servicePrice = parseFloat(servicePriceInput.val());
+                // Validate the requested amount
+                if (isNaN(requestedAmount) || requestedAmount <= 0) {
+                    alert("Please enter a valid amount.");
+                    return;
+                }
+
+                if (requestedAmount > servicePrice) {
+                    alert("Requested amount cannot exceed the Service Price.");
+                    return;
+                }
+
+                if (serviceId && requestedAmount > 0) {
+                    var element = document.getElementById("submitAmountChangeRequest");
+
+                    element.disabled = true;
+                    element.innerHTML = 'Submitting... <i class="fas fa-spinner fa-spin"></i>';
+                    $.post("/MerchantService/RequestAmountChange", { serviceId: serviceId, requestedAmount: requestedAmount }, function (response) {
+                        alert("Your request has been sent. The admin will review it.");
+                        $("#amountChangeModal").modal("hide"); // Hide the modal after success
+                        $("#requestAmountChangeBtn").replaceWith('<span class="text-success mt-3 d-block">Request Sent</span>'); // Replace the button with 'Request Sent'
+                    }).fail(function () {
+                        alert("Failed to send the request. Please try again.");
+                    });
+                } else {
+                    alert("Please enter a valid service amount.");
+                }
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.querySelector('.form');
+            var submitButton = form.querySelector('button[type="submit"]');
+
+            form.addEventListener('submit', function() {
+                // Disable the submit button
+                submitButton.disabled = true;
+                // Optionally, change button text to indicate processing
+                submitButton.innerHTML = 'Submitting... <i class="fas fa-spinner fa-spin"></i>';
+            });
+        });
+    </script>
+}

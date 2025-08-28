@@ -1,0 +1,140 @@
+﻿@model IEnumerable<AFFZ_Provider.Models.Service>
+@{
+    ViewData["Title"] = "Service List";
+}
+
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h4 class="page-title">Merchant Service List</h4>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="@Url.Action("MerchantServiceCreate")" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Create New Service
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success/Error Messages -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+            </div>
+        }
+        @if (TempData["FailMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fas fa-times-circle me-2"></i>@TempData["FailMessage"]
+            </div>
+        }
+
+        <!-- Service Table -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover custom-table datatable mb-0" id="data-table">
+                <thead class="table-light">
+                    <tr>
+                        <th><i class="fas fa-clipboard-list me-2"></i>Service Name</th>
+                        <th><i class="fas fa-dollar-sign me-2"></i>Service Price</th>
+                        <th><i class="fas fa-hand-holding-usd me-2"></i>Pay Merchant</th>
+                        <th><i class="fas fa-user-tie me-2"></i>Admin Commission</th>
+                        <th><i class="fas fa-tags me-2"></i>Amount Deduction Type</th>
+                        <th><i class="fas fa-cogs me-2"></i>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var service in ViewBag.ServiceList)
+                    {
+                        <tr>
+                            <td>@service.ServiceName</td>
+                            <td><span class="currency">@service.ServicePrice</span></td>
+                            <td><span class="currency">@service.ServiceAmountPaidToAdmin</span></td>
+                            <td><span class="currency">@service.DeductionValue</span></td>
+                            <td>
+                                @if (service.DeductionType == "Fix")
+                                {
+                                    <i class="fas fa-lock me-1" title="Fixed Deduction"></i>
+                                }
+                                else if (service.DeductionType == "Percentage")
+                                {
+                                    <i class="fas fa-percent me-1" title="Percentage Deduction"></i>
+                                }
+                                @service.DeductionType</td>
+                            <td>
+                                <div class="d-flex">
+                                    <a href="@Url.Action("MerchantServiceEdit", "MerchantService", new { id = service.ServiceId })" class="btn btn-sm btn-warning me-2">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button data-id="@service.ServiceId" class="btn btn-sm btn-danger delete-service me-2">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <button data-id="@service.ServiceId" class="btn btn-sm btn-info view-service">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- View Service Modal -->
+<div class="modal fade" id="viewServiceModal" tabindex="-1" aria-labelledby="viewServiceLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewServiceLabel">Service Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Service Details will be loaded here via AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.5/sweetalert2.min.js"></script>
+    <script type="text/javascript">
+        // Replace the currency dynamically based on the user's region
+        document.querySelectorAll('.currency').forEach(el => {
+            el.innerHTML = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'AED' }).format(el.innerHTML);
+        });
+        $(document).on('click', '.view-service', function() {
+            var serviceId = $(this).data('id');
+            $.ajax({
+                url: '@Url.Action("ViewService", "MerchantService")',
+                data: { id: serviceId },
+                success: function(data) {
+                    $('#viewServiceModal .modal-body').html(data);
+                    $('#viewServiceModal').modal('show');
+                }
+            });
+        });
+
+        $(document).on('click', '.delete-service', function() {
+            var serviceId = $(this).data('id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '@Url.Action("MerchantServiceDeleteConfirmed", "MerchantService")?id=' + serviceId;
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,523 @@
+﻿@inject AFFZ_Customer.Utils.IAppSettingsService AppSettingsService
+@{
+    var categories = ViewBag.Categories as List<AFFZ_Customer.Controllers.ServiceCat>;
+    var statistics = ViewBag.Statistics as AFFZ_Customer.Controllers.DashboardStatistics;
+    var recentReviews = ViewBag.RecentReviews as List<AFFZ_Customer.Controllers.ReviewDto>;
+    ViewData["Title"] = "SmartCenter - Your Trusted Service Marketplace";
+    Layout = "~/Views/Shared/_LayoutFront.cshtml";
+}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 hero-content">
+                <h1 class="hero-title">Your Trusted Service Partner</h1>
+                <p class="hero-subtitle">Connect with verified professionals for 25+ services. Get instant quotes, book with confidence, and experience excellence in every service.</p>
+                <button class="cta-button" onclick="showServiceCarousel()">Find Your Service Now</button>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-image">
+                    <svg width="500" height="400" viewBox="0 0 500 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="500" height="400" fill="url(#heroGradient)" />
+                        <circle cx="250" cy="200" r="150" fill="white" opacity="0.1" />
+                        <circle cx="250" cy="200" r="100" fill="white" opacity="0.2" />
+                        <circle cx="250" cy="200" r="50" fill="white" opacity="0.3" />
+                        <defs>
+                            <linearGradient id="heroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
+                                <stop offset="100%" stop-color="rgba(255,255,255,0.05)" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-number">150,000+</div>
+                    <div class="stat-label">Happy Customers</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-number">15,000+</div>
+                    <div class="stat-label">Reviews</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-number">4.8</div>
+                    <div class="stat-label">Out of 5 Rating</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Trusted Professionals</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">Why Choose SmartCenter</h2>
+        <p class="section-subtitle">We're committed to providing you with the best service experience</p>
+
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4 class="feature-title">Trusted & Verified</h4>
+                    <p class="feature-description">All our service providers are thoroughly vetted and verified for your safety and peace of mind</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4 class="feature-title">Quality Assured</h4>
+                    <p class="feature-description">We guarantee high-quality services with customer satisfaction as our top priority</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h4 class="feature-title">24/7 Support</h4>
+                    <p class="feature-description">Round-the-clock customer support to assist you with any queries or concerns</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h4 class="feature-title">Secure Payments</h4>
+                    <p class="feature-description">Safe and secure payment processing with multiple convenient payment options</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Services Section -->
+<section class="services-section" id="services">
+    <div class="container">
+        <h2 class="section-title">Most Popular Services</h2>
+        <p class="section-subtitle">Discover our wide range of professional services designed to make your life easier</p>
+
+        <div class="service-carousel">
+            <div class="carousel-control prev" onclick="moveCarousel(-1)">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            <div class="carousel-control next" onclick="moveCarousel(1)">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+
+            <div class="carousel-container">
+                <div class="carousel-track" id="carouselTrack">
+                    @if (categories != null && categories.Any())
+                    {
+                        foreach (var category in categories)
+                        {
+                            <div class="service-slide" onclick="selectService(@category.CategoryId, '@category.CategoryName')">
+                                <div class="service-icon">
+                                    @{
+                                        var iconPath = AFFZ_Customer.Controllers.HomeController.GetServiceIcon(category.CategoryName);
+                                    }
+                                    <img src="@iconPath" alt="@category.CategoryName" class="service-svg-icon">
+                                </div>
+                                <h4 class="service-title">@category.CategoryName</h4>
+                                <a href="/Categories/CategoriesIndex?CityName=&serviceCategoryName=@category.CategoryName" class="service-btn">Start</a>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="carousel-indicators" id="carouselIndicators">
+                <!-- Dots will be generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Customer Reviews Section -->
+<section class="reviews-section">
+    <div class="container">
+        <h2 class="section-title">What Our Customers Say</h2>
+        <p class="section-subtitle">Don't just take our word for it - hear from our satisfied customers</p>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-avatar">A</div>
+                        <div class="reviewer-info">
+                            <h5>Ahmed Al-Mansouri</h5>
+                            <p>Home Cleaning Service</p>
+                        </div>
+                    </div>
+                    <div class="review-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="review-text">"Excellent service! The cleaning team was professional, punctual, and thorough. My home has never looked better."</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-avatar">S</div>
+                        <div class="reviewer-info">
+                            <h5>Sarah Johnson</h5>
+                            <p>AC Repair Service</p>
+                        </div>
+                    </div>
+                    <div class="review-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="review-text">"Quick response and expert service. The technician fixed my AC unit efficiently and explained everything clearly."</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-avatar">M</div>
+                        <div class="reviewer-info">
+                            <h5>Mohammad Hassan</h5>
+                            <p>Plumbing Service</p>
+                        </div>
+                    </div>
+                    <div class="review-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="far fa-star"></i>
+                    </div>
+                    <p class="review-text">"Professional plumber who solved my water leak problem quickly. Great value for money and reliable service."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Customer Reviews Section -->
+@if (recentReviews != null && recentReviews.Any())
+{
+    <section class="reviews-section">
+        <div class="container">
+            <h2 class="section-title">What Our Customers Say</h2>
+            <div class="row">
+                @foreach (var review in recentReviews.Take(6))
+                {
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="review-card">
+                            <div class="review-header">
+                                <div class="reviewer-avatar">
+                                    @review.CustomerName.Substring(0, 1).ToUpper()
+                                </div>
+                                <div class="reviewer-info">
+                                    <h5>@review.CustomerName</h5>
+                                    <p>@review.ServiceType</p>
+                                </div>
+                            </div>
+                            <div class="review-rating">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= review.Rating)
+                                    {
+                                        <i class="fas fa-star"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="far fa-star"></i>
+                                    }
+                                }
+                            </div>
+                            <p class="review-text">"@review.Comment"</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<!-- Get Started Now Section -->
+@* <section class="get-started-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="section-title">Get Started Now</h2>
+                <p class="section-description">Join thousands of satisfied customers who trust SmartCenter for their service needs.</p>
+                
+                <!-- Google Sign-In Integration -->
+                
+                
+                <div class="mt-4">
+                    <p class="text-muted">Or continue with traditional signup</p>
+                    <a href="/Account/Register" class="btn btn-primary btn-lg">Sign Up Now</a>
+                    <a href="/Account/Login" class="btn btn-outline-primary btn-lg ml-3">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section> *@
+
+<!-- Service Selection Modal -->
+@* <div id="serviceModal" class="service-modal">
+    <div class="service-modal-content">
+        <span class="close-modal" onclick="closeServiceModal()">&times;</span>
+        <h3>Select a Service</h3>
+        <div class="service-grid">
+            @if (categories != null && categories.Any())
+            {
+                foreach (var category in categories)
+                {
+                    <div class="service-item" onclick="selectService(@category.CategoryId, '@category.CategoryName')">
+                        <i class="fas fa-cog mb-2"></i>
+                        <h5>@category.CategoryName</h5>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="service-item" onclick="selectService(1, 'Home Services')">
+                    <i class="fas fa-home mb-2"></i>
+                    <h5>Home Services</h5>
+                </div>
+                <div class="service-item" onclick="selectService(2, 'Automotive')">
+                    <i class="fas fa-car mb-2"></i>
+                    <h5>Automotive</h5>
+                </div>
+                <div class="service-item" onclick="selectService(3, 'Business Services')">
+                    <i class="fas fa-briefcase mb-2"></i>
+                    <h5>Business Services</h5>
+                </div>
+            }
+        </div>
+    </div>
+</div> *@
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Carousel functionality
+        let currentSlide = 0;
+        let slides = [];
+        let slidesPerView = 3;
+        let totalSlides = 0;
+        let maxSlides = 0;
+
+        function initializeCarousel() {
+            const track = document.getElementById('carouselTrack');
+            slides = Array.from(track.children);
+            totalSlides = slides.length;
+
+            // Determine slides per view based on screen size
+            if (window.innerWidth <= 576) {
+                slidesPerView = 1;
+            } else if (window.innerWidth <= 768) {
+                slidesPerView = 2;
+            } else {
+                slidesPerView = 3;
+            }
+
+            maxSlides = Math.max(0, totalSlides - slidesPerView);
+
+            // Create indicators
+            createIndicators();
+            updateCarousel();
+        }
+
+        function createIndicators() {
+            const indicatorsContainer = document.getElementById('carouselIndicators');
+            indicatorsContainer.innerHTML = '';
+
+            const numIndicators = maxSlides + 1;
+            for (let i = 0; i <= maxSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = `carousel-dot ${i === currentSlide ? 'active' : ''}`;
+                dot.addEventListener('click', () => goToSlide(i));
+                indicatorsContainer.appendChild(dot);
+            }
+        }
+
+        function moveCarousel(direction) {
+            currentSlide += direction;
+            if (currentSlide > maxSlides) currentSlide = 0;
+            if (currentSlide < 0) currentSlide = maxSlides;
+
+            updateCarousel();
+        }
+
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            updateCarousel();
+        }
+
+        function updateCarousel() {
+            const track = document.getElementById('carouselTrack');
+            const slideWidth = slides[0] ? slides[0].offsetWidth + 24 : 324; // 24px gap
+            const translateX = -currentSlide * slideWidth;
+
+            track.style.transform = `translateX(${translateX}px)`;
+
+            // Update control visibility
+            const prevBtn = document.querySelector('.carousel-control.prev');
+            const nextBtn = document.querySelector('.carousel-control.next');
+
+            if (prevBtn) prevBtn.style.opacity = currentSlide === 0 ? '0.5' : '1';
+            if (nextBtn) nextBtn.style.opacity = currentSlide === maxSlides ? '0.5' : '1';
+
+            // Update indicators
+            const dots = document.querySelectorAll('.carousel-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function showServiceCarousel() {
+            document.getElementById('services').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        // Auto-advance carousel
+        let autoAdvanceInterval;
+
+        function startAutoAdvance() {
+            autoAdvanceInterval = setInterval(() => {
+                if (totalSlides > slidesPerView) {
+                    moveCarousel(1);
+                }
+            }, 5000);
+        }
+
+        function stopAutoAdvance() {
+            clearInterval(autoAdvanceInterval);
+        }
+
+        // Pause auto-advance on hover
+        document.addEventListener('DOMContentLoaded', function() {
+            const carousel = document.querySelector('.service-carousel');
+
+            carousel.addEventListener('mouseenter', stopAutoAdvance);
+            carousel.addEventListener('mouseleave', startAutoAdvance);
+
+            // Initialize carousel
+            initializeCarousel();
+            startAutoAdvance();
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                clearTimeout(window.resizeTimeout);
+                window.resizeTimeout = setTimeout(() => {
+                    initializeCarousel();
+                }, 250);
+            });
+        });
+
+        // Smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add loading animation to buttons
+        document.querySelectorAll('.cta-button, .service-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const originalText = this.textContent;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                this.style.pointerEvents = 'none';
+
+                setTimeout(() => {
+                    this.textContent = originalText;
+                    this.style.pointerEvents = 'auto';
+                }, 1500);
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const animatedElements = document.querySelectorAll('.stat-card, .feature-card, .review-card');
+            animatedElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+        const baseIpAddress = "@AppSettingsService.GetBaseIpAddress()";
+        $(document).ready(function () {
+            // Step 1: Show service selection modal when 'Select a Service' button is clicked
+            $("#serviceSelectionBtn").on('click', function () {
+                console.log("Opening Service Selection Modal");
+                $('#serviceSelectionModal').modal('show'); // Show the service selection modal
+            });
+
+
+        $(".service-item").on('click', function () {
+            const selectedService = $(this).data('service');
+            console.log("Selected Service: " + selectedService);
+            var selectedCity
+            // Store the selected service in a hidden input field or a global variable
+            $("#serviceCategoryName").val(selectedService);
+
+            // Close service selection modal and show city selection modal
+            // Redirect to form submission page
+            window.location.href = `/Categories/CategoriesIndex?CityName=&serviceCategoryName=${selectedService}`;
+        });
+        });
+    </script>
+}

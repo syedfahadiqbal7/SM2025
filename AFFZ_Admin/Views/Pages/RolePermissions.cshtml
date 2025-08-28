@@ -1,0 +1,164 @@
+﻿@model List<Menu>
+
+
+<div class="page-wrapper page-settings">
+    <div class="content">
+        <div class="content-page-header content-page-headersplit">
+            <h5>Permission</h5>
+        </div>
+
+        <div class="role-wrap">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Role Name: @ViewBag.RoleName</h6>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 ">
+                <form id="permissionsForm" action="@Url.Action("Updatepermissions", "Rolepermissions")" method="post">
+                    <div class="table-resposnive">
+                        <table class="table datatable">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>MenuName</th>
+                                    <th>Description</th>
+                                    <th>Create</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                    <th>View</th>
+                                    <th>ViewMenu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model?.Count(); i++)
+                                {
+                                    var menu = Model[i];
+                                    
+                                    <tr>
+                                        <td>@menu.MenuId</td>
+                                        <td class="mod-name">@menu.MenuName</td>
+                                        <td>@menu.Description</td>
+                                        @if (menu.permissions != null && menu.permissions.Count > 0)
+                                        {
+                                            var item = menu.permissions?[0];
+                                            <td>
+                                                <label class="checkboxs mb-0">
+                                                    <input type="checkbox" name="Model[@i].permissions[0].canCreate" value="true" @(item.canCreate ? "checked" : "")>
+                                                    <span><i></i></span>
+                                                </label>
+                                                <input type="hidden" name="Model[@i].permissions[0].canCreate" value="false" />
+                                            </td>
+                                            <td>
+                                                <label class="checkboxs mb-0">
+                                                    <input type="checkbox" name="Model[@i].permissions[0].canUpdate" value="true" @(item.canUpdate ? "checked" : "")>
+                                                    <span><i></i></span>
+                                                </label>
+                                                <input type="hidden" name="Model[@i].permissions[0].canUpdate" value="false" />
+                                            </td>
+                                            <td>
+                                                <label class="checkboxs mb-0">
+                                                    <input type="checkbox" name="Model[@i].permissions[0].canDelete" value="true" @(item.canDelete ? "checked" : "")>
+                                                    <span><i></i></span>
+                                                </label>
+                                                <input type="hidden" name="Model[@i].permissions[0].canDelete" value="false" />
+                                            </td>
+                                            <td>
+                                                <label class="checkboxs mb-0">
+                                                    <input type="checkbox" name="Model[@i].permissions[0].canRead" value="true" @(item.canRead ? "checked" : "")>
+                                                    <span><i></i></span>
+                                                </label>
+                                                <input type="hidden" name="Model[@i].permissions[0].canRead" value="false" />
+                                            </td>
+                                            <td>
+                                                <label class="checkboxs mb-0">
+                                                    <input type="checkbox" name="Model[@i].permissions[0].canView" value="true" @(item.canView ? "checked" : "")>
+                                                    <span><i></i></span>
+                                                </label>
+                                                <input type="hidden" name="Model[@i].permissions[0].canView" value="false" />
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                <label class="checkboxs mb-0">
+                                                    <input type="checkbox" name="Model[@i].permissions[0].canCreate" >
+                                                    <span><i></i></span>
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <label class="checkboxs mb-0">
+                                                    <input type="checkbox" name="Model[@i].permissions[0].canUpdate">
+                                                    <span><i></i></span>
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <label class="checkboxs mb-0">
+                                                    <input type="checkbox" name="Model[@i].permissions[0].canDelete" >
+                                                    <span><i></i></span>
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <label class="checkboxs mb-0">
+                                                    <input type="checkbox" name="Model[@i].permissions[0].canRead">
+                                                    <span><i></i></span>
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <label class="checkboxs mb-0">
+                                                    <input type="checkbox" name="Model[@i].permissions[0].canView">
+                                                    <span><i></i></span>
+                                                </label>
+                                            </td>
+                                        }
+                                        <!-- Hidden fields to retain original values -->
+                                        <input type="hidden" name="Model[@i].permissions[0].roleId" value="@TempData["RoleId"].ToString()" />
+                                        <input type="hidden" name="Model[@i].permissions[0].menuId" value="@menu.MenuId.ToString()" />
+                                        <!-- Additional hidden fields as needed -->
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="btn-path text-center mt-4">
+                        <a href="~/Roles" class="btn btn-cancel me-3">Back</a>
+                        <button type="submit" class="btn btn-primary ">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('permissionsForm').addEventListener('submit', function (event) {
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(function (checkbox) {
+            if (!checkbox.checked) {
+                checkbox.value = 'false';
+            } else {
+                checkbox.value = 'true';
+            }
+        });
+    });
+    let checkboxState = {};
+
+    document.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+        checkbox.addEventListener('change', function () {
+            const key = checkbox.name; // Use the name attribute as a unique identifier
+            checkboxState[key] = checkbox.checked;
+        });
+    });
+
+    document.getElementById('permissionsForm').addEventListener('submit', function (event) {
+        // Attach the state to a hidden input
+        const stateInput = document.createElement('input');
+        stateInput.type = 'hidden';
+        stateInput.name = 'checkboxState';
+        stateInput.value = JSON.stringify(checkboxState);
+        this.appendChild(stateInput);
+    });
+
+</script>

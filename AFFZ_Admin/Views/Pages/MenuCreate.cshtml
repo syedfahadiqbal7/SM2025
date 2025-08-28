@@ -1,0 +1,27 @@
+﻿@model AFFZ_Admin.Controllers.MenuViewModel
+
+<div id="menuCreateFormContainer">
+    <form asp-action="MenusCreate" method="post" id="menuCreateForm">
+        @Html.AntiForgeryToken()
+        <div class="mb-3">
+            <label asp-for="MenuName" class="form-label"></label>
+            <input asp-for="MenuName" class="form-control" />
+            <span asp-validation-for="MenuName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="MenuUrl" class="form-label"></label>
+            <input asp-for="MenuUrl" class="form-control" />
+            <span asp-validation-for="MenuUrl" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="MenuIcon" class="form-label"></label>
+            <input asp-for="MenuIcon" class="form-control" />
+            <span asp-validation-for="MenuIcon" class="text-danger"></span>
+        </div>
+        <div class="form-check mb-3">
+            <input asp-for="IsVisible" class="form-check-input" />
+            <label asp-for="IsVisible" class="form-check-label"></label>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>

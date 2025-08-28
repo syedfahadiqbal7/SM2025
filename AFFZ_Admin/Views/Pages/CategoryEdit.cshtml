@@ -1,0 +1,27 @@
+﻿@model ServiceCategoryViewModel
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<div class="page-wrapper page-settings">
+    <div class="content">
+
+
+        <!-- Customer Table -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Edit Service Category</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="CategoryEdit" method="post">
+                    <input type="hidden" asp-for="CategoryId" />
+                    <div class="form-group">
+                        <label asp-for="CategoryName"></label>
+                        <input asp-for="CategoryName" class="form-control" />
+                        <span asp-validation-for="CategoryName" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    <a asp-action="CategoryIndex" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

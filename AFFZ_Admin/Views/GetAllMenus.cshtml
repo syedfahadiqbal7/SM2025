@@ -1,0 +1,63 @@
+﻿@{
+    ViewData["Title"] = "Menu List";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<div class="page-wrapper page-settings">
+    <div class="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold">Menu Management</h4>
+            <div class="btn-group">
+                <a asp-page="Create" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Add New Menu">
+                    <i class="bi bi-plus-circle"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Menu Table -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Menu List</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>#</th>
+                                <th>Menu Name</th>
+                                <th>URL</th>
+                                <th>Icon</th>
+                                <th>Parent Menu</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Menus.Count; i++)
+                            {
+                                var item = Model.Menus[i];
+                                <tr>
+                                    <td>@(i + 1)</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Url</td>
+                                    <td><i class="@item.Icon"></i></td>
+                                    <td>@item.ParentName</td>
+                                    <td class="text-center">
+                                        <a asp-page="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning me-1" title="Edit">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <a asp-page="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

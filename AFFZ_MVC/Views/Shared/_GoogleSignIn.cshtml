@@ -1,0 +1,191 @@
+@{
+    var googleClientId = ViewData["GoogleClientId"] ?? "YOUR_GOOGLE_CLIENT_ID_HERE";
+}
+
+<!-- Google Sign-In Button -->
+<div class="google-signin-container">
+    <div id="g_id_onload"
+         data-client_id="@googleClientId"
+         data-context="signin"
+         data-ux_mode="popup"
+         data-callback="handleGoogleSignIn"
+         data-auto_prompt="false">
+    </div>
+    @* <img src="/assets/img/icons/google.svg" class="me-2" alt="img">Login with Google *@
+    <div class="g_id_signin"
+         data-type="standard"
+         data-shape="rectangular"
+         data-theme="outline"
+         data-text="signin_with"
+         data-size="large"
+         data-logo_alignment="left">
+    </div>
+</div>
+
+<!-- Google Sign-In Script -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<script>
+function handleGoogleSignIn(response) {
+    console.log('Google Sign-In response:', response);
+    
+    // Extract user information from the response
+    const credential = response.credential;
+    const userInfo = parseJwt(credential);
+    
+    console.log('User info:', userInfo);
+    
+    // Call your API to authenticate the user
+    authenticateGoogleUser(credential, userInfo);
+}
+
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        console.error('Error parsing JWT:', e);
+        return null;
+    }
+}
+
+async function authenticateGoogleUser(credential, userInfo) {
+    try {
+        const response = await fetch('/api/GoogleAuth/signin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                idToken: credential,
+                accessToken: '', // Not needed for our implementation
+                email: userInfo.email,
+                name: userInfo.name,
+                picture: userInfo.picture
+            })
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            
+            if (result.isSuccess) {
+                // Store the JWT token
+                localStorage.setItem('jwt_token', result.jwtToken);
+                localStorage.setItem('user_info', JSON.stringify(result.user));
+                
+                // Show success message
+                if (result.isNewUser) {
+                    showMessage('Account created successfully! Welcome to SmartCenter.', 'success');
+                } else {
+                    showMessage('Welcome back!', 'success');
+                }
+                
+                // Redirect to dashboard or home page
+                setTimeout(() => {
+                    window.location.href = '/Home/Index';
+                }, 1500);
+            } else {
+                showMessage(result.message || 'Authentication failed', 'error');
+            }
+        } else {
+            const errorData = await response.json();
+            showMessage(errorData.message || 'Authentication failed', 'error');
+        }
+    } catch (error) {
+        console.error('Error during Google authentication:', error);
+        showMessage('Authentication failed. Please try again.', 'error');
+    }
+}
+
+function showMessage(message, type) {
+    // You can implement your own message display logic here
+    // For now, we'll use a simple alert
+    if (type === 'success') {
+        alert('✅ ' + message);
+    } else {
+        alert('❌ ' + message);
+    }
+}
+
+// Function to sign out
+function signOut() {
+    // Clear stored tokens and user info
+    localStorage.removeItem('jwt_token');
+    localStorage.removeItem('user_info');
+    
+    // Reload the page or redirect to login
+    window.location.reload();
+}
+
+// Check if user is already signed in
+function checkAuthStatus() {
+    const token = localStorage.getItem('jwt_token');
+    const userInfo = localStorage.getItem('user_info');
+    
+    if (token && userInfo) {
+        // User is signed in, show sign out button
+        showSignedInState();
+    } else {
+        // User is not signed in, show sign in button
+        showSignedOutState();
+    }
+}
+
+function showSignedInState() {
+    const container = document.querySelector('.google-signin-container');
+    if (container) {
+        const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}');
+        container.innerHTML = `
+            <div class="signed-in-user">
+                <img src="${userInfo.profilePicture || '/assets/img/default-avatar.png'}" 
+                     alt="Profile" class="user-avatar" style="width: 32px; height: 32px; border-radius: 50%;">
+                <span class="user-name">${userInfo.firstName || userInfo.customerName || 'User'}</span>
+                <button onclick="signOut()" class="btn btn-outline-danger btn-sm">Sign Out</button>
+            </div>
+        `;
+    }
+}
+
+function showSignedOutState() {
+    // The Google Sign-In button will be shown by default
+}
+
+// Initialize auth status check when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuthStatus();
+});
+</script>
+
+<style>
+.google-signin-container {
+    margin: 0px 0;
+    text-align: center;
+}
+
+.signed-in-user {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+
+.user-avatar {
+    border: 2px solid #007bff;
+}
+
+.user-name {
+    font-weight: 500;
+    color: #333;
+}
+a.btn.btn-google.btn-sm.w-100.mb-2 {
+    padding: 0px;
+}
+</style>

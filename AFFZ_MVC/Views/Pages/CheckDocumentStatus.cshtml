@@ -1,0 +1,197 @@
+﻿@model AFFZ_Customer.Controllers.FileUploadViewModel
+
+@{
+    var paginatedSubCategories = ViewBag.SaveResponse as AFFZ_Customer.Controllers.FileUploadViewModel;
+    ViewData["Title"] = "UploadDocuments";
+}
+@* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">*@
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script> 
+<div class="col-lg-9">
+    <!-- Tab Navigation -->
+    <ul class="nav nav-tabs card-header-tabs" id="documentTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="user-docs-tab" data-toggle="tab" href="#user-docs" role="tab">My Documents</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="merchant-docs-tab" data-toggle="tab" href="#merchant-docs" role="tab" aria-controls="merchant-docs" aria-selected="false">Merchant Shared Documents</a>
+        </li>
+    </ul>
+    <!-- Tab Content -->
+    <div class="tab-content" id="documentTabsContent">
+        <!-- User Documents Tab -->
+        <div class="tab-pane fade show active" id="user-docs" role="tabpanel" aria-labelledby="user-docs-tab">
+            @if (paginatedSubCategories == null || paginatedSubCategories.UploadedFiles == null)
+            {
+                <p><em>Loading User Documents...</em></p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table mb-0 custom-table">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>#</th>
+                                <th>File Name</th>
+                                <th>File Type</th>
+                                <th>File Size</th>
+                                <th>Download</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (paginatedSubCategories == null || paginatedSubCategories.UploadedFiles == null)
+                            {
+                                <p><em>Loading Sub Categories...</em></p>
+                            }
+                            else
+                            {
+                                string RFDFU = !string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["RFDFU"].ToString()) ? ViewContext.HttpContext.Request.Query["RFDFU"] : "";
+                                string MerchantID = !string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["MerchantID"].ToString()) ? ViewContext.HttpContext.Request.Query["MerchantID"] : "";
+
+                                @foreach (var file in paginatedSubCategories.UploadedFiles.Where(f => f.UploadedBy == "Customer"))
+                                {
+                                    <tr>
+                                        <td></td>
+                                        <td>@file.FileName</td>
+                                        <td class="text-body">@file.ContentType</td>
+                                        <td class="text-body">@(file.FileSize / 1024) KB</td>
+                                        <td class="text-body">
+                                            <a asp-action="DownloadFile" asp-route-fileName="@file.FileName" asp-route-folderName="@file.FolderName" class="btn btn-sm badge-success">Download</a>
+                                        </td>
+                                        <td class="text-body">
+                                            @if (file.Status == "Pending")
+                                            {
+                                                <span class="badge badge-warning">Pending Review</span>
+                                            }
+                                            else if (file.Status == "Resend")
+                                            {
+                                                <span class="badge badge-danger">Rejected</span>
+                                            }
+                                            else if (file.Status == "Verified")
+                                            {
+                                                <span class="badge badge-success">Approved</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (file.Status == "Resend")
+                                            {
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#uploadModal" onclick="setFileDetails('@file.FileName', '@file.FolderName', @file.UFID, @file.RFDFU, @file.MerchantId)">ReUpload</a>
+                                            }
+                                            else
+                                            {
+                                                <a asp-action="DeleteDocument" class="btn btn-sm btn-danger eye-btn" asp-route-documentId="@file.UFID" asp-route-rfudu="@file.RFDFU" asp-route-mid="@file.MerchantId"><i class="ri-eye-line align-bottom me-1"></i>Delete</a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+        <!-- Merchant Documents Tab -->
+        <!-- Merchant Documents Tab -->
+        <div class="tab-pane fade" id="merchant-docs" role="tabpanel" aria-labelledby="merchant-docs-tab">
+            @if (paginatedSubCategories == null || paginatedSubCategories.UploadedFiles == null)
+            {
+                <p><em>Loading Merchant Documents...</em></p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table mb-0 custom-table">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>#</th>
+                                <th>File Name</th>
+                                <th>File Type</th>
+                                <th>File Size</th>
+                                <th>Download</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (paginatedSubCategories == null || paginatedSubCategories.UploadedFiles == null)
+                            {
+                                <p><em>Loading Sub Categories...</em></p>
+                            }
+                            else
+                            {
+                                string RFDFU = !string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["RFDFU"].ToString()) ? ViewContext.HttpContext.Request.Query["RFDFU"] : "";
+                                string MerchantID = !string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["MerchantID"].ToString()) ? ViewContext.HttpContext.Request.Query["MerchantID"] : "";
+
+                                @foreach (var file in paginatedSubCategories.UploadedFiles.Where(f => f.UploadedBy == "Provider"))
+                                {
+                                    <tr>
+                                        <td></td>
+                                        <td>@file.FileName</td>
+                                        <td class="text-body">@file.ContentType</td>
+                                        <td class="text-body">@(file.FileSize / 1024) KB</td>
+                                        <td class="text-body">
+                                            <a asp-action="DownloadFile" asp-route-fileName="@file.FileName" asp-route-folderName="@file.FolderName" class="btn btn-sm badge-success">Download</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Resending File -->
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg rounded-3 border-0" style="overflow: hidden;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadModalLabel">Upload New File</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="ReUploadDocument" class="form" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="FileName" id="FileName" />
+                    <input type="hidden" name="FolderName" id="FolderName" />
+                    <input type="hidden" name="UFID" id="UFID" />
+                    <input type="hidden" name="RFDFU" id="RFDFU" />
+                    <input type="hidden" name="MID" id="MID" />
+                    <div class="form-group">
+                        <label for="fileUpload">Choose file:</label>
+                        <input type="file" class="form-control" id="fileUpload" name="file" required />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to Set File Details in Modal -->
+<script>
+    function setFileDetails(fileName, folderName, ufid,rfdfu,MID) {
+        document.getElementById("FileName").value = fileName;
+        document.getElementById("FolderName").value = folderName;
+        document.getElementById("UFID").value = ufid;
+        document.getElementById("RFDFU").value = rfdfu;
+        document.getElementById("MID").value = MID;
+        $('#uploadModal').modal('show');
+    }
+            document.addEventListener('DOMContentLoaded', function() {
+        var form = document.querySelector('.form');
+        var submitButton = form.querySelector('button[type="submit"]');
+
+        form.addEventListener('submit', function() {
+            // Disable the submit button
+            submitButton.disabled = true;
+            // Optionally, change button text to indicate processing
+            submitButton.innerHTML = 'Submitting... <i class="fas fa-spinner fa-spin"></i>';
+        });
+    });
+</script>

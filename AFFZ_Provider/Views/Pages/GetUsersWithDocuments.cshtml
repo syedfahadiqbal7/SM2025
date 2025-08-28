@@ -1,0 +1,309 @@
+﻿@model List<AFFZ_Provider.Controllers.UserDocumentsViewModel>
+@{
+    var paginatedSubCategories = ViewBag.UsersWithDocuments as List<AFFZ_Provider.Controllers.UserDocumentsViewModel>;
+    ViewData["Title"] = "User List for Merchant";
+}
+<style>
+    .table-hover tbody tr:hover {
+    background-color: #f9f9f9;
+    }
+
+    .alert {
+    border-left: 5px solid #007bff;
+    }
+
+    .card {
+    border-radius: 10px;
+    }
+
+    .badge {
+    font-size: 0.9rem;
+    }
+
+    .btn-outline-primary:hover {
+    background-color: #007bff;
+    color: white;
+    }
+</style>
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        <!-- Breadcrumb -->
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">User List for Merchant</h4>
+            </div>
+        </div>
+
+        <!-- Success and Error Messages -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["FailMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["FailMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <!-- User Table -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Customer Name</th>
+                                <th>Service</th>
+                                <th>Current Status</th>
+                                @* <th>Paid Amount</th> *@
+                                <th>Payment Done</th>
+                                <th>Actions</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (paginatedSubCategories == null || !paginatedSubCategories.Any())
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center">
+                                        <em>No users found</em>
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                @foreach (var user in paginatedSubCategories)
+                                {
+                                    <tr>
+                                        <td>@user.UserId</td>
+                                        <td>@user.CustomerName</td>
+                                        <td>@user.ServiceName</td>
+                                        <td>
+                                            @if (user.ServiceStatus.StatusName == "Completed")
+                                            {
+                                                <span class="badge bg-success")">
+                                                    @user.ServiceStatus.StatusDescription
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge @((user.ServiceStatus.StatusName =="Failed") ? "bg-danger" : "bg-warning")">
+                                                    @user.ServiceStatus.StatusDescription
+                                                </span>
+                                            }
+                                            
+                                        </td>
+                                        <!--td>AED @user.FINALPRICE</td-->
+                                        <td>
+                                            <span class="badge @((user.IsPaymentDone >0) ? "bg-success" : "bg-warning")">
+                                                @(user.IsPaymentDone >0 ? "Yes" : "No")
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @if (user.ServiceStatus.StatusName != "Failed" && user.ServiceStatus.StatusName != "Completed")
+                                            {
+                                                <a asp-controller="MerchantResponseToUser" asp-action="ReviewDocument"
+                                                   asp-route-rfdfu="@user.RFDFU" asp-route-quantity="@user.Quantity" asp-route-userId="@user.UserId" asp-route-sid="@user.ServiceID"
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="fa fa-file-alt"></i> Review
+                                                </a>
+                                            }
+                                            
+                                            <a asp-controller="Message" asp-action="SendMessage"
+                                               asp-route-SenderId="@user.UserId"
+                                                   class="btn btn-sm btn-outline-light" disabled>
+                                                <i class="fa fa-paper-plane"></i> Chat
+                                            </a>
+                                        </td>
+                                        <td>
+                                            @if (user.FileStatus.TotalVerified == user.DocumentCount && user.ServiceStatus.StatusName != "Completed" && user.ServiceStatus.StatusName != "Failed")
+                                            {
+                                                if (user.ServiceStatus.StatusName == "Failed" || user.ServiceStatus.StatusName == "Completed")
+                                                {
+                                                    <button class="btn btn-sm btn-outline-light"
+                                                            onclick="checkDocumentsAndShowModal('@user.UserId','@user.RFDFU','@user.ServiceStatus.StatusID','@user.MID','@user.ServiceID')" disabled>
+                                                        Update Status
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <button class="btn btn-sm btn-outline-success"
+                                                            onclick="checkDocumentsAndShowModal('@user.UserId','@user.RFDFU','@user.ServiceStatus.StatusID','@user.MID','@user.ServiceID')">
+                                                        Update Status
+                                                    </button>
+                                                }
+                                                
+                                            }
+                                            else if (user.ServiceStatus.StatusName == "Completed")
+                                            {
+                                                <span class="text-success">Service Completed Successfully.</span>
+                                            }
+                                            else if (user.ServiceStatus.StatusName == "Failed")
+                                            {
+                                                <span class="text-danger">Failed To Provide Service.</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+<div id="statusModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content doctor-profile">
+            <div class="modal-header border-bottom-0 justify-content-between">
+                <h5 class="modal-title">Update Service Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body  pt-0">
+                <form id="statusUpdateForm" class="form" method="post" asp-controller="MerchantResponseToUser" asp-action="ProcessToApplyForServiceStatus" enctype="multipart/form-data">
+                    <input type="hidden" name="RFDFU" id="_RFDFU" />
+                    <input type="hidden" name="UserId" id="_UserId" />
+                    <input type="hidden" name="ServiceID" id="_ServiceID" />
+                    <div class="form-group">
+                        <label for="statusDropdown">Status</label>
+
+                        <select class="form-select" name="CurrentStatus" id="statusDropdown" asp-items="@ViewBag.StatusList" required>
+                            <option value="">--Select--</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="fileUploadGroup" style="display: none;">
+                        <label for="fileUpload">Upload File (if required)</label>
+                        <input type="file" name="UploadedFile" id="fileUpload" class="form-control" accept=".jpg,.jpeg,.png" />
+                        <small class="text-muted">Only JPG or PNG files are allowed.</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+ <script>
+
+     $(document).ready(function() {
+       $("#fileUpload").change(function() {
+           var fileInput = $(this)[0];
+           var files = fileInput.files;
+           var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+           var fileList = "";
+           // Loop through files and validate
+           for (var i = 0; i < files.length; i++) {
+               var file = files[i];
+               if (!allowedExtensions.test(file.name)) {
+                   alert("Invalid file type. Please upload only JPG or PNG files.");
+                   $(this).val(""); // Clear the input
+                   return false;
+               }
+           }
+           for (var i = 0; i < files.length; i++) {
+             var file = files[i];
+             fileList += file.name + " < br > ";
+           }
+           $("#selectedFiles").html(fileList);
+       });
+       //check file length if visible
+       $("form").submit(function() {
+            if ($("#fileUploadGroup").is(":visible")) {
+               // Check if any file is selected
+               if ($("#fileUpload")[0].files.length === 0) {
+                   e.preventDefault(); // Prevent form submission
+                   // Show an error message (you can customize this)
+                   alert("Please upload a file before submitting.");
+                   return false;
+               }
+           }
+           // Proceed with form submission if no issues
+           return true;
+       });
+       $("#statusDropdown").change(function() {
+         // Get the selected status ID
+         var selectedStatusId = $(this).val();
+         if (selectedStatusId) {
+           // Make an AJAX call to fetch the StatusName
+           $.ajax({
+                url: '@Url.Action("getStatusName", "MerchantResponseToUser")', // Adjust this URL as necessary
+             type: "GET",
+             data: {
+               statusId: selectedStatusId
+             },
+             success: function(response) {
+               // Process the response (StatusName)
+               console.log("Status Name:", response);
+               // Optionally display or store the StatusName
+               if (response === "Service Completed Successfully" || response === "Service Failed or Rejected by Authority") {
+                   $("#fileUploadGroup").show();
+                      $("#fileUpload").attr("required", true); // Make file upload required
+               } else {
+                   $("#fileUploadGroup").hide();
+                      $("#fileUpload").removeAttr("required"); // Remove required attribute
+               }
+             },
+             error: function(xhr, status, error) {
+               console.error("Error fetching status name:", error);
+             }
+           });
+         } else {
+           console.warn("No status selected.");
+         }
+       });
+     });
+
+            function checkDocumentsAndShowModal(userId, rfdfu, currentStatus, merchantId,ServiceID) {
+         document.getElementById("_UserId").value = userId;
+         document.getElementById("_RFDFU").value = rfdfu;
+               document.getElementById("_ServiceID").value = ServiceID;
+
+         // Fetch statuses dynamically
+         $.ajax({
+             url: `/MerchantResponseToUser/StatusListUpdates`, // Update this path if necessary
+             type: "GET",
+             data: { currentStatusId: currentStatus, userId: userId, merchantId: merchantId },
+             success: function (statuses) {
+                 // Populate the dropdown
+                 var statusDropdown = $('#statusDropdown');
+                 statusDropdown.empty(); // Clear existing options
+                 statusDropdown.append('<option value="">--Select--</option>');
+
+                 statuses.forEach(function (status) {
+                     statusDropdown.append(
+                         `<option value="${status.value}">${status.text}</option>`
+                     );
+                 });
+             },
+             error: function () {
+                 console.error("Error fetching statuses.");
+             }
+         });
+
+         // Show the modal
+         $('#statusModal').modal('show');
+     }
+             document.addEventListener('DOMContentLoaded', function() {
+            var form = document.querySelector('.form');
+            var submitButton = form.querySelector('button[type="submit"]');
+
+            form.addEventListener('submit', function() {
+                // Disable the submit button
+                submitButton.disabled = true;
+                // Optionally, change button text to indicate processing
+                submitButton.innerHTML = 'Submitting... <i class="fas fa-spinner fa-spin"></i>';
+            });
+        });
+</script>
+}

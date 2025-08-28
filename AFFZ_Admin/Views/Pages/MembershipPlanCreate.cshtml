@@ -1,0 +1,61 @@
+﻿@model MembershipPlan
+@{
+    ViewData["Title"] = "Add Membership Plan";
+    var slabs = ViewBag.SlabList as List<Slab>;
+}
+<link href="~/assets/js/multi.js/multi.min.css" rel="stylesheet" />
+<div class="page-wrapper page-settings">
+    <div class="content">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Add Membership Plan</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="MembershipPlanCreate" method="post">
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Plan Name</label>
+                        <input asp-for="Name" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Price" class="form-label">Price</label>
+                        <input asp-for="Price" type="number" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Duration" class="form-label">Duration</label>
+                        <select asp-for="Duration" class="form-select">
+                            <option value="Monthly">Monthly</option>
+                            <option value="Yearly">Yearly</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="SelectedSlabIds" class="form-label">Select Slabs</label>
+                        <select asp-for="SelectedSlabIds" class="form-select" id="multiselect-basic" multiple>
+                            @foreach (var slab in slabs)
+                            {
+                                <option value="@slab.SlabID">@slab.LowerLimit - @slab.UpperLimit (@slab.Fixed or @slab.Percentage%) - @(slab.IsDefaultSlab?"Default Slab":slab.SlabName)</option>
+                            }
+                        </select>
+                        @Html.ValidationMessageFor(model => model.SelectedSlabIds, "", new { @class = "text-danger" })
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/assets/js/multi.js/multi.min.js"></script>
+    <script>
+        var multiSelectBasic = document.getElementById("multiselect-basic");
+        multi(multiSelectBasic, {
+            "enable_search": true,
+            "limit": -1,
+            "limit_reached": function () { },
+            "hide_empty_groups": false,
+        });
+        </script>
+}

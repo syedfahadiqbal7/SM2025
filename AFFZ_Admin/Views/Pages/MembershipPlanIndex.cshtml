@@ -1,0 +1,57 @@
+﻿@model List<MembershipPlan>
+<div class="page-wrapper page-settings">
+    <div class="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold">Manage Membership Plans</h4>
+            <div class="btn-group">
+                <a asp-action="MembershipPlanCreate" class="btn btn-outline-secondary" title="Add New Plan"><i class="bi bi-gear"></i>Add New Plan</a>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <!-- Success/Error Messages -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                </div>
+            }
+            @if (TempData["FailMessage"] != null)
+            {
+                <div class="alert alert-danger">
+                    <i class="fas fa-times-circle me-2"></i>@TempData["FailMessage"]
+                </div>
+            }
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle">
+                        <thead class="table-primary">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Duration</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                @foreach (var plan in Model)
+                                {
+                                <tr>
+                                    <td>@plan.Name</td>
+                                    <td>$@plan.Price</td>
+                                    <td>@plan.Duration</td>
+                                    <td>
+                                        <a href="@Url.Action("MembershipPlanEdit", "MembershipPlan", new { id = plan.Id })" class="btn btn-primary">Edit</a>
+                                        <a href="@Url.Action("MembershipPlanDelete", "MembershipPlan", new { id = plan.Id })" class="btn btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
+                                    </td>
+                                </tr>
+                                }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

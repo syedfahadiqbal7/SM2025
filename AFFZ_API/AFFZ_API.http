@@ -1,0 +1,6 @@
+@AFFZ_API_HostAddress = http://192.168.0.115:5032
+
+GET {{AFFZ_API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,74 @@
+﻿@using AFFZ_Provider.Utils
+@model AFFZ_Provider.Models.MenuView
+@inject NotificationService NotificationService
+
+@{
+    var username = await NotificationService.GetUserName();
+    var Email = await NotificationService.GetProviderEmail();
+    var IsActive = await NotificationService.GetProviderIsActive();
+
+}
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">
+            <a href="Dashboard">
+                <img src="/assets/img/logo-small.png" class="img-fluid logo" alt="Logo">
+            </a>
+            <a href="Dashboard">
+                <img src="/assets/img/logo-small.png" class="img-fluid logo-small" alt="Logo">
+            </a>
+        </div>
+        <div class="siderbar-toggle">
+            <label class="switch" id="toggle_btn">
+                <input type="checkbox">
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+
+    <div class="sidebar-inner slimscroll">
+        <div id="sidebar-menu" class="sidebar-menu">
+            <ul>
+                <li class="@(ViewContext.HttpContext.Request.Path == "/Dashboard" ? "active" : "")">
+                    <a href="/Dashboard"><i class="feather-grid"></i> <span>Dashboard</span></a>
+                </li>
+                @if (IsActive == "Active")
+                {
+                    foreach (var menuItem in Model.MenuItems)
+                    {
+                        var isActive = ((menuItem.MenuUrl?.StartsWith("/") == true ? menuItem.MenuUrl : "/" + menuItem.MenuUrl) == ViewContext.HttpContext.Request.Path ||
+                        menuItem.SubMenus?.Any(sub =>
+                        (sub.SubMenuUrl?.StartsWith("/") == true ? sub.SubMenuUrl : "/" + sub.SubMenuUrl) == ViewContext.HttpContext.Request.Path) == true);
+                        <li class="@(isActive ? "active" : "")  @(menuItem.SubMenus?.Any() == true ? "submenu" : "")">
+                            <a href="@menuItem.MenuUrl">
+                                <i class="@menuItem.MenuIcon"></i> <span>@menuItem.MenuName</span>
+                                @if (menuItem.SubMenus?.Any() == true)
+                                {
+                                    <span class="menu-arrow"></span>
+                                }
+                            </a>
+                            @if (menuItem.SubMenus?.Any() == true)
+                            {
+                                <ul>
+                                    @foreach (var subMenu in menuItem.SubMenus)
+                                    {
+                                        <li>
+                                            <a href="@subMenu.SubMenuUrl">@subMenu.SubMenuName</a>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        </li>
+
+                    }
+                }
+                
+                <li>
+                    <a class="dropdown-item" href="@Url.Action("Logout", "Login")">
+                        <i class="feather-log-out me-2"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

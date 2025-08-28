@@ -1,0 +1,40 @@
+﻿@model IEnumerable<AFFZ_Admin.Models.ProviderSlab>
+@{
+    ViewData["Title"] = "Provider Slab List";
+}
+
+<h2>Provider Slab List</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["FailMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["FailMessage"]</div>
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Provider ID</th>
+            <th>Selected Model</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var slab in Model)
+        {
+            <tr>
+                <td>@slab.ProviderID</td>
+                <td>@slab.SelectedModel</td>
+                <td>@slab.CreatedAt</td>
+                <td>
+                    <a asp-action="ProviderSlabEdit" asp-route-id="@slab.ProviderSlabID">Edit</a> |
+                    <a asp-action="ProviderSlabDelete" asp-route-id="@slab.ProviderSlabID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

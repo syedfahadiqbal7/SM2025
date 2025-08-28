@@ -1,0 +1,88 @@
+﻿@model IEnumerable<AFFZ_Admin.Controllers.SalesTransactionViewModel>
+
+<div class="page-wrapper page-settings">
+    <div class="content">
+        <div class="content-page-header content-page-headersplit">
+            <h5>Sales Transactions</h5>
+            <div class="list-btn">
+                <ul>
+                    <li>
+                        <div class="filter-sorting">
+                            <ul>
+                                <li>
+                                    <a href="javascript:void(0);" class="filter-sets"><i class="fe fe-filter me-2"></i>Filter</a>
+                                </li>
+                                <li>
+                                    <span><img src="assets/img/icons/sort.svg" class="me-2" alt="img"></span>
+                                    <div class="review-sort">
+                                        <select class="select">
+                                            <option>A - Z</option>
+                                            <option>Z - A</option>
+                                        </select>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table datatable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Customer</th>
+                        <th>Provider</th>
+                        <th>Service</th>
+                        <th>Amount</th>
+                        <th>Discount</th>
+                        <th>Tax</th>
+                        <th>Service Charge</th>
+                        <th>Quantity</th>
+                        <th>Date</th>
+                        <th>Payment Type</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.ID</td>
+                            <td>@item.CustomerName</td>
+                            <td>@item.ProviderName</td>
+                            <td>
+                                <a href="javascript:void(0);" class="table-imgname">
+                                    <img src="@item.ServiceImage" class="me-2" alt="Service Image" style="width: 50px; height: 50px;">
+                                    <span>@item.ServiceName</span>
+                                </a>
+                            </td>
+                            <td>@item.Amount AED</td>
+                            <td>@item.Discount AED</td>
+                            <td>@item.Tax AED</td>
+                            <td>@item.ServiceCharge AED</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.PaymentDateTime.ToString("dd/MM/yyyy")</td>
+                            <td>@item.PaymentType</td>
+                            <td>
+                                <h6 class="@(item.IsPaymentSuccess ? "badge-active" : "badge-pending")">@item.PaymentStatus</h6>
+                            </td>
+                            <td>
+                                <div class="table-actions d-flex">
+                                    <a class="delete-table me-2" href="javascript:void(0);">
+                                        <img src="assets/img/icons/pdf.svg" alt="svg">
+                                    </a>
+                                    <a class="delete-table" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete-item">
+                                        <img src="assets/img/icons/delete.svg" alt="svg">
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

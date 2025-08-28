@@ -1,0 +1,29 @@
+﻿namespace AFFZ_Provider.Models;
+
+public partial class PaymentHistory
+{
+    public int ID { get; set; }
+    public string PAYMENTTYPE { get; set; }
+    public string AMOUNT { get; set; }
+    public int PAYERID { get; set; }
+    public int MERCHANTID { get; set; }
+    public int ISPAYMENTSUCCESS { get; set; }
+    public int Quantity { get; set; }
+    public int SERVICEID { get; set; }
+
+    public DateTime PAYMENTDATETIME { get; set; }
+    public Service? Service { get; set; }
+}
+public partial class MembershipPaymentHistory
+{
+    public int ID { get; set; }
+    public string PAYMENTTYPE { get; set; }
+    public string AMOUNT { get; set; }
+    public int PAYERID { get; set; }
+    public int ISPAYMENTSUCCESS { get; set; }
+    public int Quantity { get; set; }
+    public DateTime PAYMENTDATETIME { get; set; }
+    public string Duration { get; set; }
+    public int MembershipId { get; set; }
+    public string MemberShipname { get; set; }
+}

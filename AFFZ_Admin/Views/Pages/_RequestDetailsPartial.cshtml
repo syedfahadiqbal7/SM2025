@@ -1,0 +1,19 @@
+﻿@model AFFZ_Admin.Controllers.AmountChangeRequestDTO
+
+<div class="request-details">
+    @* <p><strong>Service ID:</strong> @Model.ServiceId</p> *@
+    <p><strong>Requested Amount:</strong> @Model.RequestedAmount.ToString("C")</p>
+    <p><strong>Request Date:</strong> @Model.RequestedAt</p>
+    <p><strong>Status:</strong> <span id="request-status">@Model.Status</span></p>
+</div>
+
+<div class="mt-3">
+    <button id="accept-request-btn" class="btn btn-success me-2" data-id="@Model.Id">Accept Request</button>
+    <button id="reject-request-btn" class="btn btn-danger" data-id="@Model.Id">Reject Request</button>
+</div>
+
+<div id="reject-reason-container" class="mt-3" style="display: none;">
+    <label for="reject-reason" class="form-label"><strong>Rejection Reason:</strong></label>
+    <textarea id="reject-reason" class="form-control" rows="3" placeholder="Enter the reason for rejection"></textarea>
+    <button id="submit-rejection-btn" class="btn btn-primary mt-2" data-id="@Model.Id">Submit Rejection</button>
+</div>

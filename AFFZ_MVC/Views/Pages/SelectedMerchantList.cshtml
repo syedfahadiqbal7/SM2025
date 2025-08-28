@@ -1,0 +1,322 @@
+﻿@using AFFZ_Customer.Controllers
+@{
+    var paginatedSubCategories = ViewBag.SubCategoriesWithMerchant as List<CatWithMerchant>;
+    ViewData["Title"] = "Index";
+}
+<style>
+    .feather-shopping-cart:hover {
+    color: #000 !important;
+    }
+
+    .disabledCart {
+    pointer-events: none;
+    opacity: 0.6;
+    }
+
+    .disabled {
+        pointer-events: none;
+        opacity: 0.6;
+    }
+</style>
+<div class="col-lg-9">
+    <!-- Display messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["FailMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["FailMessage"]
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-12">
+            @if (paginatedSubCategories == null)
+            {
+                <p><em>Loading Sub Categories...</em></p>
+            }
+            else
+            {
+                string AdminProtalUrl = ViewBag.AdminUrl;
+                @foreach (var _subcat in paginatedSubCategories)
+                {
+                    string ImgUrl = $"{AdminProtalUrl}{_subcat.ServiceImage}";
+                    <!-- Service List -->
+                    <div class="service-list">
+                        @if (_subcat.IsRequestedAlready)
+                        {
+                            <div style="font-size: 11px;color: red;font-weight: bold;font-family: emoji;">
+                                Your Request is already in progress for this Service with the merchant
+                            </div>
+                        }
+                        <div class="service-cont">
+
+                            <div class="service-cont-img">
+                                <a href="#">
+                                    <img class="img-fluid serv-img" alt="Service Image" img src="@ImgUrl">
+                                </a>
+                                <div class="fav-item">
+                                    <a href="javascript:void(0)" class="fav-icon">
+                                        <i class="feather-heart"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="service-cont-info">
+                                <a href="#">@* categories.html"> *@
+                                    <span class="item-cat">@_subcat.SERVICENAME</span>
+                                </a>
+                                <h3 class="title">
+                                    <a href="#">@_subcat.MERCHANTNAME</a>@* service-details.html *@
+                                </h3>
+                                <p><i class="feather-map-pin"></i>@_subcat.MERCHANTLOCATION</p>
+                                <div class="service-pro-img">
+                                    <img img src="~/assets/img/profiles/avatar-01.jpg" alt="user">
+                                    <span>
+
+                                        @for (int i = 0; i < _subcat.SERVICERATING; i++)
+                                        {
+                                            <i class="fas fa-star filled"></i>
+                                        }
+                                        @for (int i = _subcat.SERVICERATING; i < 5; i++)
+                                        {
+                                            <i class="fas fa-star" style="color: lightgray;"></i>
+                                        }
+
+                                    </span>(@_subcat.SERVICERATING)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="service-action" style="display: flex; align-items: center;">
+                            <h6>AED@_subcat.PRICE</h6>
+                            <div>
+                                @if (_subcat.IsRequestedAlready)
+                                {
+                                    <a asp-action="RequestForDiscount" class="btn btn-light-danger disabled" asp-route-id="@_subcat.MID~@_subcat.SID">Request Sent</a>
+                                }
+                                else
+                                {
+                                    if (_subcat.RequiresEligibility == 1)
+                                    {
+                                        if (_subcat.IsRequestedEligibility)
+                                        {
+                                            if (_subcat.IsWaitingEligibilityResponseFromUser)
+                                            {
+                                                <span class=" disabled" style="font-size: 15px;color: green;">Hold on. Waiting for Merchant Response.</span>
+                                            }
+                                            else
+                                            {
+                                                if (_subcat.IsEligibilityApproved)
+                                                {
+                                                    <a class="discount btn btn-secondary" asp-action="ProceedDirecttoPayment" asp-route-id="@_subcat.MID~@_subcat.SID" style="margin-right: 10px;">PAY AED@_subcat.PRICE</a>
+                                                    <a href="javascript:void(0);" class="btn btn-secondary" onclick="showPaymentPopup('@_subcat.MID~@_subcat.SID', 'RequestForDiscount','PAY AED@_subcat.PRICE','@_subcat.SERVICENAME')" style="font-size: 10px;margin-top:10px;padding: 5px 10px;font-weight: bold;color: red;">Ask for Discount*</a>
+                                                }
+                                                else
+                                                {
+                                                    <span class=" disabled" style="font-size: 15px;color: red;">Unfortunately you are currently not eligible.</span>
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <a href="javascript:void(0);" class="btn btn-secondary" id="submitEligibility" onclick="showEligibilityPopup('@_subcat.MID','@_subcat.SID','@_subcat.SERVICENAME','@_subcat.ServiceImage',this)" style="border: 1px solid;box-shadow: 5px 5px;">Check eligiblity</a>
+                                        }  
+                                    }
+                                    else
+                                    {
+                                        <a class="discount btn btn-secondary" asp-action="ProceedDirecttoPayment" asp-route-id="@_subcat.MID~@_subcat.SID" style="margin-right: 10px;">PAY AED@_subcat.PRICE</a>
+                                        <a href="javascript:void(0);" class="btn btn-secondary" onclick="showPaymentPopup('@_subcat.MID~@_subcat.SID', 'RequestForDiscount','PAY AED@_subcat.PRICE','@_subcat.SERVICENAME')" style="font-size: 10px;margin-top:10px;padding: 5px 10px;font-weight: bold;color: red;">Ask for Discount*</a>
+                                    }
+                                }
+                            </div>
+                            <!-- Cart Icon -->
+                            <div class="cart-icon" style="margin-left: auto;">
+                                @if (_subcat.IsRequestedAlready)
+                                {
+                                    <a href="javascript:void(0);" onclick="addToCart('@_subcat.MID', '@_subcat.SID',this)" class="disabledCart ">
+                                        <i class="feather-shopping-cart" style="font-size: 24px; color:darkslategray;"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="javascript:void(0);" onclick="addToCart('@_subcat.MID', '@_subcat.SID',this)" @(_subcat.IsAddedToCart ? "class= disabledCart " : "")>
+                                        @{
+                                            string color = (_subcat.IsAddedToCart ? "gray" : "#007bff");
+                                            string Display = (_subcat.RequiresEligibility == 1 ? "none" : "");
+                                        }
+                                        <i class="feather-shopping-cart" style="font-size: 24px; color:@color; display:@Display"></i>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+                <!-- Image Modal -->
+                <div class="modal fade custom-modal" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content shadow-lg rounded-3 border-0" style="overflow: hidden;">
+                            <!-- Modal Header -->
+                            <div class="modal-header" style="background: linear-gradient(135deg, #f3f4f6, #e9ecef); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                <h5 class="modal-title d-flex align-items-center" id="paymentModalLabel" style="font-weight: bold; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);">
+                                    <i class="bi bi-cash-coin me-2" style="color: #007bff;"></i> Request For Discount
+                                </h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <!-- /Modal Header -->
+                            <!-- Modal Body -->
+                            <div class="modal-body p-4">
+                                <div class="mb-4">
+                                    <p id="Modalpayment" class="text-muted" style="font-size: 1rem; line-height: 1.5;">
+                                        <!-- Dynamic content will be inserted here -->
+                                    </p>
+                                </div>
+
+                                <!-- Button Set -->
+                                <div class="d-flex justify-content-between align-items-center mt-3" id="buttonset">
+                                    <button type="button" class="btn btn-secondary shadow" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary shadow" style="background: linear-gradient(135deg, #007bff, #0056b3); border: none;">
+                                        <i class="bi bi-check-circle me-1"></i> Confirm
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- /Modal Body -->
+                        </div>
+                    </div>
+                </div>
+
+
+
+            }
+        </div>
+    </div>
+
+</div> 
+<div class="modal fade custom-modal" id="EligibilityModal" tabindex="-1" role="dialog" aria-labelledby="EligibilityModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="EligibilityModalLabel">Check Your Eligibility</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="ModalEligibility">
+                <!-- Dynamic content -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+@* <div class="modal fade" id="EligibilityModal" tabindex="-1" aria-labelledby="EligibilityModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="EligibilityModalLabel">Check Your Eligibility</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="ModalEligibility">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Understood</button>
+            </div>
+        </div>
+    </div>
+</div> *@
+@section Scripts {
+    <script>
+        function showPaymentPopup(mid, sid, amount,catName) {
+            $('#Modalpayment').html('<p style="color:brown;font-size:12px">Please note: Requesting a discount may take 12 to 24 hours to process. If you like to proceed without a discount proceed with payment.</p> ');
+            $('#buttonset').html('<a class="discount btn btn-secondary" href="/MerchantList/RequestForDiscount?id=' + mid + '&catName=' + catName + '" style="float: left;color:green">Ask for Discount</a> <a class="discount btn btn-secondary" href="/MerchantList/ProceedDirecttoPayment?id=' + mid + '" style="float: right;">' + amount + '</a>');
+            // Show the modal
+            $('#paymentModal').modal('show');
+        }
+        function addToCart(merchantId, serviceId, element) {
+            // Create disabled button with spinner
+            var spinnerBtn = document.createElement('button');
+            spinnerBtn.className = 'btn btn-secondary disabled';
+            spinnerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            spinnerBtn.style.marginLeft = 'auto';
+
+            // Replace anchor with spinner button
+            element.parentNode.replaceChild(spinnerBtn, element);
+            $.ajax({
+                type: "POST",
+                url: "/MerchantList/AddToCart",
+                data: {
+                    merchantId: merchantId,
+                    serviceId: serviceId
+                },
+                success: function (response) {
+                    if (response.success) {
+                        alert("Service added to cart successfully!");
+                        // Disable the cart icon and update its state
+                        const cartButton = $('a[onclick="addToCart(\'' + merchantId + '\', \'' + serviceId + '\', this)"]');
+                        cartButton.addClass('disabledCart');
+                        cartButton.attr('title', 'Already in Cart');
+                        cartButton.find('i').css('color', 'gray');
+                        location.reload(); // Refresh the page to show updated status
+                    } else {
+                        alert("Failed to add service to cart.");
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while adding the service to the cart.");
+                }
+            });
+        }
+
+        function showEligibilityPopup(mid, sid,srvicename,ServiceImage,element) {
+             // Create disabled button with spinner
+            var spinnerBtn = document.createElement('button');
+            spinnerBtn.className = 'btn btn-secondary disabled';
+            spinnerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+            spinnerBtn.style.border = '1px solid';
+            spinnerBtn.style.boxShadow = '5px 5px';
+            // Replace the clicked element with the spinner
+            element.parentNode.replaceChild(spinnerBtn, element);
+            $.ajax({
+                url: '/Eligibility/SubmitRequest',
+                type: 'GET',
+                data: { MerchantId: mid, serviceId: sid, srvicename: srvicename, ServiceImage: ServiceImage },
+                success: function (response) {
+                    $('#ModalEligibility').html(response); // Populate the modal body with the form
+                    $('#EligibilityModal').modal('show'); // Show the modal
+                    //console.log(response);
+                },
+                error: function () {
+                    $('#ModalEligibility').html('<p class="text-danger">Failed to load the eligibility request form. Please try again later.</p>');
+                    $('#EligibilityModal').modal('show');
+                }
+            });
+        }
+        $(document).on('click', '.discount', function (e) {
+            const anchor = $(this);
+            const href = anchor.attr('href');
+
+            // Replace with disabled button
+            const spinnerButton = $(`<button class="btn btn-secondary disabled" type="button" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Please wait...
+            </button>`);
+
+            anchor.replaceWith(spinnerButton);
+
+            // Delay navigation slightly to allow user to see spinner
+            setTimeout(() => {
+                window.location.href = href;
+            }, 300); // Adjust delay as needed
+
+            e.preventDefault(); // Prevent default click for a moment
+        });
+
+    </script>
+}

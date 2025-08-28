@@ -1,0 +1,144 @@
+﻿@using AFFZ_Customer.Models
+@model AFFZ_Customer.Controllers.FileUploadViewModel
+
+@{
+    var documentList = ViewBag.DocumentList as List<DocumentInfo>; // Fetch the document list from ViewBag
+    ViewData["Title"] = "Upload Documents";
+
+    // Helper function to format ordinal (1st, 2nd, etc.)
+    Func<int, string> ordinal = (int n) => n switch
+    {
+        1 => "1st",
+        2 => "2nd",
+        3 => "3rd",
+        _ => $"{n}th"
+    };
+}
+
+<div class="col-lg-9">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["FailMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["FailMessage"]
+        </div>
+    }
+    <h6 class="user-title">Upload Your Documents For the Service: @ViewBag.ServiceName</h6>
+    <form method="post" enctype="multipart/form-data" asp-action="UploadDocuments" class="form">
+        <input type="hidden" name="Merchant" value="@ViewBag.MerchantID" />
+        <input type="hidden" name="RFDFU" value="@ViewBag.RFDFU" />
+
+        @if (documentList != null && documentList.Any())
+        {
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="documentTabs">
+                        @for (int i = 0; i < ViewBag.Quantity; i++)
+                        {
+                            <li class="nav-item">
+                                @* <a class="nav-link @(i == 0 ? "active" : "")" id="tab-@i" data-bs-toggle="tab" href="#tabContent-@i" role="tab" aria-controls="tabContent-@i" aria-selected="@(i == 0)">
+                                    Document Set For @ordinal(i + 1) Person
+                                </a> *@
+                                <a class="nav-link @(i == 0 ? "active" : "")" id="tab-@i" data-bs-toggle="tab" href="#tabContent-@i" role="tab">Document Set For @((i + 1).ToString()) Person</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                <div class="card-body">
+                    <div class="tab-content">
+                        @for (int i = 0; i < ViewBag.Quantity; i++)
+                        {
+                            <div class="tab-pane fade @(i == 0 ? "show active" : "")" id="tabContent-@i" role="tabpanel" aria-labelledby="tab-@i">
+                                <div class="document-set">
+                                    <div class="form-group">
+                                        <label for="personName_@i">Enter Person Name:</label>
+                                        <input type="text" class="form-control person-name" id="personName_@i" name="PersonNames[@i]" placeholder="Enter name" data-tab-index="@i" />
+                                    </div>
+
+                                    @foreach (var document in documentList)
+                                    {
+                                        string labelname = "fileUpload_" + document.ServiceDocumenListtId + "_" + i;
+                                        <div class="form-group">
+                                            <label for="@labelname">@document.ServiceDocumentName:</label>
+                                            <input type="file" class="form-control" id="@labelname" name="Files" accept=".pdf,.jpg,.png" required />
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning" role="alert">
+                No documents are required to be uploaded.
+            </div>
+        }
+
+        <div class="alert alert-danger" role="alert" style="display: none;" id="fileError">
+            Please select at least one file to upload in each tab.
+        </div>
+
+        <input type="submit" class="btn btn-primary mt-3" value="Upload Files" />
+    </form>
+</div>
+
+<!-- Scripts -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const tabs = document.querySelectorAll('#documentTabs .nav-link');
+        const errorAlert = document.getElementById('fileError');
+
+        tabs.forEach(tab => {
+            tab.addEventListener("click", function(e) {
+                const tabIndex = this.id.split('-')[1];
+                const fileInputs = document.querySelectorAll(`#tabContent-${tabIndex} input[type="file"]`);
+
+                // Check if any file input has a value
+                let isTabValid = Array.from(fileInputs).some(input => input.value !== "");
+
+                if (!isTabValid) {
+                    e.preventDefault(); // Stop navigation
+                    errorAlert.style.display = 'block';
+                } else {
+                    errorAlert.style.display = 'none'; // Hide error if valid
+                }
+            });
+        });
+
+        // Update tab names based on input in Person Name text boxes
+        const personNameInputs = document.querySelectorAll('.person-name');
+        personNameInputs.forEach(input => {
+            input.addEventListener("input", function() {
+                const tabIndex = this.getAttribute('data-tab-index');
+                const tab = document.querySelector(`#tab-${tabIndex}`);
+
+                if (this.value.trim()) {
+                    tab.textContent = `${this.value.trim()}'s Document Set`;
+                } else {
+                    const ordinalSuffix = ["1st", "2nd", "3rd", "4th", "5th"]; // Add more as needed
+                    tab.textContent = `Document Set For ${ordinalSuffix[tabIndex]} Person`;
+                }
+            });
+        });
+    });
+        document.addEventListener('DOMContentLoaded', function() {
+        var form = document.querySelector('.form');
+        var submitButton = form.querySelector('input[type="submit"]');
+
+        form.addEventListener('submit', function() {
+            // Disable the submit button
+            submitButton.disabled = true;
+            // Optionally, change button text to indicate processing
+            submitButton.innerHTML = 'Submitting... <i class="fas fa-spinner fa-spin"></i>';
+        });
+    });
+</script>

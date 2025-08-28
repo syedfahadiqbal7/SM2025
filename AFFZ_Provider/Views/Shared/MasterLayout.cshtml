@@ -1,0 +1,334 @@
+﻿@using AFFZ_Provider.Utils
+@inject AFFZ_Provider.Utils.IAppSettingsService AppSettingsService
+@inject NotificationService NotificationService
+@{
+    var controllerName = ViewContext.RouteData.Values["controller"]?.ToString();
+    var MerchantId = NotificationService.GetMerchantId();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <title>@ViewData["Title"] | Smart Center</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/assets/img/favicon.png">
+
+    <!-- select CSS -->
+    <link rel="stylesheet" href="/assets/css/select2.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/plugins/bootstrap-tagsinput/css/bootstrap-tagsinput.css">
+
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="/assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/assets/plugins/fontawesome/css/all.min.css">
+
+    <!-- Map CSS -->
+    <link rel="stylesheet" href="/assets/plugins/jvectormap/jquery-jvectormap-2.0.3.css">
+
+    <!-- Sweet Alert2 -->
+    <link href="/assets/plugins/sweetalert/sweetalert2.css" rel="stylesheet" />
+
+    <!-- Datatable CSS -->
+    <link rel="stylesheet" href="/assets/css/dataTables.bootstrap4.min.css">
+
+    <!-- Fearther CSS -->
+    <link href="/assets/css/feather.css" rel="stylesheet" />
+
+    <!-- Datetimepicker CSS -->
+    <link rel="stylesheet" href="/assets/css/bootstrap-datetimepicker.min.css">
+
+
+    <!-- Main CSS -->
+    @if (controllerName == "Login" || controllerName == "SignUp")
+    {
+        <link rel="stylesheet" href="/assets/css/style.css">
+    }
+    else
+    {
+        <link rel="stylesheet" href="/assets/css/admin.css">
+    }
+</head>
+
+<body class="provider-body">
+
+
+    <div class="main-wrapper">
+
+        @if (ViewContext.RouteData.Values["controller"]?.ToString() != "Login" && ViewContext.RouteData.Values["controller"]?.ToString() != "SignUp")
+        {
+
+            <!-- Header -->
+            @await Html.PartialAsync("HeaderLayout")
+            <!-- /Header -->
+            <!-- Sidebar -->
+            @await Component.InvokeAsync("Menu")
+            <!-- /Sidebar -->
+        }
+
+        @RenderBody()
+        <!-- Cursor -->
+        <div class="mouse-cursor cursor-outer"></div>
+        <div class="mouse-cursor cursor-inner"></div>
+        <!-- /Cursor -->
+
+    </div>
+
+    <!-- jQuery -->
+    <script src="/assets/js/jquery-3.7.0.min.js"></script>
+
+    <!-- select JS -->
+    <script src="/assets/plugins/select2/js/select2.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Fearther JS -->
+    <script src="/assets/js/feather.min.js"></script>
+
+
+    <!-- Datatables JS -->
+    <script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/assets/plugins/datatables/datatables.min.js"></script>
+
+    <!-- Slimscroll JS -->
+    <script src="/assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+
+    <!-- Sweetalert 2 -->
+    <script src="/assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
+    <script src="/assets/plugins/sweetalert/sweetalerts.min.js"></script>
+
+
+    <!-- jQuery Validation -->
+    <script src="/assets/js/jquery.validate.min.js"></script>
+    <script src="~/js/jquery.validate.unobtrusive.min.js"></script>
+
+
+    <!-- SignalR Client -->
+    <script src="/assets/js/signalr.min.js"></script>
+
+
+
+
+
+    <!-- Datetimepicker JS -->
+    <script src="/assets/js/moment.min.js"></script>
+    <script src="/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+
+
+
+
+    <!-- Custom JS -->
+    @* <script src="/assets/js/script.js"></script> *@
+    <script src="~/assets/js/admin.js"></script>
+
+
+    <script src="~/js/jquery.validate.unobtrusive.js"></script>
+
+    <!-- Render scripts at the bottom -->
+    @RenderSection("Scripts", required: false)
+    @if (controllerName != "Login" || controllerName != "SignUp")
+    {
+        <script>
+            const baseIpAddress = "@AppSettingsService.GetApiHttpsPort()";
+
+            console.log("Base IP Address: " + baseIpAddress);
+
+            //const apiBaseUrl = APIPort ? `${baseIpAddress}:${APIPort}` : baseIpAddress; // Dynamically append the port if it exists
+            const apiBaseUrl = `${baseIpAddress}`; // Dynamically append the port if it exists
+
+            const clientType = "AFFZ_Provider";
+            console.log("API URL: " + apiBaseUrl);
+            console.log("Client: " + clientType);
+            var loggedInMerchantId = '@MerchantId';
+            console.log("LoggedIn Merchant Id: " + loggedInMerchantId);
+            function markAsReadAndRedirect(notificationId, redirectUrl, element) {
+                // Mark the notification as read via an API call
+                fetch(`${apiBaseUrl}/api/Notifications/${notificationId}/mark-as-read`, {
+                    method: 'POST',
+                })
+                    .then(response => {
+                        if (response.ok) {
+                             // Stop blinking effect if applied
+                        element.closest('.notification-message').classList.remove('blinking');
+                            // If successful, redirect to the specified URL
+                            window.location.href = redirectUrl;
+                        } else {
+                            alert('Failed to mark notification as read.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while processing your request.');
+                    });
+            }
+
+            function markAllAsRead(userOrMerchantId,element) {
+                fetch(`${apiBaseUrl}/api/Notifications/mark-all-as-read?UserOrMerchantid=${userOrMerchantId}&isUser=false`, {
+                    method: 'POST',
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // Reload the page or update the notifications count/UI as needed
+                            //element.closest('.notification-message').classList.remove('blinking');
+                            location.reload();
+                        } else {
+                            alert('Failed to mark all notifications as read.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while processing your request.');
+                    });
+            }
+             const connection = new signalR.HubConnectionBuilder()
+            .withUrl(`${apiBaseUrl}/notificationHub`, { withCredentials: true }) // Ensure credentials are allowed
+            .build();
+
+            console.log(connection);
+
+            // Utility to ensure the connection is in the proper state
+            async function ensureConnectionStarted() {
+                if (connection.state === signalR.HubConnectionState.Disconnected) {
+                    try {
+                        await connection.start();
+                        console.log("SignalR connection started.");
+                    } catch (err) {
+                        console.error("Error starting SignalR connection:", err.toString());
+                    }
+                } else {
+                    console.log(`SignalR connection already in state: ${connection.state}`);
+                }
+            }
+                    // Add the client to the appropriate group and Start the connection and invoke methods
+            ensureConnectionStarted().then(() => {
+                connection.invoke("JoinGroup", clientType) // Joins either AFFZ_Customer or AFFZ_Provider group
+                    .catch(err => console.error("Error joining group:", err.toString()));
+            });
+
+
+            @* connection.on("ReceiveNotification", function (notifications) {
+            console.log("Received notifications:", notifications);
+
+            // Filter notifications for the logged-in merchant
+            const merchantNotifications = notifications.filter(notification =>
+                notification.merchantId === loggedInMerchantId
+            );
+
+            // Process merchant-specific notifications as before
+            const unreadNotifications = merchantNotifications.filter(notification => !notification.isRead);
+            console.log("Unread Notifications:", unreadNotifications);
+
+            const notificationList = document.querySelector('.notification-list');
+            const sortedNotifications = merchantNotifications.sort((a, b) => b.id - a.id);
+            notificationList.innerHTML = '';
+            console.log("sorted Notifications:", sortedNotifications);
+            sortedNotifications.forEach(_noti => {
+            console.log("_noti.id"+_noti.id);
+            const newNotification = document.createElement('li');
+            newNotification.classList.add('notification-message', 'blinking');
+
+            newNotification.innerHTML = `
+                <a href="javascript:void(0)" onclick="markAsReadAndRedirect(${_noti.id}, '${_noti.redirectToActionUrl}', this)">
+                    <div class="media d-flex">
+                        <span class="avatar avatar-sm flex-shrink-0">
+                            <img class="avatar-img rounded-circle" alt="user" src="/assets/img/provider/provider-01.jpg">
+                        </span>
+                        <div class="media-body flex-grow-1">
+                            <p class="noti-details">
+                                <span class="noti-title">${_noti.message}</span>
+                            </p>
+                            <p class="noti-time">
+                                <span class="notification-time">${new Date(_noti.createdDate).toLocaleString()}</span>
+                            </p>
+                        </div>
+                    </div>
+                </a>`;
+            notificationList.prepend(newNotification);
+            if (!_noti.isRead) {
+                newNotification.classList.add('blinking');
+            }
+            });
+            console.log("List of Notifications:", notificationList);
+            const notificationCountElement = document.querySelector(".notification-count");
+            notificationCountElement.textContent = unreadNotifications.length;
+        }); *@
+                connection.on("ReceiveNotification", function (notifications) {
+                    console.log("Received notifications:", notifications);
+
+                    // Filter notifications for the logged-in merchant
+                    const merchantNotifications = notifications.filter(notification =>
+                        notification.merchantId === loggedInMerchantId
+                    );
+
+                    // Sort all notifications in descending order by ID
+                    const sortedNotifications = merchantNotifications;//.sort((a, b) => b.id - a.id);
+                    console.log("Sorted Notifications:", sortedNotifications);
+
+                    // Clear the existing notification list
+                    const notificationList = document.querySelector('.notification-list');
+                    notificationList.innerHTML = '';
+
+                    // Loop through the sorted notifications and display them
+                    sortedNotifications.forEach(_noti => {
+                    const newNotification = document.createElement('li');
+                    newNotification.classList.add('notification-message');
+
+                    // Set the color based on read status
+                    if (_noti.isRead) {
+                        newNotification.style.color = 'black'; // Read notifications in black
+                    } else {
+                        newNotification.style.color = 'blue'; // Unread notifications in blue
+                    }
+
+                    // Build the notification HTML
+                    newNotification.innerHTML = `
+                        <a href="javascript:void(0)" onclick="markAsReadAndRedirect(${_noti.id}, '${_noti.redirectToActionUrl}', this)">
+                            <div class="media d-flex">
+                                <span class="avatar avatar-sm flex-shrink-0">
+                                    <img class="avatar-img rounded-circle" alt="user" src="/assets/img/provider/provider-01.jpg">
+                                </span>
+                                <div class="media-body flex-grow-1">
+                                    <p class="noti-details">
+                                        <span class="noti-title">${_noti.message}</span>
+                                    </p>
+                                    <p class="noti-time">
+                                        <span class="notification-time">${new Date(_noti.createdDate).toLocaleString()}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </a>`;
+
+                    // Prepend the notification to the list
+                    notificationList.append(newNotification);
+
+                    // Mark notification as read and update the color to black when clicked
+                    newNotification.addEventListener('click', function () {
+                        _noti.isRead = true; // Update the notification status
+                        newNotification.style.color = 'black'; // Change color to black
+                        newNotification.classList.remove('blinking');
+                    });
+                });
+                    console.log("List of Notifications:", notificationList);
+                    // Update the notification count (only for unread notifications)
+                    const unreadNotifications = sortedNotifications.filter(notification => !notification.isRead);
+                    console.log("Unread Notifications:", unreadNotifications);
+
+                    const notificationCountElement = document.querySelector(".notification-count");
+                    notificationCountElement.textContent = unreadNotifications.length;
+                });
+
+            // Restart connection on disconnection
+            connection.onclose(async () => {
+                console.warn("SignalR connection closed. Attempting to reconnect...");
+                await ensureConnectionStarted();
+            });
+        </script>
+    }
+</body>
+</html>

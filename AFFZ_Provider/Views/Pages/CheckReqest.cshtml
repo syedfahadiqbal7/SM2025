@@ -1,0 +1,212 @@
+﻿@{
+    var paginatedSubCategories = ViewBag.RequestForDisCountToMerchant as List<AFFZ_Provider.Controllers.RequestForDiscountViewModel>;
+    ViewData["Title"] = "Requests for Discounts";
+}
+<div class="page-wrapper">
+    <div class="content container-fluid">
+
+        <!-- Page Header -->
+        <div class="page-header d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="page-title text-primary">🎉 Discount Requests</h1>
+                <p class="text-muted" style="font-size: 15px;">Manage and respond to user discount requests efficiently.</p>
+            </div>
+        </div>
+        <!-- /Page Header -->
+        <!-- Display messages -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["FailMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["FailMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <!-- Coupons Table -->
+        <div class="card shadow-sm">
+            <div class="card-header text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Discount Request List</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Service Name</th>
+                                <th>Service Price Quoted</th>
+                                <th>Date Of Request</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (paginatedSubCategories == null || !paginatedSubCategories.Any())
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">No data available.</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                foreach (var _subcat in paginatedSubCategories)
+                                {
+                                    <tr>
+                                        <td style="font-weight:bold">@_subcat.ServiceName</td>
+                                        <td>AED @_subcat.ServicePrice</td>
+                                        @* <td>@_subcat.RequestDatetime.ToString("yyyy-MM-dd")</td> *@
+                                        <td>@_subcat.RequestDatetime.ToString("F")</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#ApplyDiscount_@_subcat.RFDTM">
+                                                Apply Discount
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="ApplyDiscount_@_subcat.RFDTM" tabindex="-1" aria-labelledby="ApplyDiscountLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                                            <div class="modal-content shadow-lg rounded-3 border-0" style="overflow: hidden;">
+                                                <!-- Modal Header -->
+                                                <div class="modal-header" style="background: linear-gradient(135deg, #f3f4f6, #e9ecef); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                                    <h5 class="modal-title d-flex align-items-center" id="ApplyDiscountLabel" style="font-weight: bold; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);">
+                                                        <i class="bi bi-tag-fill me-2" style="color: #007bff;"></i> Update Discount Price
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <!-- /Modal Header -->
+                                                <!-- Modal Body -->
+                                                <div class="modal-body p-4">
+                                                    <form class="form" id="discountForm_@_subcat.RFDTM" onsubmit="return validateDiscountPrice(@_subcat.ServicePrice, 'DiscountPrice_@_subcat.RFDTM')" action="ApplyDiscountedPrice" method="post">
+                                                        <input type="hidden" name="RFDTM" value="@_subcat.RFDTM" />
+                                                        <input type="hidden" name="MID" value="@_subcat.MID" />
+                                                        <input type="hidden" name="UID" value="@_subcat.UID" />
+                                                        <input type="hidden" name="SID" value="@_subcat.SID" />
+
+                                                        <!-- Original Price -->
+                                                        <div class="mb-4">
+                                                            <label for="OriginalPrice_@_subcat.RFDTM" class="form-label fw-bold">Original Price:</label>
+                                                            <input type="text" class="form-control border-2 shadow-sm" id="OriginalPrice_@_subcat.RFDTM" value="@_subcat.ServicePrice" readonly>
+                                                        </div>
+
+                                                        <!-- Discounted Price -->
+                                                        <div class="mb-4">
+                                                            <label for="DiscountPrice_@_subcat.RFDTM" class="form-label fw-bold">How much discount can you give to Customer on @_subcat.ServiceName service:</label>
+                                                            <input type="number" class="form-control border-2 shadow-sm" name="DiscountPrice" id="DiscountPrice_@_subcat.RFDTM" placeholder="Enter Discounted Price" required>
+                                                            <div class="text-danger mt-2" id="noteDiscountPrice_@_subcat.RFDTM" style="display: none;">
+                                                                Discounted price should not be greater than the original price. The value has been reset to the original price.
+                                                            </div>
+                                                            <div class="text-muted mt-2" id="paymentNote_@_subcat.RFDTM" style="font-size: 0.9em;">
+                                                                <!-- This will update dynamically -->
+                                                            </div>
+                                                            <div class="invalid-feedback" id="errorDiscountPrice_@_subcat.RFDTM"></div>
+                                                        </div>
+
+                                                        <!-- Action Buttons -->
+                                                        <div class="d-flex justify-content-end">
+                                                            <button type="button" class="btn btn-secondary me-2 shadow" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="submit" id="submitDiscountbtn_@_subcat.RFDTM" class="btn btn-primary shadow" style="background: linear-gradient(135deg, #007bff, #0056b3); border: none;">
+                                                                <i class="bi bi-check-circle me-1"></i> Submit
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <!-- /Modal Body -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /Modal -->
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- /Coupons Table -->
+
+    </div>
+</div>
+<script>
+        function validateDiscountPrice(originalPrice, discountInputId) {
+        const discountInput = document.getElementById(discountInputId);
+        const submitDiscountbtn = document.getElementById(`submitDiscountbtn_${this.id.split('_')[1]}`);
+        const discountPrice = parseFloat(discountInput.value);
+        const originalPriceValue = parseFloat(originalPrice);
+        const noteElement = document.getElementById(`note_${discountInputId}`);
+
+        if (discountPrice < 0) {
+            // Show the error note and prevent form submission
+            noteElement.style.display = "block";
+            discountInput.classList.add("is-invalid");
+            discountInput.value = originalPriceValue; // Replace the value
+            submitDiscountbtn.disabled = true; // Disable the button
+            return false;
+        }
+        if (discountPrice > originalPriceValue) {
+            // Show the error note and prevent form submission
+            noteElement.style.display = "block";
+            discountInput.classList.add("is-invalid");
+            discountInput.value = originalPriceValue; // Replace the value
+            submitDiscountbtn.disabled = true; // Disable the button
+            return false;
+        } else {
+            // Hide the error note and allow form submission
+            noteElement.style.display = "none";
+            discountInput.classList.remove("is-invalid");
+            submitDiscountbtn.disabled = false; // Enable the button
+            return true;
+        }
+    }
+
+    //Attach real-time validation to the input
+        document.querySelectorAll("[id^=DiscountPrice_]").forEach(input => {
+            
+        input.addEventListener("input", function () {
+            const submitDiscountbtn = document.getElementById(`submitDiscountbtn_${this.id.split('_')[1]}`);
+            const originalPrice = parseFloat(document.getElementById(`OriginalPrice_${this.id.split('_')[1]}`).value);
+            const discountPrice = parseFloat(this.value);
+            const noteElement = document.getElementById(`note${this.id}`);
+            const paymentNoteElement = document.getElementById(`paymentNote_${this.id.split('_')[1]}`);
+            if (discountPrice > originalPrice) {
+                noteElement.style.display = "block";
+                this.value = originalPrice; // Replace the value dynamically
+                this.classList.add("is-invalid");
+                submitDiscountbtn.disabled = true; // Disable the button
+            } else {
+                noteElement.style.display = "none";
+                this.classList.remove("is-invalid");
+            }
+            // Update the payment note dynamically
+            if (!isNaN(discountPrice) && discountPrice > 0) {
+                var FPrice = originalPrice-discountPrice;
+                paymentNoteElement.innerHTML = `The customer will pay the discounted amount of <span class="fw-bold text-primary">AED ${FPrice}</span>.`;
+                submitDiscountbtn.disabled = false; // Disable the button
+            }
+            else if (!isNaN(discountPrice) && discountPrice == 0) {
+                var FPrice = originalPrice-discountPrice;
+                paymentNoteElement.innerHTML = `The customer will pay the discounted amount of <span class="fw-bold text-primary">AED ${FPrice}</span>.`;
+                submitDiscountbtn.disabled = false; // Disable the button
+            }
+            else {
+                paymentNoteElement.innerHTML = "Please enter a valid discounted price.";
+                submitDiscountbtn.disabled = true; // Disable the button
+            }
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        var form = document.querySelector('.form');
+        var submitButton = form.querySelector('button[type="submit"]');
+        form.addEventListener('submit', function() {
+            // Disable the submit button
+            submitButton.disabled = true;
+            // Optionally, change button text to indicate processing
+            submitButton.innerHTML = 'Submitting... <i class="fas fa-spinner fa-spin"></i>';
+        });
+    });
+
+</script>

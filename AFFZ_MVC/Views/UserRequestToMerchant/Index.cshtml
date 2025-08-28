@@ -1,0 +1,665 @@
+﻿@{
+	var paginatedSubCategories = ViewBag.RequestForDisCountToMerchant as List<AFFZ_Customer.Controllers.RequestForDiscountViewModel>;
+	ViewData["Title"] = "Index";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+	<title>Truelysell | Template</title>
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="~/assets/img/favicon.png">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="~/assets/css/bootstrap.min.css">
+
+	<!-- Fontawesome CSS -->
+	<link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+	<link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+	<!-- Fearther CSS -->
+	<link rel="stylesheet" href="~/assets/css/feather.css">
+
+	<!-- select CSS -->
+	<link rel="stylesheet" href="~/assets/plugins/select2/css/select2.min.css">
+
+	<!-- Datetimepicker CSS -->
+	<link rel="stylesheet" href="~/assets/css/bootstrap-datetimepicker.min.css">
+
+	<!-- Datatables CSS -->
+	<link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+	<!-- Main CSS -->
+	<link rel="stylesheet" href="~/assets/css/style.css">
+
+
+</head>
+
+<body class="provider-body">
+
+
+	<div class="main-wrapper">
+
+		<!-- Header -->
+		<div class="header">
+			<div class="header-left">
+				<div class="sidebar-logo">
+					<a href="index.html">
+						<img src="~/assets/img/logo.svg" class="img-fluid logo" alt="Logo">
+					</a>
+					<a href="index.html">
+						<img src="~/assets/img/logo-small.png" class="img-fluid logo-small" alt="Logo">
+					</a>
+				</div>
+				<div class="siderbar-toggle">
+					<label class="switch" id="toggle_btn">
+						<input type="checkbox">
+						<span class="slider round"></span>
+					</label>
+				</div>
+			</div>
+			<a class="mobile_btns" id="mobile_btns" href="javascript:void(0);">
+				<i class="fas fa-align-left"></i>
+			</a>
+			<div class="header-split">
+				<div class="page-headers">
+					<div class="search-bar">
+						<span><i class="feather-search"></i></span>
+						<input type="text" placeholder="Search" class="form-control">
+					</div>
+				</div>
+				<ul class="nav user-menu noti-pop-detail">
+					<!-- Notifications -->
+					<li class="nav-item">
+						<a href="index.html" class="viewsite"><i class="feather-globe me-2"></i>View Site</a>
+					</li>
+					<li class="nav-item dropdown has-arrow dropdown-heads flag-nav">
+						<a class="nav-link" data-bs-toggle="dropdown" href="#" role="button">
+							<img src="~/assets/img/flags/us1.png" alt="Flag" height="20">
+						</a>
+						<div class="dropdown-menu dropdown-menu-right">
+							<a href="javascript:void(0);" class="dropdown-item">
+								<img src="~/assets/img/flags/us.png" class="me-2" alt="Flag" height="16"> English
+							</a>
+							<a href="javascript:void(0);" class="dropdown-item">
+								<img src="~/assets/img/flags/fr.png" class="me-2" alt="Flag" height="16"> French
+							</a>
+							<a href="javascript:void(0);" class="dropdown-item">
+								<img src="~/assets/img/flags/es.png" class="me-2" alt="Flag" height="16"> Spanish
+							</a>
+							<a href="javascript:void(0);" class="dropdown-item">
+								<img src="~/assets/img/flags/de.png" class="me-2" alt="Flag" height="16"> German
+							</a>
+						</div>
+					</li>
+					<li class="nav-item  has-arrow dropdown-heads ">
+						<a href="#">
+							<i class="feather-moon"></i>
+						</a>
+					</li>
+					<!-- Notifications -->
+					<li class="nav-item  has-arrow dropdown-heads dropdown logged-item noti-nav noti-wrapper">
+						<a href="#" class="dropdown-toggled nav-link notify-link" data-bs-toggle="dropdown">
+							<span class="noti-message">@paginatedSubCategories.Count</span>
+							<img src="~/assets/img/icons/bell-icon.svg" alt="Bell">
+						</a>
+						<div class="dropdown-menu notify-blk notifications">
+							<div class="topnav-dropdown-header">
+								<div>
+									<p class="notification-title">Notifications <span> 3 </span></p>
+								</div>
+								<a href="javascript:void(0)" class="clear-noti"><i class="fa-regular fa-circle-check"></i> Mark all as read </a>
+							</div>
+							<div class="noti-content">
+								<ul class="notification-list">
+									<li class="notification-message">
+										<a href="notification.html">
+											<div class="media noti-img d-flex">
+												<span class="avatar avatar-sm flex-shrink-0">
+													<img class="avatar-img rounded-circle img-fluid" alt="User Image" src="~/assets/img/notifications/avatar-01.jpg">
+												</span>
+												<div class="media-body flex-grow-1">
+													<p class="noti-details">Lex Murphy left 6 comments on Isla Nublar SOC2 compliance report</p>
+													<p class="noti-time"><span class="notification-time">1m ago</span></p>
+												</div>
+											</div>
+										</a>
+									</li>
+									<li class="notification-message">
+										<div class="media noti-img d-flex">
+											<a href="notification.html">
+												<span class="avatar avatar-sm flex-shrink-0">
+													<img class="avatar-img rounded-circle img-fluid" alt="User Image" src="~/assets/img/notifications/avatar-02.jpg">
+												</span>
+											</a>
+											<div class="media-body flex-grow-1">
+												<a href="notification.html"><p class="noti-details">Ray Arnold requested access to UNIX directory tree hierarchy</p></a>
+												<p class="noti-time"><span class="notification-time">1 min</span></p>
+												<div class="notify-btns">
+													<button class="btn btn-secondary">Decline</button>
+													<button class="btn btn-primary">Accept</button>
+												</div>
+
+											</div>
+										</div>
+									</li>
+									<li class="notification-message">
+										<a href="notification.html">
+											<div class="media noti-img d-flex">
+												<span class="avatar avatar-sm flex-shrink-0">
+													<img class="avatar-img rounded-circle img-fluid" alt="User Image" src="~/assets/img/notifications/avatar-03.jpg">
+												</span>
+												<div class="media-body flex-grow-1">
+													<p class="noti-details">Dennis Nedry commented on Isla Nublar SOC2 compliance report</p>
+													<p class="noti-time"><span class="notification-time">1m ago</span></p>
+												</div>
+											</div>
+										</a>
+									</li>
+									<li class="notification-message">
+										<a href="notification.html">
+											<div class="media noti-img d-flex">
+												<span class="avatar avatar-sm flex-shrink-0">
+													<img class="avatar-img rounded-circle img-fluid" alt="User Image" src="~/assets/img/notifications/avatar-04.jpg">
+												</span>
+												<div class="media-body flex-grow-1">
+													<p class="noti-details">John Hammond created Isla Nublar SOC2 compliance report  </p>
+													<p class="noti-time"><span class="notification-time">1m ago</span></p>
+												</div>
+											</div>
+										</a>
+									</li>
+								</ul>
+							</div>
+							<div class="topnav-dropdown-footer">
+								<a href="notification.html">View All Notifications <img src="~/assets/img/icons/arrow-right-01.svg" alt="Arrow"></a>
+							</div>
+						</div>
+					</li>
+					<!-- /Notifications -->
+					<li class="nav-item  has-arrow dropdown-heads ">
+						<a href="#" class="win-maximize">
+							<i class="feather-maximize"></i>
+						</a>
+					</li>
+
+					<!-- User Menu -->
+					<li class="nav-item dropdown has-arrow account-item">
+						<a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+							<div class="user-infos">
+								<span class="user-img">
+									<img src="~/assets/img/profiles/avatar-02.jpg" class="rounded-circle" alt="User Image">
+								</span>
+								<div class="user-info">
+									<h6>John Smith</h6>
+									<p>Demo User</p>
+								</div>
+							</div>
+						</a>
+						<div class="dropdown-menu dropdown-menu-end emp">
+							<a class="dropdown-item" href="provider-profile-settings.html">
+								<i class="feather-user me-2"></i> Profile
+							</a>
+							<a class="dropdown-item" href="index.html">
+								<i class="feather-log-out me-2"></i> Logout
+							</a>
+						</div>
+					</li>
+					<!-- /User Menu -->
+				</ul>
+			</div>
+
+		</div>
+		<!-- /Header -->
+		<!-- Sidebar -->
+		<div class="sidebar" id="sidebar">
+
+
+			<div class="sidebar-inner slimscroll">
+				<div id="sidebar-menu" class="sidebar-menu">
+					<ul>
+						<li>
+							<a href="provider-dashboard.html"><i class="feather-grid"></i> <span>Dashboard</span></a>
+						</li>
+						<li>
+							<a href="provider-services.html"><i class="feather-briefcase"></i> <span>My Services</span></a>
+						</li>
+						<li>
+							<a href="provider-booking.html"><i class="feather-calendar"></i> <span>Bookings </span></a>
+						</li>
+						<li>
+							<a href="provider-payout.html"><i class="feather-credit-card"></i> <span>Payout</span></a>
+						</li>
+						<li>
+							<a href="provider-availability.html"><i class="feather-clock"></i> <span>Availability</span></a>
+						</li>
+						<li>
+							<a href="provider-holiday.html"><i class="feather-calendar"></i> <span>Holidays & Leave</span></a>
+						</li>
+						<li class="active">
+							<a href="provider-coupons.html"><i class="feather-bookmark"></i> <span>Coupons</span></a>
+						</li>
+						<li>
+							<a href="provider-subscription.html"><i class="feather-dollar-sign"></i> <span>Subscription</span></a>
+						</li>
+						<li>
+							<a href="provider-offers.html"><i class="feather-percent"></i> <span>Offers</span></a>
+						</li>
+						<li>
+							<a href="provider-reviews.html"><i class="feather-star"></i> <span>Reviews</span></a>
+						</li>
+						<li>
+							<a href="provider-earnings.html"><i class="feather-dollar-sign"></i> <span>Earnings</span></a>
+						</li>
+						<li>
+							<a href="provider-chat.html"><i class="feather-message-circle"></i> <span>Chat</span></a>
+						</li>
+						<li class="submenu">
+							<a href="provider-settings.html"><i class="feather-settings"></i> <span>Settings</span> <span class="menu-arrow"></span></a>
+							<ul>
+								<li>
+									<a href="provider-appointment-settings.html">Appointment Settings</a>
+								</li>
+								<li>
+									<a href="provider-profile-settings.html">Account Settings</a>
+								</li>
+								<li>
+									<a href="provider-social-profile.html">Social Profiles</a>
+								</li>
+								<li>
+									<a href="provider-security-settings.html">Security Setting</a>
+								</li>
+								<li>
+									<a href="provider-plan.html">Plan & Billings</a>
+								</li>
+								<li>
+									<a href="payment-settings.html">Payment Settings</a>
+								</li>
+								<li>
+									<a href="provider-notifcations.html">Notifications</a>
+								</li>
+								<li>
+									<a href="provider-connected-apps.html">Connected Apps</a>
+								</li>
+								<li>
+									<a href="verification.html">Profile Verification</a>
+								</li>
+								<li>
+									<a href="#" data-bs-toggle="modal" data-bs-target="#del-account">Delete Account</a>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<a href="index.html"><i class="feather-log-out"></i> <span>Logout</span></a>
+						</li>
+					</ul>
+					<div class="menu-bottom">
+						<div class="menu-user">
+							<div class="menu-user-img avatar-online">
+								<img src="~/assets/img/profiles/avatar-02.jpg" alt="user">
+							</div>
+							<div class="menu-user-info">
+								<h6>John Smith</h6>
+								<p>johnsmith@example.com</p>
+							</div>
+						</div>
+						<a href="#" class="select-set"><i class="feather-settings"></i></a>
+						<div class="dropdown-menu user-drop" id="dropboxes">
+							<div class="menu-user">
+								<div class="menu-user-img avatar-online">
+									<img src="~/assets/img/profiles/avatar-02.jpg" alt="user">
+								</div>
+								<div class="menu-user-info">
+									<h6>John Smith</h6>
+									<p>Active</p>
+								</div>
+							</div>
+							<div class="set-user">
+								<p>Set as Away</p>
+								<div class="status-toggle">
+									<input type="checkbox" id="active-user" class="check">
+									<label for="active-user" class="checktoggle">checkbox</label>
+								</div>
+							</div>
+							<ul class="set-menu">
+								<li>
+									<a href="provider-security-settings.html">
+										<i class="feather-settings me-2"></i> Settings
+									</a>
+								</li>
+								<li>
+									<a href="provider-profile-settings.html">
+										<i class="feather-user me-2"></i> Your Account
+									</a>
+								</li>
+								<li>
+									<a href="javascript:void(0)">
+										<i class="feather-check-circle me-2"></i> Identity Verification
+									</a>
+								</li>
+							</ul>
+							<ul class="help-menu">
+								<li>
+									<a href="#">
+										Help Center
+									</a>
+								</li>
+								<li>
+									<a href="terms-condition.html">
+										Terms of Condition
+									</a>
+								</li>
+								<li>
+									<a href="privacy-policy.html">
+										Privacy Policy
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /Sidebar -->
+
+		<div class="page-wrapper">
+			<div class="content container-fluid">
+
+				<!-- Page Header -->
+				<div class="page-header">
+					<div class="row">
+						<div class="col-md-4">
+							<div class="provider-subtitle">
+								<h6>Request List</h6>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /Page Header -->
+				<!-- Coupons -->
+				<div class="row">
+					<div class="col-md-12">
+						<div class="provide-table manage-table">
+							<div class="table-responsive">
+								<table class="table custom-table datatable mb-0" id="data-table">
+									<thead class="thead-light">
+										<tr>
+											<th>Service Name</th>
+											<th>Service Price Quoted</th>
+											<th>Date Of Request</th>
+											@* <th>Status</th> *@
+											<th>Action</th>
+										</tr>
+									</thead>
+									<tbody>
+										@if (paginatedSubCategories == null)
+										{
+											<p><em>Loading Data...</em></p>
+										}
+										else
+										{
+
+											@foreach (var _subcat in paginatedSubCategories)
+											{
+												<tr>
+													<td>@_subcat.ServiceName</td>
+													<td>@_subcat.ServicePrice</td>
+													<td>@_subcat.RequestDatetime</td>
+													@* <td><span class="badge-success">Action</span></td> *@
+													<td>
+														<div class="table-actions">
+															<a class="badge-success" href="javascript:void();" data-bs-toggle="modal" data-bs-target="#ApplyDiscount_@_subcat.RFDTM">
+																Apply Discount Price
+															</a>
+															@*<a class="action-set confirm-text" href="#">
+													<i class="feather-trash-2"></i>
+													</a>*@
+														</div>
+													</td>
+												</tr>
+												<!-- Edit Coupon  -->
+												<div class="modal modal-lg fade custom-modal" id="ApplyDiscount_@_subcat.RFDTM">
+													<div class="modal-dialog modal-dialog-centered">
+														<div class="modal-content doctor-profile">
+															<div class="modal-header border-bottom-0 justify-content-between">
+																<h5 class="modal-title">Update Price On User Request</h5>
+																<button type="button" class="close-btn" data-bs-dismiss="modal" aria-label="Close"><i class="feather-x"></i></button>
+															</div>
+															<div class="modal-body pt-0">
+																<form action="ApplyDiscountedPrice" method="post">
+																	<input type="hidden" name="RFDTM" value="@_subcat.RFDTM" />
+																	<input type="hidden" name="MID" value="@_subcat.MID" />
+																	<input type="hidden" name="UID" value="@_subcat.UID" />
+																	<input type="hidden" name="SID" value="@_subcat.SID" />
+																	<div class="row align-items-center">
+																		<div class="col-md-12">
+																			<div class="form-group">
+																				<label class="col-form-label">Orignal Price : <strong>@_subcat.ServicePrice</strong></label>
+																			</div>
+																			<div class="form-group">
+																				<label class="col-form-label">Discounted Price</label>
+																				<input type="text" class="form-control" name="DiscountPrice" value="@_subcat.ServicePrice" placeholder="Amount">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="row float-end">
+																		<div class="col-md-5 coupon-submit">
+																			<button type="submit" class="btn btn-primary">Submit</button>
+																		</div>
+																	</div>
+																</form>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- /Edit Coupon  -->
+											}
+										}
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3">
+								<div id="tablelength"></div>
+							</div>
+							<div class="col-md-9">
+								<div class="table-ingopage">
+									<div id="tableinfo"></div>
+									<div id="tablepagination"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /Coupons -->
+
+			</div>
+		</div>
+
+		<!-- Add Coupon  -->
+		<div class="modal modal-lg fade custom-modal" id="add-coupon">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content doctor-profile">
+					<div class="modal-header border-bottom-0 justify-content-between">
+						<h5 class="modal-title">Add Coupon</h5>
+						<button type="button" class="close-btn" data-bs-dismiss="modal" aria-label="Close"><i class="feather-x"></i></button>
+					</div>
+					<div class="modal-body pt-0">
+						<form action="provider-coupons.html">
+							<div class="row align-items-center">
+								<div class="col-md-12">
+									<div class="form-group">
+										<label class="col-form-label">Services</label>
+										<select class="select">
+											<option>Select Service</option>
+											<option>Car Repair</option>
+											<option>House Cleaning</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="col-form-label">Coupon Name</label>
+										<input type="text" class="form-control" placeholder="Enter Coupon Name">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="col-form-label">Code</label>
+										<input type="text" class="form-control" placeholder="Enter Code">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="col-form-label">Coupon Type</label>
+										<select class="select">
+											<option>Fixed</option>
+											<option>Percentage</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="col-form-label">Discount</label>
+										<input type="text" class="form-control" placeholder="10">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="col-form-label">Start Date</label>
+										<input type="date" class="form-control">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="col-form-label">End Date</label>
+										<input type="date" class="form-control">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="col-form-label">Company Name</label>
+										<input type="text" class="form-control" placeholder="Enter Company Name">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="col-form-label"></label>
+										<div class="status-toggle blue-tog d-flex align-items-center text-dark fw-500">
+											<input type="checkbox" id="status" class="check" checked="">
+											<label for="status" class="checktoggle me-2">checkbox</label>
+											Once per customer
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="col-form-label">Status</label>
+										<div class="form-group coupon-radio">
+											<label class="custom_radio d-inline-block me-3">
+												<input type="radio" name="status" checked="">
+												<span class="checkmark"></span> Active
+											</label>
+											<label class="custom_radio d-inline-block">
+												<input type="radio" name="status">
+												<span class="checkmark"></span> Inactive
+											</label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row float-end">
+								<div class="col-md-5 coupon-submit">
+									<button type="submit" class="btn btn-primary">Submit</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /Add Coupon  -->
+		<!-- Delete Account -->
+		<div class="modal fade custom-modal" id="del-account" data-bs-backdrop="static" data-bs-keyboard="false">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header border-bottom-0 justify-content-between">
+						<h5 class="modal-title">Delete Account</h5>
+						<button type="button" class="close-btn" data-bs-dismiss="modal" aria-label="Close"><i class="feather-x"></i></button>
+					</div>
+					<div class="modal-body pt-0">
+						<div class="write-review">
+							<form action="login.html">
+								<p>Are you sure you want to delete this account? To delete your account, Type your password.</p>
+								<div class="form-group">
+									<label class="col-form-label">Password</label>
+									<div class="pass-group">
+										<input type="password" class="form-control pass-input" placeholder="*************">
+										<span class="toggle-password feather-eye-off"></span>
+									</div>
+								</div>
+								<div class="modal-submit text-end">
+									<a href="#" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</a>
+									<button type="submit" class="btn btn-danger">Delete Account</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /Delete Account -->
+		<!-- Cursor -->
+		<div class="mouse-cursor cursor-outer"></div>
+		<div class="mouse-cursor cursor-inner"></div>
+		<!-- /Cursor -->
+
+	</div>
+
+	<!-- jQuery -->
+	<script src="~/assets/js/jquery-3.7.0.min.js"></script>
+
+	<!-- Bootstrap Core JS -->
+	<script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+	<!-- Fearther JS -->
+	<script src="~/assets/js/feather.min.js"></script>
+
+	<!-- select JS -->
+	<script src="~/assets/plugins/select2/js/select2.min.js"></script>
+
+	<!-- Datetimepicker JS -->
+	<script src="~/assets/js/moment.min.js"></script>
+	<script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+	<!-- Slimscroll JS -->
+	<script src="~/assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+	<!-- Datatables JS -->
+	<script src="~/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+	<script src="~/assets/plugins/datatables/datatables.min.js"></script>
+
+	<!-- Sweetalert 2 -->
+	<script src="~/assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
+	<script src="~/assets/plugins/sweetalert/sweetalerts.min.js"></script>
+
+	<!-- Custom JS -->
+	<script src="~/assets/js/script.js"></script>
+
+</body>
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			var responseMessage = "@ViewBag.SaveResponse";
+			if (responseMessage != "") {
+				// Show popup with the response message
+				alert(responseMessage);
+			}
+		});
+	</script>
+}
+</html>

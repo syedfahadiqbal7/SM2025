@@ -1,0 +1,39 @@
+{
+  "serviceIcons": {
+    "Visa Application and Renewals": {
+      "icon": "visa-application.svg",
+      "color": "#2563eb",
+      "description": "Professional visa application and renewal services"
+    },
+    "Emirates Id Registration And Renewal": {
+      "icon": "emirates-id.svg",
+      "color": "#059669",
+      "description": "Emirates ID registration and renewal services"
+    },
+    "Documents and Clearance": {
+      "icon": "documents-clearance.svg",
+      "color": "#7c3aed",
+      "description": "Document processing and clearance services"
+    },
+    "Pro Services": {
+      "icon": "pro-services.svg",
+      "color": "#dc2626",
+      "description": "Premium professional services"
+    },
+    "Corporate Typing Services": {
+      "icon": "corporate-typing.svg",
+      "color": "#0891b2",
+      "description": "Professional corporate typing and documentation services"
+    },
+    "Real Estate Services": {
+      "icon": "real-estate.svg",
+      "color": "#16a34a",
+      "description": "Real estate and property services"
+    }
+  },
+  "defaultIcon": {
+    "icon": "default-service.svg",
+    "color": "#6b7280",
+    "description": "General service"
+  }
+} 

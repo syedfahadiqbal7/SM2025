@@ -1,0 +1,51 @@
+﻿@model ServicesListViewModel
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<div class="">
+    <div class="content">
+
+
+        <!-- Customer Table -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form asp-action="ServicesListEdit" method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="ServiceListID" />
+                    <input type="hidden" asp-for="ServiceImage" />
+                    @Html.ValidationSummary("", new { @class = "text-danger" })
+                    <input type="hidden" name="ServiceListBindID" value="@ViewBag.ServiceListBindID" />
+                    <div class="form-group">
+                        <label>Service Category</label>
+                        <select class="form-select" name="CategoryID" id="CategoryID" asp-items="@ViewBag.ServiceCategoryComboData" required>
+                            <option value="">--Select--</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ServiceName"></label>
+                        <input asp-for="ServiceName" class="form-control" required />
+                        <span asp-validation-for="ServiceName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="UploadedImage">Upload New Image</label>
+                        @if (!string.IsNullOrEmpty(Model.ServiceImage))
+                        {
+                            <input asp-for="UploadedImage" class="form-control-file" type="file" />
+                        }
+                        else
+                        {
+                            <input asp-for="UploadedImage" class="form-control-file" type="file" required />
+                        }
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.ServiceImage))
+                    {
+                        <div class="form-group">
+                            <label>Current Image</label>
+                            <img src="@Url.Content(Model.ServiceImage)" alt="Service Image" class="img-thumbnail" style="max-width: 200px;" />
+                        </div>
+                    }
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    <a asp-action="ServicesListIndex" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

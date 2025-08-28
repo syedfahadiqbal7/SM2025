@@ -1,0 +1,56 @@
+﻿@model IEnumerable<AFFZ_Admin.Models.CustomerTransferViewModel>
+
+<div class="page-wrapper page-settings">
+    <div class="content">
+        <div class="content-page-header content-page-headersplit">
+            <h5>Customer Transfer Details</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Service</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Payment Date</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.ID</td>
+                            <td>
+                                <a href="javascript:void(0);" class="table-imgname">
+                                    <img src="@item.ServiceImage" class="me-2" alt="Service Image" style="width: 50px; height: 50px;">
+                                    <span>@item.ServiceName</span>
+                                </a>
+                            </td>
+                            <td>@item.CustomerName</td>
+                            <td>@item.Amount AED</td>
+                            <td>@item.PaymentDateTime.ToString("dd/MM/yyyy")</td>
+                            <td>@item.Quantity</td>
+                            <td>
+                                @if (item.IsPaymentSuccess)
+                                {
+                                    <span class="badge bg-success">Successful</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning">Pending</span>
+                                }
+                            </td>
+                            <td>
+                                <a href="javascript:void(0);" class="btn btn-primary btn-sm">View</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

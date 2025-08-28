@@ -1,0 +1,22 @@
+﻿@model ServiceCategoryViewModel
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<div class="page-wrapper page-settings">
+    <div class="content">
+
+        <!-- Customer Table -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Delete Service Category</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="CategoryDeleteConfirmed" method="post">
+                    <input type="hidden" asp-for="CategoryId" />
+                    <p>Are you sure you want to delete the service category "<strong>@Model.CategoryName</strong>"?</p>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <a asp-action="CategoryIndex" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

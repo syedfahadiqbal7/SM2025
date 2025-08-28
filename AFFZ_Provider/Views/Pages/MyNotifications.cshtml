@@ -1,0 +1,57 @@
+﻿@model IEnumerable<AFFZ_Provider.Models.Notification>
+<div class="page-wrapper">
+    <div class="content container-fluid">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="provider-subtitle">
+                        <h3 class="m-b-50 heading-line">Notifications <i class="fa fa-bell text-muted"></i></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="notification-ui_dd-content">
+                    @foreach (var notification in Model)
+                    {
+                        string style = notification.IsRead ? "font-weight:100" : "";
+                        <li class="notification-message alert alert-primary mb-2" role="alert">
+                            <a href="javascript:void(0)" onclick="markAsReadAndRedirect(@notification.Id, '@notification.RedirectToActionUrl',this)">
+
+                                <div class="media noti-img  d-flex">
+                                    <span class="avatar avatar-sm flex-shrink-0">
+                                        <img class="avatar-img rounded-circle" alt="user" src="/assets/img/provider/provider-01.jpg">
+                                    </span>
+                                    <div class="media-body flex-grow-1">
+                                        <p class="noti-details">
+                                            <span class="noti-title" style="@style">@notification.Message</span>
+                                        </p>
+                                        <p class="noti-time">
+                                            <span class="notification-time">@notification.CreatedDate.ToString("g")</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <div class="notification-list_content">
+                            <div class="notification-list_img">
+                                <img src="/assets/img/provider/provider-01.jpg" alt="user">
+                            </div>
+                            <div class="notification-list_detail">
+                                <p><b>John Doe</b> reacted to your post</p>
+                                <p class="text-muted">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Unde, dolorem.</p>
+                                <p class="text-muted"><small>10 mins ago</small></p>
+                            </div>
+                        </div>
+                        <div class="notification-list_feature-img">
+                            <img src="https://i.imgur.com/AbZqFnR.jpg" alt="Feature image">
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

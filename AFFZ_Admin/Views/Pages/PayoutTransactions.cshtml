@@ -1,0 +1,69 @@
+﻿@model IEnumerable<AFFZ_Admin.Models.PayoutTransactionViewModel>
+
+<div class="page-wrapper">
+    <div class="content">
+        <div class="content-page-header d-flex justify-content-between">
+            <h5>Payout Transactions</h5>
+            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#add-payout">
+                <i class="fa fa-plus me-2"></i>Add Payout
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Merchant</th>
+                        <th>Payout Method</th>
+                        <th>Amount</th>
+                        <th>Commission</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.MerchantName</td>
+                            <td>@item.PayoutMethod</td>
+                            <td>@item.Amount AED</td>
+                            <td>@item.Commission AED</td>
+                            <td>
+                                <span class="badge @(item.Status == "Successful" ? "bg-success" : "bg-warning")">
+                                    @item.Status
+                                </span>
+                            </td>
+                            <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                @if (item.Status == "Pending")
+                                {
+                                    <button class="btn btn-primary" onclick="processPayout(@item.MerchantId, @item.Amount)">Pay</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function processPayout(merchantId, amount) {
+        $.ajax({
+            url: '@Url.Action("ProcessPayout", "PayoutTransactionAdmin")',
+            type: 'POST',
+            data: { merchantId: merchantId, amount: amount, payoutMethod: "Bank" },
+            success: function(response) {
+                location.reload();
+            },
+            error: function() {
+                alert("Error processing payout.");
+            }
+        });
+    }
+</script>

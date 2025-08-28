@@ -1,0 +1,120 @@
+﻿<div class="cart-section col-lg-9">
+    <h4>Your Cart</h4>
+    @if (Model?.CartItem != null && Model.CartItem.Count > 0)
+    {
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>Service ID</th>
+                    <th>Service Name</th>
+                    @* <th>Price (AED)</th>
+                    <th>Quantity</th>
+                    <th>Subtotal (AED)</th> *@
+                    <th>Added Date</th>
+                     <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var merchantServiceTotals = new Dictionary<string, decimal>();
+                    foreach (var item in Model.CartItem)
+                    {
+                        var subtotal = item.ServicePrice * item.Quantity;
+                        string merchantServiceKey = $"{item.MID}_{item.ServiceID}_{item.Quantity}_{item.CartItemID}";
+
+                        if (merchantServiceTotals.ContainsKey(merchantServiceKey))
+                        {
+                            merchantServiceTotals[merchantServiceKey] += subtotal;
+                        }
+                        else
+                        {
+                            merchantServiceTotals[merchantServiceKey] = subtotal;
+                        }
+
+                        <tr>
+                            <td>@item.ServiceID</td>
+                            <td>@item.ServiceName</td>
+                            @*<td>@item.ServicePrice.ToString("F2")</td>
+                            <td>
+                                <form asp-action="UpdateQuantity" method="post" style="display: inline-block;">
+                                    <input type="hidden" name="cartItemId" value="@item.CartItemID" />
+                                    <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control quantity-input" style="width: 70px; display: inline-block;" />
+                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                                </form>
+                            </td>
+                            <td>@subtotal.ToString("F2")</td>*@
+                            <td>@item.AddedDate</td>
+                            <td>
+                                <form asp-action="RemoveFromCart" method="post" style="display: inline-block;">
+                                    <input type="hidden" name="cartItemId" value="@item.CartItemID" />
+                                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+            <tfoot>
+                @foreach (var kvp in merchantServiceTotals)
+                {
+                    var keys = kvp.Key.Split('_');
+                    var mid = keys[0];
+                    var serviceId = keys[1];
+                    var quantity = keys[2];
+                    var _cartItemId = keys[3];
+                    var p = kvp.Value.ToString("F2");
+                    <tr>
+                        <td colspan="2" class="text-start"><strong>Total for Merchant @mid, Service @serviceId:</strong></td>
+                        @* <td colspan="3">@p AED</td> *@
+                        <td colspan="2">
+                            <a href="javascript:void(0);"
+                               class="btn btn-secondary"
+                               onclick="showPaymentPopup('@mid~@serviceId', '@p', '@_cartItemId', '@quantity')"
+                               style="font-size: 10px; margin-top: 10px; padding: 5px 10px; font-weight: bold; color: red;float: right;">
+                                Ask for Discount*
+                            </a>
+                            <a class="btn btn-secondary"
+                               href="javascript:void(0);"
+                               onclick="showPaymentPopup('@mid~@serviceId', '@p', '@_cartItemId', '@quantity')"
+                               style="margin-right: 10px;float: right;">
+                                Proceed To Pay
+                               @*  PAY AED @p *@
+                            </a>
+                        </td>
+                    </tr>
+                }
+
+            </tfoot>
+        </table>
+        <!-- Image Modal -->
+        <div class="modal fade custom-modal" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content doctor-profile">
+                    <div class="modal-header border-bottom-0 justify-content-between">
+                        <h5 class="modal-title" id="imageModalLabel">Request For Discount</h5>
+                        <button type="button" class="close-btn" data-bs-dismiss="modal" aria-label="Close"><i class="feather-x"></i></button>
+                    </div>
+                    <div class="modal-body pt-0">
+                        <p id="Modalpayment"></p>
+                        <p id="buttonset">
+
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <p>No items in the cart.</p>
+    }
+</div>
+<script src="~/assets/js/script.js"></script>
+<script>
+    function showPaymentPopup(mid, amount,CartId,quantity) {
+        //alert(mid+" - "+amount);
+        $('#Modalpayment').html('<b style="color:red;font-size:12px">Please note: Requesting a discount may take 12 to 24 hours to process. If you like to proceed without a discount proceed with payment.</b > ');
+        $('#buttonset').html('<a class="btn btn-secondary" href="/MerchantList/RequestForDiscountFromCart?id=' + mid + '&CartId=' + CartId + '" style="float: left;">Ask for Discount</a> <a class="btn btn-secondary" href="/MerchantList/ProceedDirecttoPaymentByCart?id=' + mid + '&quantity=' + quantity +'&payment=' + amount +'&CartId=' + CartId + '" style="float: right;">Continue To Payment</a>');
+        $('#paymentModal').modal('show');
+    }
+</script>

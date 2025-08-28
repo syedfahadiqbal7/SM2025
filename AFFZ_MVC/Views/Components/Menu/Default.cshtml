@@ -1,0 +1,41 @@
+﻿@using AFFZ_Customer.Utils
+@model AFFZ_Customer.Models.MenuView
+@inject NotificationService NotificationService
+
+@{
+    var username = await NotificationService.GetUserName();
+    var MemberSince = await NotificationService.GetMemberSince();
+    ViewBag.userId = NotificationService.GetUserId();
+}
+<!-- Customer Menu -->
+<div class="col-lg-3 theiaStickySidebar">
+    <div class="settings-widget">
+        <div class="settings-header">
+            <div class="settings-img">
+                @* <img src="/assets/img/profiles/user.png" alt="user"> *@
+                <img src="@Url.Action("GetImage", "Login")" alt="User Image">
+            </div>
+            <h6>@username</h6>
+            <p>Member Since @MemberSince</p>
+        </div>
+        <div class="settings-menu">
+            <ul>
+                @foreach (var item in Model.MenuItems)
+                {
+                    <li>
+                        <a href="@item.MenuUrl">
+                            <i class="@item.MenuIcon"></i> <span>@item.MenuName</span>
+                        </a>
+                    </li>
+                }
+
+                <li>
+                    <a class="dropdown-item" href="@Url.Action("Logout", "Login")">
+                        <i class="feather-log-out me-2"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- /Customer Menu -->

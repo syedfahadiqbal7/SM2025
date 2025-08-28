@@ -1,0 +1,135 @@
+﻿@using AFFZ_Customer.Models
+@using System.Text.Json
+@{
+    var paginatedSubCategories = ViewBag.ResponseForDisCountFromMerchant as AFFZ_Customer.Controllers.RequestForDisCountToUserViewModel;
+    var config = ViewBag.Configuration as ConfigurationSettings;
+    decimal FINALPRICE = paginatedSubCategories.FINALPRICE;
+    double vat = (Convert.ToDouble(FINALPRICE) * config.VATPercentage / 100);
+    double Service_charge = config.IsServiceChargePerQuantity ? Convert.ToDouble(config.ServiceCharge) : Convert.ToDouble(config.ServiceCharge);
+    double Final = Convert.ToDouble(FINALPRICE) + vat;
+    Final += Service_charge;
+    Final = Math.Round(Final, 2);
+}
+<script src="https://js.stripe.com/v3/"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<div class="container col-lg-9">
+    <!-- Attractive Heading -->
+    <div class="mb-4">
+        <h1 class="text-primary fw-bold">
+            <i class="bi bi-credit-card"></i> Secure Payment
+        </h1>
+        <p class="text-muted">Review your booking and proceed with a secure payment.</p>
+    </div>
+
+    <!-- Booking Summary and Payment Details -->
+    <form method="post" action="PaymentDone" class="form row gy-4">
+        <input type="hidden" name="AMOUNT" id="hiddenAmount" value="@Final" />
+        <input type="hidden" name="PAYERID" value="@paginatedSubCategories.UID" />
+        <input type="hidden" name="MERCHANTID" value="@paginatedSubCategories.MerchantID" />
+        <input type="hidden" name="SERVICEID" value="@paginatedSubCategories.SID" />
+        <input type="hidden" name="RFDFU" value="@paginatedSubCategories.RFDFU" />
+        <input type="hidden" id="NoOfQuantity" name="NoOfQuantity" value="1" />
+        <input type="hidden" id="ServicePrice" name="ServicePrice" value="@ViewBag.ServicePrice" />
+
+        <!-- Booking Summary -->
+        <div class="col-lg-9">
+            <div class="card shadow-lg border-0 rounded-4" style="background: linear-gradient(145deg, #f3f4f6, #e0e1e3);">
+                <div class="card-header text-white rounded-top-4" style="background: linear-gradient(135deg, #ccc, #0056b3);">
+                    <h5 class="mb-0">Booking Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-light text-primary rounded-circle shadow-sm d-flex justify-content-center align-items-center"
+                             style="width: 80px; height: 80px;;margin-right: 10px;">
+                            <i class="bi bi-wallet-fill" style="font-size: 2rem;"></i>
+                        </div>
+                        <div>
+                            <p class="mb-0"><strong>Service Provider:</strong> Smart Center</p>
+                            <p class="mb-0"><strong>Date:</strong> @DateTime.Now.ToString("dd/MM/yyyy")</p>
+                            <p><strong>Time:</strong> @DateTime.Now.ToString("HH:mm")</p>
+                        </div>
+                    </div>
+                    <ul class="list-unstyled mb-3">
+                        <li class="d-flex justify-content-between">
+                            <span>Subtotal:</span>
+                            <span>@paginatedSubCategories.FINALPRICE AED</span>
+                        </li>
+                        <li class="d-flex justify-content-between">
+                            <span>Convenience Charges:</span>
+                            <span id="ServiceCharge">@config.ServiceCharge</span>
+                        </li>
+                    </ul>
+                    <div class="d-flex align-items-center mb-3">
+                        <label for="quantity" class="me-2">Quantity:</label>
+                        <button type="button" id="decrement" class="btn btn-outline-secondary btn-sm shadow-sm">-</button>
+                        <input type="text" id="quantity" value="1" readonly class="form-control mx-2 text-center" style="width: 50px;">
+                        <button type="button" id="increment" class="btn btn-outline-secondary btn-sm shadow-sm">+</button>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong>Total:</strong>
+                        <strong class="text-primary" id="totalCost" style="font-size: larger;">AED @Final</strong>
+                    </div>
+                    <small class="text-muted text-end d-block" style="font-size: 12px;">* VAT (5%) included in total</small>
+                </div>
+                <div class="card-footer text-center bg-transparent border-0">
+                    <input type="submit" class="btn btn-primary btn-lg w-100 shadow-lg" id="sbtn"
+                           style="background: linear-gradient(135deg, #007bff, #0056b3); border: none; border-radius: 8px;"
+                           value="Proceed to Pay AED @Final" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- jQuery -->
+<script src="~/assets/js/jquery-3.7.0.min.js"></script>
+<!-- Bootstrap Core JS -->
+<script src="~/assets/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var config = @Html.Raw(JsonSerializer.Serialize(config));
+        var basePrice = @FINALPRICE;
+        var vat = @vat;
+        var serviceCharge = @Service_charge;
+        var quantity = 1;
+
+    function updateTotalCost() {
+        var subtotal = basePrice * quantity;
+        var vat = subtotal * config.VATPercentage / 100;
+        var serviceCharge = config.IsServiceChargePerQuantity ? config.ServiceCharge * quantity : config.ServiceCharge;
+        var total = subtotal + vat + serviceCharge;
+
+        $('#totalCost').text(total.toFixed(2) + " AED");
+        $('#hiddenAmount').val(total.toFixed(2));
+        $('#sbtn').val("Proceed to Pay AED " + total.toFixed(2));
+    }
+
+        $('#increment').click(function () {
+            quantity++;
+            $('#quantity').val(quantity);
+            $('#NoOfQuantity').val(quantity);
+            updateTotalCost();
+        });
+
+        $('#decrement').click(function () {
+            if (quantity > 1) {
+                quantity--;
+                $('#quantity').val(quantity);
+                $('#NoOfQuantity').val(quantity);
+                updateTotalCost();
+            }
+        });
+    });
+        document.addEventListener('DOMContentLoaded', function() {
+        var form = document.querySelector('.form');
+        var submitButton = form.querySelector('input[type="submit"]');
+
+        form.addEventListener('submit', function() {
+            // Disable the submit button
+            submitButton.disabled = true;
+            // Optionally, change button text to indicate processing
+            submitButton.innerHTML = 'Submitting... <i class="fas fa-spinner fa-spin"></i>';
+        });
+    });
+</script>

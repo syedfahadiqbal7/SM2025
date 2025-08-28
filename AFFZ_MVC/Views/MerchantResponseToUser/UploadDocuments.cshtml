@@ -1,0 +1,164 @@
+﻿@model AFFZ_Customer.Controllers.FileUploadViewModel
+
+@{
+    var paginatedSubCategories = ViewBag.SaveResponse as AFFZ_Customer.Controllers.FileUploadViewModel;
+    ViewData["Title"] = "UploadDocuments";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <title>Upload Documents</title>
+
+    <!-- CSS links -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/feather.css">
+    <link rel="stylesheet" href="assets/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="main-wrapper">
+        <div class="content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 theiaStickySidebar">
+                        <div class="settings-widget">
+                            <div class="settings-header">
+                                <div class="settings-img">
+                                    <img src="assets/img/profiles/avatar-02.jpg" alt="user">
+                                </div>
+                                <h6>John Smith</h6>
+                                <p>Member Since Sep 2021</p>
+                            </div>
+                            <div class="settings-menu">
+                                <ul>
+                                    <li><a href="customer-dashboard.html"><i class="feather-grid"></i> Dashboard</a></li>
+                                    <li><a href="customer-booking.html"><i class="feather-smartphone"></i> Bookings</a></li>
+                                    <li><a href="customer-favourite.html"><i class="feather-heart"></i> Favorites</a></li>
+                                    <li><a href="MerchantResponseToUser/Index" class="active"><i class="feather-credit-card"></i> Merchant Response</a></li>
+                                    <li><a href="customer-reviews.html"><i class="feather-star"></i> Reviews</a></li>
+                                    <li><a href="customer-chat.html"><i class="feather-message-circle"></i> Chat</a></li>
+                                    <li><a href="customer-profile.html"><i class="feather-settings"></i> Settings</a></li>
+                                    <li><a href="index.html"><i class="feather-log-out"></i> Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <h6 class="user-title">Upload Your Documents</h6>
+                        <form method="post" enctype="multipart/form-data" asp-action="UploadDocuments">
+                            <div class="form-group">
+                                <label for="fileUpload">Choose Files:</label>
+                                <input type="file" class="form-control" id="fileUpload" name="Files" accept=".pdf,.jpg,.png" multiple />
+                            </div>
+                            <div class="alert alert-danger" role="alert" style="display: none;" id="fileError">
+                                Please select at least one file to upload.
+                            </div>
+                            <input type="submit" class="btn btn-primary" value="Upload Files" />
+                        </form>
+                        <div class="table-responsive">
+                            <table class="table mb-0 custom-table">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>File Name</th>
+                                        <th>File Type</th>
+                                        <th>File Size</th>
+                                        <th>Download</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @if (paginatedSubCategories.UploadedFiles == null)
+                                    {
+                                        <p><em>Loading Sub Categories...</em></p>
+                                    }
+                                    else
+                                    {
+
+                                        string RFDFU = !string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["RFDFU"].ToString()) ? ViewContext.HttpContext.Request.Query["RFDFU"] : "";
+                                        string MerchantID = !string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["MerchantID"].ToString()) ? ViewContext.HttpContext.Request.Query["MerchantID"] : "";
+
+                                        @foreach (var file in paginatedSubCategories.UploadedFiles)
+                                        {
+                                            <tr>
+                                                <td></td>
+                                                <td>@file.FileName</td>
+                                                <td class="text-body">@file.ContentType</td>
+                                                <td class="text-body">@(file.FileSize / 1024) KB</td>
+                                                <td class="text-body">
+                                                    <a asp-action="DownloadFile" asp-route-fileName="@file.FileName" asp-route-folderName="@file.FolderName" class="btn btn-sm badge-success">Download</a>
+                                                </td>
+                                                <td class="text-body">
+                                                    @if (file.Status == "Pending")
+                                                    {
+                                                        <span class="badge badge-warning">Pending Review</span>
+                                                    }
+                                                    else if (file.Status == "Rejected")
+                                                    {
+                                                        <span class="badge badge-danger">Rejected</span>
+                                                    }
+                                                    else if (file.Status == "Verified")
+                                                    {
+                                                        <span class="badge badge-success">Approved</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <a asp-action="DeleteDocument" class="btn btn-sm btn-danger eye-btn " asp-route-documentId="@file.UFID"><i class="ri-eye-line align-bottom me-1"></i>Delete</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery-3.7.0.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/feather.min.js"></script>
+    <script src="assets/plugins/select2/js/select2.min.js"></script>
+    <script src="assets/js/moment.min.js"></script>
+    <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
+    <script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
+    <script src="assets/js/script.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#fileUpload").change(function () {
+                var fileInput = $(this)[0];
+                var files = fileInput.files;
+
+                var fileList = "";
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    fileList += file.name + "<br>";
+                }
+
+                $("#selectedFiles").html(fileList);
+            });
+
+            $("form").submit(function () {
+                if ($("#fileUpload")[0].files.length === 0) {
+                    $("#fileError").show();
+                    return false;
+                }
+                $("#fileError").hide();
+                return true;
+            });
+        });
+    </script>
+</body>
+</html>

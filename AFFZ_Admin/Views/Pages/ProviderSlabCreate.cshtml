@@ -1,0 +1,21 @@
+﻿@model AFFZ_Admin.Models.ProviderSlab
+@{
+    ViewData["Title"] = "Create Provider Slab";
+}
+
+<h2>Create Provider Slab</h2>
+
+<form asp-action="ProviderSlabCreate" method="post">
+    <div class="form-group">
+        <label>Provider ID</label>
+        <input type="number" asp-for="ProviderID" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Selected Model</label>
+        <select asp-for="SelectedModel" class="form-control">
+            <option value="Fixed">Fixed</option>
+            <option value="Percentage">Percentage</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>

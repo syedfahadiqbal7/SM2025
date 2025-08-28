@@ -1,0 +1,21 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+#**/folder/ ka matlab: "ye folder kisi bhi subfolder mein ho, ignore kar do".
+# Ignore build folders
+**/bin/
+**/obj/
+
+# Ignore VS folders
+**/.vs/
+
+# Ignore logs
+**/Logs/
+
+# Ignore cache files
+*.cache
+
+# Specific folders
+/AspireHost/obj/
+/SCAPI.ServiceDefaults/obj/
+/DBScript

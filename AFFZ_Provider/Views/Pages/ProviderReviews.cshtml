@@ -1,0 +1,71 @@
+﻿@model IEnumerable<AFFZ_Provider.Models.ReviewViewModel>
+
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="provider-subtitle">
+                        <h6>Reviews</h6>
+                    </div>
+                </div>
+                <div class="col-md-8 d-flex align-items-center justify-content-md-end flex-wrap">
+                    <div class="review-sort me-2">
+                        <p>Sort</p>
+                        <select class="select">
+                            <option>Newest</option>
+                            <option>Highest</option>
+                            <option>Lowest</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Coupons -->
+        <div class="row">
+            <div class="col-md-12">
+                @foreach (var review in Model)
+                {
+                    <div class="review-list">
+                        <div class="review-imgs">
+                            <a href="/ServiceDetails/@review.ServiceId">
+                                @* <img class="rounded img-fluid" src="@review.ServiceImageUrl" alt="@review.ServiceName"> *@
+                                <img class="rounded img-fluid" src="/assets/img/services/service-12.jpg" alt="@review.SID">
+                            </a>
+                        </div>
+                        <div class="review-info">
+                            <h5>
+                                <a href="/ServiceDetails/@review.ServiceId">@review.ServiceName</a>
+                            </h5>
+                            <div class="review-user">
+                                @* <img class="avatar rounded-circle" src="@review.UserAvatarUrl" alt="@review.CustomerName"> @review.CustomerName, *@
+                                @* <img class="avatar rounded-circle" src="/assets/img/profiles/avatar-01.jpg" alt="@review.CUser.CustomerName"> *@
+                                <h6 style="float:left;">Reviewed By : </h6>@review.CustomerName,
+                                <span class="review-date">@review.ReviewDate.ToString("MMM dd, yyyy hh:mm tt")</span>
+                            </div>
+                        </div>
+                        <div class="review-count">
+                            <div class="rating">
+                                @for (var i = 0; i < review.Rating; i++)
+                                {
+                                    <i class="fas fa-star filled"></i>
+                                }
+                                @for (var i = review.Rating; i < 5; i++)
+                                {
+                                    <i class="fas fa-star"></i>
+                                }
+                                (@review.Rating)
+                            </div>
+                        </div>
+                        <p style="width: 100%;"><b style="float:left;">Review : </b>
+
+                    @review.ReviewText
+
+                    </p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

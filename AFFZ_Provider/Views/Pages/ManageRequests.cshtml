@@ -1,0 +1,224 @@
+﻿@using System.Web
+@model IEnumerable<AFFZ_Provider.Controllers.EligibilityRequestDTO>
+@{
+    ViewData["Title"] = "Manage Eligibility Requests";
+}
+
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h4 class="page-title text-primary"><i class="fas fa-tasks"></i> Manage Eligibility Requests</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success/Error Messages -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["FailMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-times-circle me-2"></i>@TempData["FailMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <!-- Service Table -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover custom-table datatable mb-0" id="data-table">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Customer Name</th>
+                                <th>Service</th>
+                                <th>Require Service For</th>
+                                <th>Request Details</th>
+                                <th>Request Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var request in Model)
+                            {
+                                var statusLower = request.Status.StatusName.ToLower();
+                                var createdDate = request.UpdatedDate;
+                                var isExpired = (DateTime.UtcNow.ToLocalTime() - createdDate).TotalHours > 24;
+                                <tr>
+                                    <td>@request.RequestID</td>
+                                    <td style="text-wrap: auto;">@request.Customer.CustomerName</td>
+                                    <td style="text-wrap: auto;">@request.Service.ServiceName</td>
+                                    <td>@request.Nationality</td>
+                                    <td style="text-wrap: auto;">
+                                        <a href="javascript:void(0);" onclick="showRequestDetails('@Html.Raw(HttpUtility.JavaScriptStringEncode(request.RequestDetails))')">
+                                            View Details
+                                        </a>
+                                    </td>
+                                    <td>@createdDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td>
+                                        <span class="badge @(statusLower == "approved" ? "bg-success" : statusLower == "rejected" ? "bg-danger" : isExpired ? "bg-secondary" : "bg-warning")">
+                                            @request.Status.StatusName
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (statusLower != "approved" && statusLower != "rejected" && !isExpired)
+                                        {
+                                            <button type="button" class="btn btn-sm btn-primary"
+                                                    onclick="showUpdateModal(@request.RequestID, '@createdDate.ToString("yyyy-MM-dd HH:mm:ss")','@request.CustomerID','@request.ServiceID','@request.Service.ServiceName','@Html.Raw(HttpUtility.JavaScriptStringEncode(request.RequestDetails))')">
+                                                <i class="fas fa-edit"></i> Update
+                                            </button>
+                                        }
+                                        else if (isExpired)
+                                        {
+                                            <span class="badge bg-danger" style="color:#fff">Request Expired</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Eligibility Update -->
+<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="updateModalLabel"><i class="fas fa-file-signature me-2"></i> Update Eligibility Request</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="requestId" name="requestId">
+                <input type="hidden" id="customerId" name="customerId">
+                <input type="hidden" id="ServiceId" name="ServiceId">
+                <input type="hidden" id="ServiceName" name="ServiceName">
+                <input type="hidden" id="RequestDetails" name="RequestDetails">
+                <p id="modalMessage" class="text-muted"></p>
+                <div id="updateActions" style="display: none;">
+                    <button type="button" class="btn btn-success" onclick="submitUpdate('Accepted',this)"><i class="fas fa-check-circle me-2"></i> Accept</button>
+                    <button type="button" class="btn btn-danger" onclick="showRejectionReason()"><i class="fas fa-times-circle me-2"></i> Reject</button>
+                    <button type="button" class="btn btn-warning" onclick="showAskMoreQuestionsPopup()"><i class="fas fa-book-open me-2"></i> Ask More Details</button>
+                </div>
+                <div id="rejectionReasonDiv" style="display: none; margin-top: 15px;">
+                    <label for="rejectionReason" class="form-label fw-bold">Reason for Rejection</label>
+                    <textarea id="rejectionReason" class="form-control" rows="3"></textarea>
+                    <button type="button" class="btn btn-danger mt-3" onclick="submitUpdate('Rejected',this)"><i class="fas fa-paper-plane me-2"></i> Submit</button>
+                </div>
+                <div id="AskMoreQuestions" style="display: none; margin-top: 15px;">
+                    <label for="AskMoreQuestions" class="form-label fw-bold">What do you want to ask?</label>
+                    <textarea id="Questions" class="form-control" rows="3"></textarea>
+                    <button type="button" class="btn btn-danger mt-3" onclick="submitUpdate('RequestMore',this)"><i class="fas fa-paper-plane me-2"></i> Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal for Request Details -->
+<div class="modal fade" id="requestDetailsModal" tabindex="-1" aria-labelledby="requestDetailsLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="requestDetailsLabel"><i class="fas fa-info-circle me-2"></i> Request Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="requestDetailsText" class="text-muted"></p>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        function showUpdateModal(requestId, createdDate,customerId,ServiceId,ServiceName,RequestDetails) {
+            var createdDateTime = new Date(createdDate);
+            var currentTime = new Date();
+            var hoursDifference = Math.abs(currentTime - createdDateTime) / 36e5;
+
+            $('#requestId').val(requestId);
+            $('#customerId').val(customerId);
+            $('#ServiceId').val(ServiceId);
+            $('#ServiceName').val(ServiceName);
+            $('#RequestDetails').val(RequestDetails);
+            if (hoursDifference > 24) {
+                $('#modalMessage').html('<p class="text-danger">This request has expired.</p>');
+                $('#updateActions').hide();
+                $('#rejectionReasonDiv').hide();
+                $('#AskMoreQuestions').hide();
+            } else {
+                $('#modalMessage').html('<p class="text-primary">Do you want to accept or reject this request?</p>');
+                $('#updateActions').show();
+                $('#rejectionReasonDiv').hide();
+                $('#AskMoreQuestions').hide();
+            }
+
+            $('#updateModal').modal('show');
+        }
+
+        function showRejectionReason() {
+            $('#rejectionReasonDiv').show();
+            $('#updateActions').hide();
+        }
+        function showAskMoreQuestionsPopup() {
+            $('#AskMoreQuestions').show();
+            $('#updateActions').hide();
+        }
+        function submitUpdate(status,element) {
+            var requestId = $('#requestId').val();
+            var customerId = $('#customerId').val();
+            var ServiceId = $('#ServiceId').val();
+            var ServiceName = $('#ServiceName').val();
+            var RequestDetails = $('#RequestDetails').val();
+            var rejectionReason = status === 'Rejected' ? $('#rejectionReason').val() : null;
+            var MerchantQuestions = status === 'RequestMore' ? $('#Questions').val() : null;
+            if (status === 'Rejected' && !rejectionReason.trim()) {
+                alert("Please provide a reason for rejection.");
+                return;
+            }
+            element.disabled = true;
+            element.innerHTML = 'Submitting... <i class="fas fa-spinner fa-spin"></i>';
+            $.ajax({
+                url: '@Url.Action("UpdateEligibilityRequest", "Eligibility")',
+                type: 'POST',
+                data: {
+                    requestId: requestId,
+                    status: status,
+                    reasonForRejection: rejectionReason,
+                    customerId:customerId,
+                    ServiceId:ServiceId,
+                    ServiceName:ServiceName,
+                    Questions:RequestDetails+". Merchant has a query : "+MerchantQuestions
+                },
+                success: function (response) {
+                    $('#updateModal').modal('hide');
+                    //if (response.success) {
+                        alert("Request updated successfully.");
+                        location.reload();
+                   // } else {
+                    //    alert(response.message);
+                   // }
+                },
+                error: function () {
+                    alert("An error occurred while processing the request.");
+                }
+            });
+        }
+        function showRequestDetails(details) {
+            $('#requestDetailsText').text(details);
+            $('#requestDetailsModal').modal('show');
+        }
+    </script>
+}

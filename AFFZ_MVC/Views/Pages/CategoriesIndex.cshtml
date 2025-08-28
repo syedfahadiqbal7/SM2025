@@ -1,0 +1,228 @@
+﻿@inject AFFZ_Customer.Utils.IAppSettingsService AppSettingsService
+@{
+    var paginatedSubCategories = ViewBag.SubCategories as List<AFFZ_Customer.Controllers.AllSubCategories>;
+    var Filtercatories = ViewBag.Categories as List<AFFZ_Customer.Controllers.ServiceCat>;
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutFront.cshtml";
+}
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+</style>
+<div class="main-wrapper bg-white">
+    <div class="breadcrumb-bar py-4 bg-light border-bottom">
+        <div class="container">
+            <h2 class="fw-bold">Find a Professional</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb bg-transparent px-0">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Find a Professional</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="content py-5">
+        <div class="container">
+            <div class="row">
+                <!-- Filters Sidebar -->
+                <div class="col-lg-3 mb-4">
+                    @if (Filtercatories == null)
+                    {
+                        <div class="text-muted">Loading filters...</div>
+                    }
+                    else
+                    {
+                        <form onsubmit="event.preventDefault(); updateUrlAndSubmit();" class="p-3 border rounded shadow-sm bg-white">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">Filters</h5>
+                                <a href="#" class="text-decoration-none text-danger">Reset</a>
+                            </div>
+
+                            <!-- Categories -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Categories</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="checkAllCategories" onclick="toggleCheckboxes('checkAllCategories', 'categoryCheckbox')">
+                                    <label class="form-check-label" for="checkAllCategories">All Categories</label>
+                                </div>
+                                @foreach (var category in Filtercatories)
+                                {
+                                    <div class="form-check">
+                                        <input class="form-check-input categoryCheckbox" type="checkbox" name="ServiceCatoryName" value="@category.CategoryName"
+                                               @(ViewContext.HttpContext.Request.Query["serviceCategoryName"].ToString().Split(',').Contains(category.CategoryName) ? "checked" : "")>
+                                        <label class="form-check-label">@category.CategoryName</label>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Location -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Location</label>
+                                <div class="input-group">
+                                    <input type="text" name="CityName" id="CityName" value="@ViewContext.HttpContext.Request.Query["CityName"]" class="form-control" placeholder="Enter city">
+                                    <span class="input-group-text"><i class="feather-map-pin"></i></span>
+                                </div>
+                                @* <div class="input-group">
+
+                                    @{
+                                        string uCity = !string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["CityName"].ToString()) ? ViewContext.HttpContext.Request.Query["CityName"] : "Sharjah";
+                                    }
+
+                                    <input type="text" name="CityName" id="CityName" value="@uCity" class="form-control" placeholder="Select Location">
+                                    <i class="feather-map-pin"></i>
+                                </div> *@
+                            </div>
+
+                            <!-- Price Range -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Price Range</label>
+                                <div class="input-group mb-2">
+                                    <input type="number" class="form-control" id="rangeStart" name="rangeStart" value="@ViewContext.HttpContext.Request.Query["rangeStart"]">
+                                    <span class="input-group-text">-</span>
+                                    <input type="number" class="form-control" id="rangeEnd" name="rangeEnd" value="@ViewContext.HttpContext.Request.Query["rangeEnd"]">
+                                </div>
+                                <small class="text-muted">AED @ViewContext.HttpContext.Request.Query["rangeStart"] - @ViewContext.HttpContext.Request.Query["rangeEnd"]</small>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">Search</button>
+                        </form>
+                    }
+                </div>
+
+                <!-- Services Grid -->
+                <div class="col-lg-9">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="mb-0">Found @(paginatedSubCategories?.Count ?? 0) Services</h6>
+                    </div>
+
+                    @if (paginatedSubCategories == null)
+                    {
+                        <div class="text-muted">Loading services...</div>
+                    }
+                    else
+                    {
+                        <div class="row g-4">
+                            @foreach (var _subcat in paginatedSubCategories)
+                            {
+                                string ImgUrl = $"{ViewBag.AdminUrl}/{_subcat.ServiceImage}";
+                                string MerchantListUrl = ViewBag.CustomerUrl + "/MerchantList/SelectedMerchantList?catName=" + _subcat.ServiceName;
+                                <div class="col-md-6 col-xl-4">
+                                    <div class="card h-100 shadow-sm border-0">
+                                        <a href="@MerchantListUrl">
+                                            <img src="@ImgUrl" class="card-img-top object-fit-cover" alt="@_subcat.ServiceName" style="height: 200px;">
+                                        </a>
+                                        <div class="card-body">
+                                            <h5 class="card-title text-truncate">@_subcat.ServiceName</h5>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="text-primary fw-semibold">AED @_subcat.ServicePrice</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+@* <script src="assets/js/jquery-3.7.0.min.js"></script>
+<script src="~/wwwrootFront/assets/js/bootstrap.bundle.min.js"></script>
+<script src="~/wwwrootFront/assets/js/feather.min.js"></script>
+<script src="~/wwwrootFront/assets/js/owl.carousel.min.js"></script>
+<script src="~/wwwrootFront/assets/plugins/select2/js/select2.min.js"></script>
+<script src="~/wwwrootFront/assets/plugins/aos/aos.js"></script>
+<script src="~/wwwrootFront/assets/js/backToTop.js"></script>
+<script src="~/wwwrootFront/assets/js/script.js"></script> *@
+@section Scripts {
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+    <script>
+    function toggleCheckboxes(masterId, className) {
+        const master = document.getElementById(masterId);
+        document.querySelectorAll('.' + className).forEach(cb => cb.checked = master.checked);
+    }
+
+        function updateUrlAndSubmit() {
+                // Get all checked checkboxes
+                var checkedCategories = [];
+                var checkboxes = document.querySelectorAll('.categoryCheckbox:checked');
+                checkboxes.forEach(function (checkbox) {
+                    checkedCategories.push(checkbox.value);
+                });
+                console.log("Checked Categories: " + checkedCategories.join(','));
+
+                // Get the city name from the form
+                var cityName = document.getElementById("CityName").value;
+                console.log("City Name: " + cityName);
+
+                // Get the price range values
+                var rangeStart = parseInt(document.getElementById("rangeStart").value);
+                var rangeEnd = parseInt(document.getElementById("rangeEnd").value);
+                console.log("Range Start: " + rangeStart);
+                console.log("Range End: " + rangeEnd);
+
+                // Validate the price range
+                if (rangeStart > rangeEnd) {
+                    alert("Range start should be less than or equal to range end");
+                    return;
+                }
+
+                // Create the new URL with the comma-separated ServiceCategoryName
+                    var newUrl = '/Categories/CategoriesIndex?CityName=' + encodeURIComponent(cityName) +
+                    '&serviceCategoryName=' + encodeURIComponent(checkedCategories.join(',')) +
+                    '&rangeStart=' + encodeURIComponent(rangeStart) +
+                    '&rangeEnd=' + encodeURIComponent(rangeEnd);
+
+                console.log("New URL: " + newUrl);
+
+                // Redirect to the new URL
+                window.location.href = newUrl;
+            }
+
+
+    const apiBaseUrl = `${"@AppSettingsService.GetApiHttpsPort()"}`;
+    console.log(apiBaseUrl);
+        $(document).ready(function () {
+        $("#CityName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: `${apiBaseUrl}/api/MainPage/GetCities/${request.term}`,
+                    type: "GET",
+                    success: function (data) {
+                       console.log('Raw response:', data);
+
+                       // Parse the string into a real JavaScript array/object
+                       let parsedData;
+
+                       if (typeof data === "string") {
+                           try {
+                               parsedData = JSON.parse(data);
+                           } catch (e) {
+                               console.error("Failed to parse JSON:", e);
+                               return;
+                           }
+                       } else {
+                           parsedData = data;
+                       }
+
+                       // Now it's safe to map
+                       const cityNames = parsedData.map(function (city) {
+                           return city.Name;
+                       });
+
+                       console.log('City Names:', cityNames);
+                       response(cityNames);
+                    },
+                    error: function (error) {
+                        console.log('message Error' + JSON.stringify(error));
+                    }
+                });
+            }
+        });
+    });
+
+</script>
+}

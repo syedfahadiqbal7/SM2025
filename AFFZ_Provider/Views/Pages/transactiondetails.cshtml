@@ -1,0 +1,135 @@
+﻿@{
+    var paginatedSubCategories = ViewBag.RequestForDisCountToMerchant as List<AFFZ_Provider.Controllers.RequestForDiscountViewModel>;
+    ViewData["Title"] = "Index";
+}
+<div class="page-wrapper">
+    <div class="content container-fluid">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="provider-subtitle">
+                        <h6>Request List</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+        <!-- Coupons -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="provide-table manage-table">
+                    <!-- Display messages -->
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+                    @if (TempData["FailMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["FailMessage"]
+                        </div>
+                    }
+                    <div class="table-responsive">
+                        <table class="table custom-table datatable mb-0" id="data-table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Payer Name</th>
+                                    <th>Service Name</th>
+                                    <th>Service Price Quoted</th>
+                                    <th>Is Discounted</th>
+                                    <th>Date Of Request</th>
+                                    <th>Final Price</th>
+                                    <th>Is Amount Paid</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (paginatedSubCategories == null)
+                                {
+                                    <p><em>Loading Data...</em></p>
+                                }
+                                else
+                                {
+
+                                    @foreach (var _subcat in paginatedSubCategories)
+                                    {
+                                        <tr>
+                                            <td>@_subcat.ServiceName</td>
+                                            <td>@_subcat.ServiceName</td>
+                                            <td>@_subcat.ServicePrice</td>
+                                            <td>@_subcat.RequestDatetime</td>
+                                            @* <td><span class="badge-success">Action</span></td> *@
+                                            <td>
+                                                <div class="table-actions">
+                                                    <a class="badge-success" href="javascript:void();" data-bs-toggle="modal" data-bs-target="#ApplyDiscount_@_subcat.RFDTM">
+                                                        Apply Discount Price
+                                                    </a>
+                                                    @*<a class="action-set confirm-text" href="#">
+                                            <i class="feather-trash-2"></i>
+                                            </a>*@
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <!-- Edit Coupon  -->
+                                        <div class="modal modal-lg fade custom-modal" id="ApplyDiscount_@_subcat.RFDTM">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content doctor-profile">
+                                                    <div class="modal-header border-bottom-0 justify-content-between">
+                                                        <h5 class="modal-title">Update Price On User Request</h5>
+                                                        <button type="button" class="close-btn" data-bs-dismiss="modal" aria-label="Close"><i class="feather-x"></i></button>
+                                                    </div>
+                                                    <div class="modal-body pt-0">
+                                                        <form action="ApplyDiscountedPrice" method="post">
+                                                            <input type="hidden" name="RFDTM" value="@_subcat.RFDTM" />
+                                                            <input type="hidden" name="MID" value="@_subcat.MID" />
+                                                            <input type="hidden" name="UID" value="@_subcat.UID" />
+                                                            <input type="hidden" name="SID" value="@_subcat.SID" />
+                                                            <div class="row align-items-center">
+                                                                <div class="col-md-12">
+                                                                    <div class="form-group">
+                                                                        <label class="col-form-label">Orignal Price : <strong>@_subcat.ServicePrice</strong></label>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label class="col-form-label">Discounted Price</label>
+                                                                        <input type="text" class="form-control" name="DiscountPrice" value="@_subcat.ServicePrice" placeholder="Amount">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row float-end">
+                                                                <div class="col-md-5 coupon-submit">
+                                                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- /Edit Coupon  -->
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div id="tablelength"></div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="table-ingopage">
+                            <div id="tableinfo"></div>
+                            <div id="tablepagination"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Coupons -->
+
+    </div>
+
+</div>

@@ -1,0 +1,271 @@
+﻿@{
+	var paginatedSubCategories = ViewBag.ResponseForDisCountFromMerchant as List<AFFZ_Customer.Controllers.RequestForDisCountToUserViewModel>;
+	ViewData["Title"] = "Index";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+	<title>Truelysell | Template</title>
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="assets/img/favicon.png">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+	<!-- Fontawesome CSS -->
+	<link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+	<link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+
+	<!-- Fearther CSS -->
+	<link rel="stylesheet" href="assets/css/feather.css">
+
+	<!-- select CSS -->
+	<link rel="stylesheet" href="assets/plugins/select2/css/select2.min.css">
+
+	<!-- Datetimepicker CSS -->
+	<link rel="stylesheet" href="assets/css/bootstrap-datetimepicker.min.css">
+
+	<!-- Main CSS -->
+	<link rel="stylesheet" href="assets/css/style.css">
+
+</head>
+
+<body>
+
+
+	<div class="main-wrapper">
+
+
+		<div class="content">
+			<div class="container">
+				<div class="row">
+
+					<div class="col-lg-3 theiaStickySidebar">
+						<div class="settings-widget">
+							<div class="settings-header">
+								<div class="settings-img">
+									<img src="assets/img/profiles/avatar-02.jpg" alt="user">
+								</div>
+								<h6>John Smith</h6>
+								<p>Member Since Sep 2021</p>
+							</div>
+							<div class="settings-menu">
+								<ul>
+									<li>
+										<a href="customer-dashboard.html">
+											<i class="feather-grid"></i> <span>Dashboard</span>
+										</a>
+									</li>
+									<li>
+										<a href="customer-booking.html">
+											<i class="feather-smartphone"></i> <span>Bookings</span>
+										</a>
+									</li>
+									<li>
+										<a href="customer-favourite.html">
+											<i class="feather-heart"></i> <span>Favorites</span>
+										</a>
+									</li>
+									<li>
+										<a href="MerchantResponseToUser/Index" class="active">
+											<i class="feather-credit-card"></i>  <span>Merchant Response</span>
+										</a>
+									</li>
+									<li>
+										<a href="customer-reviews.html">
+											<i class="feather-star"></i> <span>Reviews</span>
+										</a>
+									</li>
+									<li>
+										<a href="customer-chat.html">
+											<i class="feather-message-circle"></i> <span>Chat</span>
+										</a>
+									</li>
+									<li>
+										<a href="customer-profile.html">
+											<i class="feather-settings"></i> <span>Settings</span>
+										</a>
+									</li>
+									<li>
+										<a href="index.html">
+											<i class="feather-log-out"></i> <span>Logout</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-lg-9">
+						<!-- Wallet Transactions -->
+						<h6 class="user-title">Merchant Responses</h6>
+
+						<div class="table-responsive">
+							<table class="table mb-0 custom-table">
+								<thead class="thead-light">
+									<tr>
+										<th>#</th>
+										<th>Service Name</th>
+										<th>Amount Before Discount</th>
+										<th>Amount After Discount</th>
+										<th>Response Date</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									@if (paginatedSubCategories == null)
+									{
+										<p><em>Loading Sub Categories...</em></p>
+									}
+									else
+									{
+
+										@foreach (var data in paginatedSubCategories)
+										{
+											<tr>
+												<td>@data.RFDFU</td>
+												<td>@data.ServiceName</td>
+												<td class="text-light-success">@data.ServicePrice</td>
+												<td class="text-body">@data.FINALPRICE</td>
+												<td class="text-body">@data.ResponseDateTime</td>
+												<td>
+													@if (data.IsMerchantSelected == 1)
+													{
+														if(data.IsPaymentDone==1)
+														{
+														<a asp-action="UploadDocuments" class="btn btn-sm badge-success" asp-route-RFDFU="@data.RFDFU" asp-route-UID="@data.UID" asp-route-MerchantID="@data.MerchantID">
+															Upload Documents
+														</a>
+														<a asp-action="DeSelectFinalMerchant" class="btn btn-sm badge-success" asp-route-RFDFU="@data.RFDFU" asp-route-UID="@data.UID" asp-route-MerchantID="@data.MerchantID">
+															Cancel Merchant
+															</a>
+														}
+														else
+														{
+															<a asp-action="Payment" class="btn btn-sm badge-success" asp-route-RFDFU="@data.RFDFU" asp-route-UID="@data.UID" asp-route-MerchantID="@data.MerchantID">
+																Payment Due
+															</a>
+														}
+													}
+													else
+													{
+														<a asp-action="SelectFinalMerchant" class="btn btn-sm badge-success" asp-route-RFDFU="@data.RFDFU" asp-route-UID="@data.UID" asp-route-MerchantID="@data.MerchantID">
+															Select Merchant
+														</a>
+													}
+												</td>
+											</tr>
+										}
+									}
+								</tbody>
+							</table>
+						</div>
+						<!-- /Wallet Transactions -->
+
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+		<!-- Add Wallet -->
+		<div class="modal fade custom-modal" id="add-wallet" data-bs-backdrop="static" data-bs-keyboard="false">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header border-bottom-0 justify-content-between">
+						<h5 class="modal-title">Add Wallet</h5>
+						<button type="button" class="close-btn" data-bs-dismiss="modal" aria-label="Close"><i class="feather-x"></i></button>
+					</div>
+					<div class="modal-body pt-0">
+						<form action="#">
+							<div class="wallet-add">
+								<div class="form-group">
+									<label class="col-form-label pt-0">Amount</label>
+									<input type="text" class="form-control" placeholder="Enter Amount">
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<div class="bank-selection">
+											<input type="radio" value="attach_link" id="rolelink" name="attachment" checked="">
+											<label for="rolelink">
+												<img src="assets/img/paypal.png" alt="Paypal">
+												<span class="role-check"><i class="fa-solid fa-circle-check"></i></span>
+											</label>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="bank-selection">
+											<input type="radio" value="attach_link" id="rolelink1" name="attachment">
+											<label for="rolelink1">
+												<img src="assets/img/stripe.png" alt="Stripe">
+												<span class="role-check"><i class="fa-solid fa-circle-check"></i></span>
+											</label>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="bank-selection">
+											<input type="radio" value="attach_link" id="rolelink2" name="attachment">
+											<label for="rolelink2">
+												<img src="assets/img/bank.png" alt="image">
+												<span class="role-check"><i class="fa-solid fa-circle-check"></i></span>
+											</label>
+										</div>
+									</div>
+								</div>
+								<div class="modal-submit text-end">
+									<a href="#" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</a>
+									<button type="submit" class="btn btn-primary">Submit</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /Add Wallet -->
+		<!-- Cursor -->
+		<div class="mouse-cursor cursor-outer"></div>
+		<div class="mouse-cursor cursor-inner"></div>
+		<!-- /Cursor -->
+
+	</div>
+
+	<!-- jQuery -->
+	<script src="assets/js/jquery-3.7.0.min.js"></script>
+
+	<!-- Bootstrap Core JS -->
+	<script src="assets/js/bootstrap.bundle.min.js"></script>
+
+	<!-- Fearther JS -->
+	<script src="assets/js/feather.min.js"></script>
+
+	<!-- select JS -->
+	<script src="assets/plugins/select2/js/select2.min.js"></script>
+
+	<!-- Datetimepicker JS -->
+	<script src="assets/js/moment.min.js"></script>
+	<script src="assets/js/bootstrap-datetimepicker.min.js"></script>
+
+	<!-- Sticky Sidebar JS -->
+	<script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
+	<script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
+
+	<!-- Custom JS -->
+	<script src="assets/js/script.js"></script>
+	@section Scripts {
+		<script>
+			$(document).ready(function () {
+				var responseMessage = "@ViewBag.SaveResponse";
+				if (responseMessage != "") {
+					// Show popup with the response message
+					alert(responseMessage);
+				}
+			});
+		</script>
+	}
+</body>
+</html>

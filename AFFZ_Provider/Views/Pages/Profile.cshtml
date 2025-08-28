@@ -1,0 +1,404 @@
+﻿@model AFFZ_Provider.Models.ProviderUser
+@using AFFZ_Provider.Models
+
+@{
+    string formattedDOB = Model?.DOB.HasValue == true ? Model.DOB.Value.ToString("dd/MM/yyyy") : string.Empty;
+}
+<style>
+    .hover-effect {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .hover-effect:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+    .btn-upload {
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        .btn-upload:hover {
+            background-color: #0056b3 !important;
+            color: #fff !important;
+        }
+
+    .linked-acc button img {
+        transition: transform 0.3s ease;
+    }
+
+        .linked-acc button img:hover {
+            transform: scale(1.1);
+        }
+</style>
+
+
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        @if (TempData["FailMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["FailMessage"]
+            </div>
+        }
+        <div class="row">
+            <div class="container mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" id="profileTabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Profile</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="false">Address</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="documents-tab" data-bs-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">Documents</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="merchant-tab" data-bs-toggle="tab" href="#merchant" role="tab" aria-controls="merchant" aria-selected="false">Merchant Linking</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="profileTabsContent">
+                            <!-- Profile Tab -->
+                            <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                <form action="@Url.Action("UpdateProfileInformation", "Profile")" method="post" enctype="multipart/form-data">
+
+                                    @* Display validation errors *@
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <input type="hidden" name="providerId" value="@ViewBag.providerId" />
+                                    <input type="hidden" name="ProfilePicture" value="@Model?.ProfilePicture" />
+                                    <input type="hidden" name="Password" value="@Model?.Password" />
+                                    <h5>Profile Picture</h5>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="me-3">
+                                            <button type="button" class="rounded-circle" data-bs-toggle="modal" data-bs-target="#viewImageModal" data-image="@Model.ProfilePicture">
+                                                <img src="@Url.Action("GetImage", "Login")" class="rounded-circle" style="width: 100px; height: 100px;" alt="User Image">
+                                            </button>
+                                        </div>
+                                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#imageUploadModal" data-context="ProfilePicture">Change Picture</button>
+                                    </div>
+                                    <h5>General Information</h5>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="FirstName" class="form-label">First Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="FirstName" name="FirstName" value="@Model?.FirstName" placeholder="Enter First Name" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="LastName" class="form-label">Last Name</label>
+                                            <input type="text" class="form-control" id="LastName" name="LastName" value="@Model?.LastName" placeholder="Enter Last Name">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="Email" class="form-label">Email <span class="text-danger">*</span></label>
+                                            <input type="email" class="form-control" id="Email" name="Email" value="@Model?.Email" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="PhoneNumber" class="form-label">Mobile Number <span class="text-danger">*</span></label>
+                                            <input type="number" class="numeric-input form-control" id="PhoneNumber" name="PhoneNumber" value="@Model?.PhoneNumber" placeholder="Enter Mobile Number" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="CreatedDate" class="form-label">Date of Registration</label>
+                                            <input type="text" class="form-control datetimepicker" id="CreatedDate" name="CreatedDate" value="@Model?.CreatedDate.ToString("dd/MM/yyyy")" placeholder="DD/MM/YYYY" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="ProviderName" class="form-label">Provider Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="ProviderName" name="ProviderName" value="@Model?.ProviderName" placeholder="Enter Business Name" readonly>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </form>
+                            </div>
+
+                            <!-- Address Tab -->
+                            <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
+                                <form action="@Url.Action("UpdateAddressInformation", "Profile")" method="post">
+                                    <input type="hidden" name="providerId" value="@ViewBag.providerId" />
+                                    <h5>Address Information</h5>
+                                    <div class="mb-3">
+                                        <label for="Address" class="form-label">Address</label>
+                                        <input type="text" class="form-control" id="Address" name="Address" value="@Model.Address" placeholder="Enter Address">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="PostalCode" class="form-label">Postal Code</label>
+                                        <input type="number" class="form-control" id="PostalCode" name="PostalCode" value="@Model.PostalCode" placeholder="Enter Postal Code" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save Address</button>
+                                </form>
+                            </div>
+
+                            <!-- Documents Tab -->
+                            <div class="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">
+                                <h5 class="text-primary fw-bold mb-4">Document Verification</h5>
+                                <p class="text-muted">Upload and verify your documents below. Click on any document to view or update.</p>
+
+                                <div class="row g-4">
+                                    @foreach (var document in (List<MerchantVerificationDocumentViewModel>)ViewBag.Documents)
+                                    {
+                                        string No = "Not Yet Uploaded";
+                                        <div class="col-md-6">
+                                            <div class="shadow-sm p-3 rounded bg-white position-relative hover-effect">
+                                                <h6 class="fw-semibold text-dark">
+                                                    @document.MerchantVerificationDocumentName
+
+                                                    @if (string.IsNullOrEmpty(document.FilePath))
+                                                    {
+                                                        <span class="badge  bg-@(document.Status == "Verified" ? "success" : "danger") text-light ms-2">
+                                                            @No
+                                                        </span>
+                                                    }
+                                                    else if (document.Status == "Verified")
+                                                    {
+                                                        <span class="badge bg-success text-light ms-2">
+                                                            @document.Status
+                                                        </span>
+                                                    }
+                                                    else if (document.Status == "Under Review")
+                                                    {
+                                                        <span class="badge bg-warning text-light ms-2">
+                                                            @document.Status
+                                                        </span>
+                                                    }
+                                                    else if (document.Status == "Rejected")
+                                                    {
+                                                        <span class="badge bg-danger text-light ms-2">
+                                                            @document.Status
+                                                        </span>
+                                                    }
+                                                </h6>
+                                                <div class="d-flex align-items-center justify-content-between mt-3">
+                                                    <div class="linked-acc d-flex align-items-center">
+                                                        @if (!string.IsNullOrEmpty(document.FilePath))
+                                                        {
+                                                            string p = document.FilePath.Split("wwwroot\\")[1];
+                                                            <button class="rounded-circle border-0 shadow-sm me-3" data-bs-toggle="modal" data-bs-target="#viewImageModal" data-image="@document.FilePath">
+                                                                <img src="@p" class="rounded-circle" style="width: 75px; height: 75px;" alt="@document.MerchantVerificationDocumentName">
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                    <button class="btn btn-outline-primary btn-sm btn-upload shadow-sm" data-bs-toggle="modal" data-bs-target="#imageMerchantUploadModal" data-document-id="@document.MDID" data-context="@document.MerchantVerificationDocumentName">
+                                                        <i class="feather-upload me-2"></i>Upload
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <!-- Merchant Linking Tab -->
+                            <div class="tab-pane fade" id="merchant" role="tabpanel" aria-labelledby="merchant-tab">
+                                <form action="@Url.Action("LinkMerchant", "Profile")" method="post">
+                                    <input type="hidden" name="providerId" value="@ViewBag.providerId" />
+                                    <input type="hidden" name="MerchantId" value="@ViewBag.MerchantDetail.MerchantId" />
+                                    <input type="hidden" name="RegistrationMethod" value="Direct" />
+                                    <!-- Display validation errors -->
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <h5>Merchant Linking</h5>
+                                    <div class="mb-3">
+                                        <label class="col-form-label">Company Name</label>
+                                        <input type="text" class="form-control" name="CompanyName" value="@(!string.IsNullOrEmpty(ViewBag.MerchantDetail.CompanyName) ? ViewBag.MerchantDetail.CompanyName : Model?.ProviderName)" placeholder="Enter Company Name" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="col-form-label">Contact Info</label>
+                                        <input type="text" class="form-control numeric-input" name="ContactInfo" value="@(!string.IsNullOrEmpty(ViewBag.MerchantDetail.ContactInfo) ? ViewBag.MerchantDetail.ContactInfo : Model?.PhoneNumber)" placeholder="Enter Contact Info" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                    </div>
+
+                                    @*<div class="mb-3">
+                                        <label class="col-form-label">Registration Method</label>
+                                        <input type="text" class="form-control" name="RegistrationMethod" value="@ViewBag.MerchantDetail.RegistrationMethod" placeholder="Enter Registration Method">
+                                    </div>
+                                     <div class="mb-3">
+                                        <label class="col-form-label">Company Registration Number</label>
+                                        <input type="number" class="numeric-input form-control" name="CompanyRegistrationNumber" value="@ViewBag.MerchantDetail.CompanyRegistrationNumber" placeholder="Enter Registration Number" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
+                                    </div> *@
+
+                                    <div class="mb-3">
+                                        <label class="col-form-label">Trading License</label>
+                                        <input type="text" class="form-control" name="TradingLicense" value="@ViewBag.MerchantDetail.TradingLicense" placeholder="Enter Trading License" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="col-form-label">Emirates Id Number</label>
+                                        <input type="number" class="numeric-input form-control" name="EmiratesId" value="@ViewBag.MerchantDetail.EmiratesId" placeholder="Enter Emirates Id Number" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="col-form-label">Merchant Location</label>
+                                        <select class="form-select" name="MerchantLocation" id="MerchantLocation" asp-items="@ViewBag.Locations">
+                                            <option value="">--Select--</option>
+                                        </select>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Update Merchant Link</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+<!-- Image Upload Modal -->
+<div class="modal fade" id="imageUploadModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="imageUploadForm" action="@Url.Action("UploadDocuments", "Profile")" method="post" enctype="multipart/form-data">
+                    <input type="hidden" id="uploadContext" name="documentType" />
+
+                    <div class="drag-drop-area">
+                        <input type="file" id="imageInput" name="file" accept=".jpg,.png" onchange="validateImage()" required />
+                        <p>Drag & drop image or <span>Browse</span></p>
+                        <p class="small">Supported formats: JPG, PNG</p>
+                    </div>
+                    <div id="previewArea" class="mt-3"></div>
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@* imageMerchantUploadModal *@
+<div class="modal fade" id="imageMerchantUploadModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="imageUploadForm" action="@Url.Action("UploadMerchantDocuments", "Profile")" method="post" enctype="multipart/form-data">
+                    <input type="hidden" id="uploadMerchantContext" name="documentMerchantType" />
+                    <input type="hidden" id="documentId" name="documentId" value="" />
+                    <div class="drag-drop-area">
+                        <input type="file" id="merchantImageInput" name="file" accept=".jpg,.png" onchange="validateMerchantImages()" required />
+                        <p>Drag & drop image or <span>Browse</span></p>
+                        <p class="small">Supported formats: JPG, PNG</p>
+                    </div>
+                    <div id="previewArea" class="mt-3"></div>
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="viewImageModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">View Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="Selected Image" style="max-width: 100%; max-height: 400px;">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const inputBox = document.querySelector('.numeric-input');
+
+    inputBox.addEventListener('input', (event) => {
+        // Remove any non-numeric characters
+        event.target.value = event.target.value.replace(/[^0-9]/g, '');
+    });
+    function validateImage() {
+        const fileInput = document.getElementById('imageInput');
+        const file = fileInput.files[0];
+        const allowedExtensions = ['image/jpeg', 'image/png'];
+
+        if (file && !allowedExtensions.includes(file.type)) {
+            alert('Invalid file type. Only JPG and PNG are supported.');
+            fileInput.value = ''; // Clear the input
+            return false;
+        }
+    }
+    function validateMerchantImages() {
+        const fileInput = document.getElementById('merchantImageInput');
+        const file = fileInput.files[0];
+        const allowedExtensions = ['image/jpeg', 'image/png'];
+
+        if (file && !allowedExtensions.includes(file.type)) {
+            alert('Invalid file type. Only JPG and PNG are supported.');
+            fileInput.value = ''; // Clear the input
+            return false;
+        }
+    }
+        document.addEventListener('DOMContentLoaded', () => {
+        const imageUploadModal = document.getElementById('imageUploadModal');
+        const imageMerchantUploadModal = document.getElementById('imageMerchantUploadModal');
+        const documentIdInput = document.getElementById('documentId');
+        console.log(documentIdInput);
+        const uploadContextInput = document.getElementById('uploadContext');
+        const uploadMerchantContextInput = document.getElementById('uploadMerchantContext');
+
+        imageUploadModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; // Button that triggered the modal
+            const context = button.getAttribute('data-context'); // Extract info from data-context
+            uploadContextInput.value = context; // Set it in the hidden input
+        });
+        imageMerchantUploadModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; // Button that triggered the modal
+            const context = button.getAttribute('data-context'); // Extract info from data-context
+            uploadMerchantContextInput.value = context; // Set it in the hidden input
+            const documentId = button.getAttribute('data-document-id'); // Extract info from data-* attributes
+            console.log("documentId"+documentId);
+            documentIdInput.value = documentId || ''; // Populate hidden field
+        });
+        //View Image Modal
+        const viewImageModal = document.getElementById('viewImageModal');
+        const modalImage = document.getElementById('modalImage');
+
+        viewImageModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; // Button that triggered the modal
+            const fullPath = button.getAttribute('data-image'); // Get full image path
+            console.log("Full Path:", fullPath);
+
+            // Extract relative path by splitting on 'wwwroot' and taking the part after it
+            const relativePath = fullPath.split('wwwroot\\')[1] || fullPath.split('wwwroot/')[1] || fullPath;
+
+            console.log("Relative Path:", relativePath);
+
+            // Set the image source to the relative path or a default image
+            modalImage.src = relativePath ? `/${relativePath.replace(/\\/g, '/')}` : '/path/to/default/image.jpg';
+        });
+
+        viewImageModal.addEventListener('hidden.bs.modal', function () {
+            modalImage.src = ''; // Clear the image when modal is closed
+        });
+    });
+        document.addEventListener('DOMContentLoaded', () => {
+        const activeTabKey = 'activeTab';
+
+        // Remember the active tab
+        document.querySelectorAll('.nav-link').forEach(tab => {
+            tab.addEventListener('click', () => {
+                localStorage.setItem(activeTabKey, tab.id);
+            });
+        });
+
+        // Restore the active tab
+        const activeTabId = localStorage.getItem(activeTabKey);
+        if (activeTabId) {
+            const activeTab = document.getElementById(activeTabId);
+            if (activeTab) {
+                new bootstrap.Tab(activeTab).show();
+            }
+        }
+    });
+</script>
