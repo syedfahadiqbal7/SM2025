@@ -1,0 +1,28 @@
+# Global code owners
+* @syedfahadiqbal7
+
+# API specific
+AFFZ_API/ @syedfahadiqbal7
+
+# Admin specific
+AFFZ_Admin/ @syedfahadiqbal7
+
+# Customer specific
+AFFZ_MVC/ @syedfahadiqbal7
+
+# Provider specific
+AFFZ_Provider/ @syedfahadiqbal7
+
+# CI/CD and infrastructure
+.github/ @syedfahadiqbal7
+scripts/ @syedfahadiqbal7
+environments/ @syedfahadiqbal7
+docs/ @syedfahadiqbal7
+
+# Solution and project files
+*.sln @syedfahadiqbal7
+*.csproj @syedfahadiqbal7
+
+# Configuration files
+appsettings*.json @syedfahadiqbal7
+*.config @syedfahadiqbal7

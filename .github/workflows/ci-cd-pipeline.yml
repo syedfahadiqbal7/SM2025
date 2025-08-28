@@ -1,0 +1,163 @@
+name: CI/CD Pipeline - SmartCenter
+
+on:
+  push:
+    branches: [ main, develop, sit, uat ]
+  pull_request:
+    branches: [ main, develop, sit, uat ]
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  SOLUTION_FILE: 'AFFZ_11012025.sln'
+
+jobs:
+  # Build and Test Job
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.SOLUTION_FILE }}
+      
+    - name: Build solution
+      run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore
+      
+    - name: Run tests
+      run: dotnet test ${{ env.SOLUTION_FILE }} --configuration Release --no-build --verbosity normal
+      
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: |
+          **/TestResults/
+          **/coverage/
+          
+  # SIT Environment Deployment
+  deploy-sit:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/sit'
+    environment: sit
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Build and publish AFFZ_API
+      run: |
+        dotnet publish AFFZ_API/AFFZ_API.csproj -c Release -o ./sit/AFFZ_API
+        
+    - name: Build and publish AFFZ_Admin
+      run: |
+        dotnet publish AFFZ_Admin/AFFZ_Admin.csproj -c Release -o ./sit/AFFZ_Admin
+        
+    - name: Build and publish AFFZ_Customer
+      run: |
+        dotnet publish AFFZ_MVC/AFFZ_Customer.csproj -c Release -o ./sit/AFFZ_Customer
+        
+    - name: Build and publish AFFZ_Provider
+      run: |
+        dotnet publish AFFZ_Provider/AFFZ_Provider.csproj -c Release -o ./sit/AFFZ_Provider
+        
+    - name: Commit and push to SIT
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add sit/
+        git commit -m "Deploy to SIT environment - ${{ github.sha }}"
+        git push origin sit
+        
+  # UAT Environment Deployment
+  deploy-uat:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/uat'
+    environment: uat
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Build and publish AFFZ_API
+      run: |
+        dotnet publish AFFZ_API/AFFZ_API.csproj -c Release -o ./uat/AFFZ_API
+        
+    - name: Build and publish AFFZ_Admin
+      run: |
+        dotnet publish AFFZ_Admin/AFFZ_Admin.csproj -c Release -o ./uat/AFFZ_Admin
+        
+    - name: Build and publish AFFZ_Customer
+      run: |
+        dotnet publish AFFZ_MVC/AFFZ_Customer.csproj -c Release -o ./uat/AFFZ_Customer
+        
+    - name: Build and publish AFFZ_Provider
+      run: |
+        dotnet publish AFFZ_Provider/AFFZ_Provider.csproj -c Release -o ./uat/AFFZ_Provider
+        
+    - name: Commit and push to UAT
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add uat/
+        git commit -m "Deploy to UAT environment - ${{ github.sha }}"
+        git push origin uat
+        
+    - name: Deploy to Production
+      run: |
+        # Copy UAT builds to Production
+        cp -r ./uat/* ./production/
+        git add production/
+        git commit -m "Deploy to Production from UAT - ${{ github.sha }}"
+        git push origin main
+        
+  # Production Environment Deployment
+  deploy-production:
+    needs: [build-and-test, deploy-uat]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Verify Production deployment
+      run: |
+        echo "Production deployment verified for:"
+        ls -la production/
+        ls -la production/AFFZ_API/
+        ls -la production/AFFZ_Admin/
+        ls -la production/AFFZ_Customer/
+        ls -la production/AFFZ_Provider/
+        
+    - name: Create Production Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ github.run_number }}
+        release_name: Production Release v${{ github.run_number }}
+        body: |
+          Production deployment completed successfully
+          - AFFZ_API: ✅
+          - AFFZ_Admin: ✅
+          - AFFZ_Customer: ✅
+          - AFFZ_Provider: ✅
+        draft: false
+        prerelease: false
