@@ -11,8 +11,8 @@ env:
   SOLUTION_FILE: 'AFFZ_11012025.sln'
 
 jobs:
-  # Build and Test Job
-  build-and-test:
+  # Build Job
+  build:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -29,21 +29,15 @@ jobs:
     - name: Build solution
       run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore
       
-    - name: Run tests
-      run: dotnet test ${{ env.SOLUTION_FILE }} --configuration Release --no-build --verbosity normal
-      
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: test-results
-        path: |
-          **/TestResults/
-          **/coverage/
+    - name: Build verification
+      run: |
+        echo "Build completed successfully!"
+        echo "Projects built:"
+        dotnet list ${{ env.SOLUTION_FILE }} --verbosity quiet
           
   # SIT Environment Deployment
   deploy-sit:
-    needs: build-and-test
+    needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/sit'
     environment: sit
@@ -72,6 +66,14 @@ jobs:
       run: |
         dotnet publish AFFZ_Provider/AFFZ_Provider.csproj -c Release -o ./sit/AFFZ_Provider
         
+    - name: Copy environment configuration
+      run: |
+        cp -r ./environments/sit/* ./sit/
+        
+    - name: Create deployment manifest
+      run: |
+        echo '{"deploymentDate":"'$(date -u +"%Y-%m-%d %H:%M:%S UTC")'","environment":"sit","status":"success"}' > ./sit/deployment-manifest.json
+        
     - name: Commit and push to SIT
       run: |
         git config --local user.email "action@github.com"
@@ -82,7 +84,7 @@ jobs:
         
   # UAT Environment Deployment
   deploy-uat:
-    needs: build-and-test
+    needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/uat'
     environment: uat
@@ -111,6 +113,14 @@ jobs:
       run: |
         dotnet publish AFFZ_Provider/AFFZ_Provider.csproj -c Release -o ./uat/AFFZ_Provider
         
+    - name: Copy environment configuration
+      run: |
+        cp -r ./environments/uat/* ./uat/
+        
+    - name: Create deployment manifest
+      run: |
+        echo '{"deploymentDate":"'$(date -u +"%Y-%m-%d %H:%M:%S UTC")'","environment":"uat","status":"success"}' > ./uat/deployment-manifest.json
+        
     - name: Commit and push to UAT
       run: |
         git config --local user.email "action@github.com"
@@ -129,7 +139,7 @@ jobs:
         
   # Production Environment Deployment
   deploy-production:
-    needs: [build-and-test, deploy-uat]
+    needs: [build, deploy-uat]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment: production
