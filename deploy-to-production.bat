@@ -98,6 +98,28 @@ if exist "%MAIN_PROJECT%\AFFZ_Provider" (
     )
 )
 
+REM Copy AspireHost
+if exist "%MAIN_PROJECT%\AspireHost" (
+    echo 📁 Copying AspireHost...
+    xcopy "%MAIN_PROJECT%\AspireHost" "AspireHost" /E /Y /Q >nul 2>&1
+    if errorlevel 1 (
+        echo ⚠️  Warning: Some files in AspireHost may not have copied
+    ) else (
+        echo ✅ AspireHost copied successfully
+    )
+)
+
+REM Copy SCAPI.ServiceDefaults
+if exist "%MAIN_PROJECT%\SCAPI.ServiceDefaults" (
+    echo 📁 Copying SCAPI.ServiceDefaults...
+    xcopy "%MAIN_PROJECT%\SCAPI.ServiceDefaults" "SCAPI.ServiceDefaults" /E /Y /Q >nul 2>&1
+    if errorlevel 1 (
+        echo ⚠️  Warning: Some files in SCAPI.ServiceDefaults may not have copied
+    ) else (
+        echo ✅ SCAPI.ServiceDefaults copied successfully
+    )
+)
+
 REM Copy solution file
 if exist "%MAIN_PROJECT%\AFFZ_11012025.sln" (
     echo 📁 Copying solution file...
@@ -142,13 +164,21 @@ echo    🎉 DEPLOYMENT TRIGGERED SUCCESSFULLY!
 echo ========================================
 echo.
 echo 📋 What happens next:
-echo    1. ✅ Build process starts
+echo    1. ✅ Build process starts (6 projects)
 echo    2. 🚀 SIT deployment begins
 echo    3. 🚀 UAT deployment (after SIT success)
 echo    4. 🚀 Production deployment (after UAT success)
 echo.
+echo 🚀 Projects included:
+echo    - AFFZ_API
+echo    - AFFZ_Admin
+echo    - AFFZ_Customer
+echo    - AFFZ_Provider
+echo    - AspireHost
+echo    - SCAPI.ServiceDefaults
+echo.
 echo 🌐 Check progress at: https://github.com/syedfahadiqbal7/SM2025/actions
 echo.
-echo ⏳ Deployment will take approximately 5-10 minutes
+echo ⏳ Deployment will take approximately 10-15 minutes
 echo.
 pause

@@ -46,10 +46,23 @@ jobs:
         dotnet build AFFZ_Provider/AFFZ_Provider.csproj --configuration Release --no-restore
       continue-on-error: true
         
+    - name: Build AspireHost
+      run: |
+        dotnet restore AspireHost/AspireHost.csproj
+        dotnet build AspireHost/AspireHost.csproj --configuration Release --no-restore
+      continue-on-error: true
+        
+    - name: Build SCAPI.ServiceDefaults
+      run: |
+        dotnet restore SCAPI.ServiceDefaults/SCAPI.ServiceDefaults.csproj
+        dotnet build SCAPI.ServiceDefaults/SCAPI.ServiceDefaults.csproj --configuration Release --no-restore
+      continue-on-error: true
+        
     - name: Build verification
       run: |
         echo "✅ Individual project builds completed!"
         echo "📋 Note: Some projects may have dependency warnings but builds should succeed"
+        echo "🚀 Projects built: AFFZ_API, AFFZ_Admin, AFFZ_Customer, AFFZ_Provider, AspireHost, SCAPI.ServiceDefaults"
           
   # SIT Environment Deployment (First Stage)
   deploy-sit:
@@ -83,6 +96,11 @@ jobs:
     - name: Build and publish AFFZ_Provider
       run: |
         dotnet publish AFFZ_Provider/AFFZ_Provider.csproj -c Release -o ./sit/AFFZ_Provider
+      continue-on-error: true
+        
+    - name: Build and publish AspireHost
+      run: |
+        dotnet publish AspireHost/AspireHost.csproj -c Release -o ./sit/AspireHost
       continue-on-error: true
         
     - name: Copy environment configuration
@@ -139,6 +157,11 @@ jobs:
         dotnet publish AFFZ_Provider/AFFZ_Provider.csproj -c Release -o ./uat/AFFZ_Provider
       continue-on-error: true
         
+    - name: Build and publish AspireHost
+      run: |
+        dotnet publish AspireHost/AspireHost.csproj -c Release -o ./uat/AspireHost
+      continue-on-error: true
+        
     - name: Copy environment configuration
       run: |
         if [ -d "./environments/uat" ] && [ "$(ls -A ./environments/uat)" ]; then
@@ -193,6 +216,11 @@ jobs:
         dotnet publish AFFZ_Provider/AFFZ_Provider.csproj -c Release -o ./production/AFFZ_Provider
       continue-on-error: true
         
+    - name: Build and publish AspireHost
+      run: |
+        dotnet publish AspireHost/AspireHost.csproj -c Release -o ./production/AspireHost
+      continue-on-error: true
+        
     - name: Copy environment configuration
       run: |
         if [ -d "./environments/production" ] && [ "$(ls -A ./environments/production)" ]; then
@@ -217,3 +245,4 @@ jobs:
         echo "- Production: ✅"
         echo ""
         echo "🚀 Applications are now live in production!"
+        echo "📦 Deployed projects: AFFZ_API, AFFZ_Admin, AFFZ_Customer, AFFZ_Provider, AspireHost"

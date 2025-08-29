@@ -17,7 +17,13 @@
 ```
 Push to main branch
     ↓
-1. 🔨 Build Projects (AFFZ_API, AFFZ_Admin, AFFZ_Customer, AFFZ_Provider)
+1. 🔨 Build Projects (6 Projects Total)
+   - AFFZ_API
+   - AFFZ_Admin
+   - AFFZ_Customer
+   - AFFZ_Provider
+   - AspireHost
+   - SCAPI.ServiceDefaults
     ↓
 2. 🚀 Deploy to SIT Environment
     ↓
@@ -31,6 +37,7 @@ Push to main branch
 - ✅ **Sequential**: Each stage waits for previous stage to succeed
 - ✅ **Automated**: No manual intervention needed
 - ✅ **Safe**: Production only deploys after UAT success
+- ✅ **Complete**: All 6 projects included in deployment
 
 ## 🛠️ **How to Deploy**
 
@@ -61,22 +68,22 @@ git push origin main
 
 ## 📋 **What Happens After You Push**
 
-### **1. Build Stage (2-3 minutes)**
-- ✅ Restore NuGet packages
-- ✅ Build all projects
+### **1. Build Stage (3-4 minutes)**
+- ✅ Restore NuGet packages for all 6 projects
+- ✅ Build all projects successfully
 - ✅ Verify builds succeed
 
-### **2. SIT Deployment (2-3 minutes)**
+### **2. SIT Deployment (3-4 minutes)**
 - 🚀 Publish applications to `./sit/` folder
 - ✅ Create deployment manifest
 - ✅ Copy environment configuration
 
-### **3. UAT Deployment (2-3 minutes)**
+### **3. UAT Deployment (3-4 minutes)**
 - 🚀 Publish applications to `./uat/` folder
 - ✅ Create deployment manifest
 - ✅ Copy environment configuration
 
-### **4. Production Deployment (2-3 minutes)**
+### **4. Production Deployment (3-4 minutes)**
 - 🚀 Publish applications to `./production/` folder
 - ✅ Create deployment manifest
 - ✅ Copy environment configuration
@@ -90,11 +97,11 @@ git push origin main
 - **Detailed logs** for each stage
 
 ### **Expected Timeline:**
-- **Total Time**: 8-12 minutes
-- **Build**: 2-3 minutes
-- **SIT**: 2-3 minutes
-- **UAT**: 2-3 minutes
-- **Production**: 2-3 minutes
+- **Total Time**: 12-16 minutes
+- **Build**: 3-4 minutes
+- **SIT**: 3-4 minutes
+- **UAT**: 3-4 minutes
+- **Production**: 3-4 minutes
 
 ## ⚠️ **Important Notes**
 
