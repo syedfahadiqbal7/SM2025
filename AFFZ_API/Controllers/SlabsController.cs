@@ -31,7 +31,7 @@ namespace AFFZ_API.Controllers
             }
         }
         [HttpGet("GetDefaultApplicableSlab")]
-        public async Task<ActionResult<IEnumerable<Slab>>> GetDefaultApplicableSlab(decimal amount)
+        public async Task<ActionResult<Slab>> GetDefaultApplicableSlab(decimal amount, int? merchantId = null)
         {
             if (amount <= 0)
             {
@@ -41,21 +41,60 @@ namespace AFFZ_API.Controllers
 
             try
             {
-                _logger.LogInformation("Fetching applicable slab for amount: {Amount}", amount);
+                _logger.LogInformation("Fetching applicable slab for amount: {Amount}, MerchantId: {MerchantId}", amount, merchantId);
 
                 // Convert the amount to double for comparison
                 double amountAsDouble = Convert.ToDouble(amount);
 
-                var applicableSlab = await _context.Slab.Where(s => s.LowerLimit <= amountAsDouble && s.UpperLimit >= amountAsDouble && s.IsDefaultSlab == true).OrderBy(s => s.LowerLimit).FirstOrDefaultAsync();
+                // First, check if merchant has an active membership
+                if (merchantId.HasValue && merchantId.Value > 0)
+                {
+                    var activeMembership = await _context.MembershipPaymentHistory
+                        .Where(m => m.PAYERID == merchantId.Value && m.IsActiveMembership == 1)
+                        .OrderByDescending(m => m.PAYMENTDATETIME)
+                        .FirstOrDefaultAsync();
 
-                if (applicableSlab == null)
+                    if (activeMembership != null)
+                    {
+                        // Get the membership plan name
+                        var membershipPlan = await _context.MembershipPlans
+                            .FirstOrDefaultAsync(mp => mp.Id == activeMembership.MembershipId);
+
+                        if (membershipPlan != null)
+                        {
+                            // Try to find slab based on membership plan name
+                            var membershipSlab = await _context.Slab
+                                .Where(s => s.LowerLimit <= amountAsDouble &&
+                                          s.UpperLimit >= amountAsDouble &&
+                                          s.SlabName == membershipPlan.Name &&
+                                          s.IsDefaultSlab == false)
+                                .OrderBy(s => s.LowerLimit)
+                                .FirstOrDefaultAsync();
+
+                            if (membershipSlab != null)
+                            {
+                                _logger.LogInformation("Membership slab found for amount: {Amount}, MerchantId: {MerchantId}, SlabID: {SlabID}, SlabName: {SlabName}",
+                                    amount, merchantId, membershipSlab.SlabID, membershipSlab.SlabName);
+                                return Ok(membershipSlab);
+                            }
+                        }
+                    }
+                }
+
+                // Fallback to default slab if no membership or membership slab found
+                var defaultSlab = await _context.Slab
+                    .Where(s => s.LowerLimit <= amountAsDouble && s.UpperLimit >= amountAsDouble && s.IsDefaultSlab == true)
+                    .OrderBy(s => s.LowerLimit)
+                    .FirstOrDefaultAsync();
+
+                if (defaultSlab == null)
                 {
                     _logger.LogWarning("No applicable slab found for amount: {Amount}", amount);
                     return NotFound("No applicable slab found.");
                 }
 
-                _logger.LogInformation("Applicable slab found for amount: {Amount}, SlabID: {SlabID}", amount, applicableSlab.SlabID);
-                return Ok(applicableSlab);
+                _logger.LogInformation("Default slab found for amount: {Amount}, SlabID: {SlabID}", amount, defaultSlab.SlabID);
+                return Ok(defaultSlab);
             }
             catch (Exception ex)
             {
@@ -206,6 +245,77 @@ namespace AFFZ_API.Controllers
             {
                 _logger.LogError(ex, "An error occurred while fetching the applicable slab for amount: {Amount}", amount);
                 return StatusCode(500, "An error occurred while fetching the applicable slab.");
+            }
+        }
+        [HttpGet("GetMembershipApplicableSlab")]
+        public async Task<ActionResult<Slab>> GetMembershipApplicableSlab(decimal amount, int merchantId)
+        {
+            if (amount <= 0)
+            {
+                _logger.LogWarning("Invalid amount received: {Amount}", amount);
+                return BadRequest("Amount must be greater than zero.");
+            }
+
+            if (merchantId <= 0)
+            {
+                _logger.LogWarning("Invalid merchant ID received: {MerchantId}", merchantId);
+                return BadRequest("Merchant ID must be greater than zero.");
+            }
+
+            try
+            {
+                _logger.LogInformation("Fetching membership slab for amount: {Amount}, MerchantId: {MerchantId}", amount, merchantId);
+
+                // Convert the amount to double for comparison
+                double amountAsDouble = Convert.ToDouble(amount);
+
+                // Check if merchant has an active membership
+                var activeMembership = await _context.MembershipPaymentHistory
+                    .Where(m => m.PAYERID == merchantId && m.IsActiveMembership == 1)
+                    .OrderByDescending(m => m.PAYMENTDATETIME)
+                    .FirstOrDefaultAsync();
+
+                if (activeMembership != null)
+                {
+                    // Get the membership plan name
+                    var membershipPlan = await _context.MembershipPlans
+                        .FirstOrDefaultAsync(mp => mp.Id == activeMembership.MembershipId);
+
+                    if (membershipPlan != null)
+                    {
+                        // Try to find slab based on membership plan name
+                        var membershipSlab = await _context.Slab
+                            .Where(s => s.LowerLimit <= amountAsDouble &&
+                                      s.UpperLimit >= amountAsDouble &&
+                                      s.IsDefaultSlab == false)
+                            .OrderBy(s => s.LowerLimit)
+                            .FirstOrDefaultAsync();
+
+                        if (membershipSlab != null)
+                        {
+                            _logger.LogInformation("Membership slab found for amount: {Amount}, MerchantId: {MerchantId}, SlabID: {SlabID}, SlabName: {SlabName}",
+                                amount, merchantId, membershipSlab.SlabID, membershipSlab.SlabName);
+                            return Ok(membershipSlab);
+                        }
+                        else
+                        {
+                            _logger.LogWarning("No membership slab found for amount: {Amount}, Membership: {MembershipName}",
+                                amount, membershipPlan.Name);
+                        }
+                    }
+                }
+                else
+                {
+                    _logger.LogInformation("No active membership found for merchant: {MerchantId}", merchantId);
+                }
+
+                // Return null if no membership slab found
+                return NotFound("No membership slab found for this merchant.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching the membership applicable slab for amount: {Amount}, MerchantId: {MerchantId}", amount, merchantId);
+                return StatusCode(500, "An error occurred while fetching the membership applicable slab.");
             }
         }
 

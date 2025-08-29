@@ -12,19 +12,18 @@ namespace AFFZ_API.Services
         private readonly IAuthService _authService;
         private readonly MyDbContext _context;
         private readonly HttpClient _httpClient;
-
         public GoogleAuthService(
             IConfiguration configuration,
             ILogger<GoogleAuthService> logger,
             IAuthService authService,
             MyDbContext context,
-            HttpClient httpClient)
+            IHttpClientFactory httpClientFactory)
         {
             _configuration = configuration;
             _logger = logger;
             _authService = authService;
             _context = context;
-            _httpClient = httpClient;
+            _httpClient = httpClientFactory.CreateClient();
         }
 
         public async Task<GoogleAuthResponse> AuthenticateGoogleUserAsync(GoogleAuthRequest request)

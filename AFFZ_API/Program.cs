@@ -16,7 +16,7 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add service defaults
-        // builder.AddServiceDefaults(); // Removed for CI/CD compatibility
+// builder.AddServiceDefaults(); // Removed for CI/CD compatibility
 
 // Load shared configuration
 var sharedConfig = new ConfigurationBuilder()
@@ -146,6 +146,7 @@ builder.Services.AddSingleton<IAppSettingsService, AppSettingsService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 // Register Google auth service
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
 
 // Register auth service

@@ -13,18 +13,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AFFZ_API", "..\AFFZ_API\AFF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AFFZ_Provider", "..\AFFZ_Provider\AFFZ_Provider.csproj", "{0AD615DC-2594-4D99-8DE6-C28026167965}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCAPI.WebFront", "..\WebFront\SCAPI.WebFront.csproj", "{E8D3762E-00A0-4544-A584-2CEE96E35217}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCAPI.ServiceDefaults", "..\SCAPI.ServiceDefaults\SCAPI.ServiceDefaults.csproj", "{293385AF-83A5-450D-8B7E-A661CD310DD9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
 	ProjectSection(SolutionItems) = preProject
 		Readme.md = Readme.md
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AFFZ_TEST", "..\AFFZ_TEST\AFFZ_TEST.csproj", "{A847CFF5-D09C-4802-CFED-9F427BFD1A99}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartCenterApplicationTest", "..\SmartCenterApplicationTest\SmartCenterApplicationTest.csproj", "{A22F3A9E-C2E7-4179-B1AF-6AAEEF20D554}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,22 +46,10 @@ Global
 		{0AD615DC-2594-4D99-8DE6-C28026167965}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AD615DC-2594-4D99-8DE6-C28026167965}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AD615DC-2594-4D99-8DE6-C28026167965}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E8D3762E-00A0-4544-A584-2CEE96E35217}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E8D3762E-00A0-4544-A584-2CEE96E35217}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E8D3762E-00A0-4544-A584-2CEE96E35217}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E8D3762E-00A0-4544-A584-2CEE96E35217}.Release|Any CPU.Build.0 = Release|Any CPU
 		{293385AF-83A5-450D-8B7E-A661CD310DD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{293385AF-83A5-450D-8B7E-A661CD310DD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{293385AF-83A5-450D-8B7E-A661CD310DD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{293385AF-83A5-450D-8B7E-A661CD310DD9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A847CFF5-D09C-4802-CFED-9F427BFD1A99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A847CFF5-D09C-4802-CFED-9F427BFD1A99}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A847CFF5-D09C-4802-CFED-9F427BFD1A99}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A847CFF5-D09C-4802-CFED-9F427BFD1A99}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A22F3A9E-C2E7-4179-B1AF-6AAEEF20D554}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A22F3A9E-C2E7-4179-B1AF-6AAEEF20D554}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A22F3A9E-C2E7-4179-B1AF-6AAEEF20D554}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A22F3A9E-C2E7-4179-B1AF-6AAEEF20D554}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

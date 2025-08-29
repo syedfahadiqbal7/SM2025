@@ -403,7 +403,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- SCAPI.ServiceDefaults reference removed for CI/CD compatibility -->
+    <ProjectReference Include="..\SCAPI.ServiceDefaults\SCAPI.ServiceDefaults.csproj" />
   </ItemGroup>
 
   <ItemGroup>

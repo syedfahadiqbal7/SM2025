@@ -1035,18 +1035,43 @@ namespace AFFZ_Provider.Controllers
 
             try
             {
-                //First Check merchant membership and then accordingly take the amount
-                var response = await _httpClient.GetAsync($"Slabs/GetDefaultApplicableSlab?amount={amount}");
-                var responseString = await response.Content.ReadAsStringAsync();
-                var slab = JsonConvert.DeserializeObject<Slab>(responseString);
-                //Check if the provider slab for this merchant is Fixed or percentage
-                if (slab == null)
+                // Get merchant ID from session
+                string merchantId = HttpContext.Session.GetEncryptedString("ProviderId", _protector);
+
+                if (string.IsNullOrEmpty(merchantId))
+                {
+                    _logger.LogWarning("Merchant ID not found in session");
+                    return BadRequest("Merchant ID not found");
+                }
+
+                // First, try to get membership-based slab
+                var membershipResponse = await _httpClient.GetAsync($"Slabs/GetMembershipApplicableSlab?amount={amount}&merchantId={merchantId}");
+
+                if (membershipResponse.IsSuccessStatusCode)
+                {
+                    var membershipResponseString = await membershipResponse.Content.ReadAsStringAsync();
+                    var membershipSlab = JsonConvert.DeserializeObject<Slab>(membershipResponseString);
+
+                    if (membershipSlab != null)
+                    {
+                        _logger.LogInformation("Membership slab found for amount: {Amount}, MerchantId: {MerchantId}", amount, merchantId);
+                        return Json(membershipSlab);
+                    }
+                }
+
+                // If no membership slab found, fall back to default slab
+                _logger.LogInformation("No membership slab found, falling back to default slab for amount: {Amount}", amount);
+                var defaultResponse = await _httpClient.GetAsync($"Slabs/GetDefaultApplicableSlab?amount={amount}");
+                var defaultResponseString = await defaultResponse.Content.ReadAsStringAsync();
+                var defaultSlab = JsonConvert.DeserializeObject<Slab>(defaultResponseString);
+
+                if (defaultSlab == null)
                 {
                     _logger.LogWarning("No applicable slab found for amount: {Amount}", amount);
                     return NotFound("No applicable slab found.");
                 }
 
-                return Json(slab);
+                return Json(defaultSlab);
             }
             catch (Exception ex)
             {
@@ -1104,33 +1129,33 @@ namespace AFFZ_Provider.Controllers
                 //Process Payment for basic
                 //Fetch basic membership details
 
-                var planslist = await _httpClient.GetAsync($"MembershipPlans");
-                var planslistData = await planslist.Content.ReadAsStringAsync();
-                var _data = JsonConvert.DeserializeObject<List<MembershipPlan>>(planslistData);
-                var basicMembership = _data.Where(x => x.Price == 0).FirstOrDefault();
+                //var planslist = await _httpClient.GetAsync($"MembershipPlans");
+                //var planslistData = await planslist.Content.ReadAsStringAsync();
+                //var _data = JsonConvert.DeserializeObject<List<MembershipPlan>>(planslistData);
+                //var basicMembership = _data.Where(x => x.Price == 0).FirstOrDefault();
 
-                if (basicMembership == null)
-                {
-                    throw new Exception("No Membership Details Exist. Please create one to process further");
-                }
+                //if (basicMembership == null)
+                //{
+                //    throw new Exception("No Membership Details Exist. Please create one to process further");
+                //}
 
 
 
-                var paymentHistory = new MembershipPaymentHistory
-                {
-                    PAYMENTTYPE = "Online",
-                    AMOUNT = "0",
-                    PAYERID = Convert.ToInt32(_merchantId),
-                    Duration = basicMembership.Duration,
-                    ISPAYMENTSUCCESS = 1,
-                    MembershipId = basicMembership.Id,
-                    PAYMENTDATETIME = DateTime.Now,
-                    Quantity = 1,
-                    MemberShipname = basicMembership.Name
-                };
+                //var paymentHistory = new MembershipPaymentHistory
+                //{
+                //    PAYMENTTYPE = "Online",
+                //    AMOUNT = "0",
+                //    PAYERID = Convert.ToInt32(_merchantId),
+                //    Duration = basicMembership.Duration,
+                //    ISPAYMENTSUCCESS = 1,
+                //    MembershipId = basicMembership.Id,
+                //    PAYMENTDATETIME = DateTime.Now,
+                //    Quantity = 1,
+                //    MemberShipname = basicMembership.Name
+                //};
 
-                var PaymentresponseMessage = await _httpClient.PostAsync("MembershipPayment/sendRequestToSaveMembershipPayment", Customs.GetJsonContent(paymentHistory));
-                var PaymentresponseString = await PaymentresponseMessage.Content.ReadAsStringAsync();
+                //var PaymentresponseMessage = await _httpClient.PostAsync("MembershipPayment/sendRequestToSaveMembershipPayment", Customs.GetJsonContent(paymentHistory));
+                //var PaymentresponseString = await PaymentresponseMessage.Content.ReadAsStringAsync();
                 return providerSlab;
             }
             catch (Exception ex)

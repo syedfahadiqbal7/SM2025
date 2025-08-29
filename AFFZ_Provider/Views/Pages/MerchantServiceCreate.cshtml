@@ -206,10 +206,19 @@
 
                 if (servicePrice > 0) {
                     $.getJSON(`/MerchantService/GetApplicableSlab?amount=${servicePrice}`, function (data) {
-                        console.log(data);
+                        console.log('Applicable slab data:', data);
                         applicableSlab = data;
+                        
+                        // Log which type of slab is being used
+                        if (data.slabName && data.slabName !== 'Default') {
+                            console.log(`✅ Using MEMBERSHIP slab: ${data.slabName} (Fixed: ${data.fixed}, Percentage: ${data.percentage})`);
+                        } else {
+                            console.log(`⚠️ Using DEFAULT slab: Fixed: ${data.fixed}, Percentage: ${data.percentage}`);
+                        }
+                        
                         calculateAmount(servicePrice);
-                    }).fail(function () {
+                    }).fail(function (xhr, status, error) {
+                        console.error('Failed to fetch applicable slab:', error);
                         alert("Failed to fetch applicable slab.");
                     });
                 }
@@ -218,13 +227,18 @@
             // Calculate the final amount based on deduction type and slab
             function calculateAmount(servicePrice) {
                 let finalAmount = servicePrice;
-                console.log(applicableSlab.fixed);
+                
                 if (applicableSlab) {
+                    console.log(`📊 Calculating amount for service price: ${servicePrice}`);
+                    console.log(`📋 Slab details: ${applicableSlab.slabName || 'Default'} (Fixed: ${applicableSlab.fixed}, Percentage: ${applicableSlab.percentage})`);
+                    
                     if (deductionTypeRadios.filter(":checked").val() === "Fix") {
                         finalAmount -= applicableSlab.fixed;
-
+                        console.log(`💰 Fixed deduction: ${servicePrice} - ${applicableSlab.fixed} = ${finalAmount}`);
                     } else if (deductionTypeRadios.filter(":checked").val() === "Percentage") {
-                        finalAmount -= (servicePrice * applicableSlab.percentage) / 100;
+                        const percentageDeduction = (servicePrice * applicableSlab.percentage) / 100;
+                        finalAmount -= percentageDeduction;
+                        console.log(`💯 Percentage deduction: ${servicePrice} - ${percentageDeduction} (${applicableSlab.percentage}%) = ${finalAmount}`);
                     }
                 }
 
@@ -233,8 +247,10 @@
                 }
 
                 $("#ServiceAmountPaidToAdmin").val(Math.round(finalAmount));
-                        $("#DeductionValue").val(Math.round(applicableSlab.fixed));
-                    
+                $("#DeductionValue").val(Math.round(applicableSlab.fixed));
+                
+                console.log(`🎯 Final merchant amount: ${Math.round(finalAmount)}`);
+                console.log(`💸 Deduction value set to: ${Math.round(applicableSlab.fixed)}`);
             }
 
             // Request Amount Change Button Handler

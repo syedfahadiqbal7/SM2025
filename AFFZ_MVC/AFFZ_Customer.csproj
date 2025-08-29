@@ -613,7 +613,7 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <!-- SCAPI.ServiceDefaults reference removed for CI/CD compatibility -->
+    <!-- ProjectReference Include="..\SCAPI.ServiceDefaults\SCAPI.ServiceDefaults.csproj" / --> <!-- Removed for CI/CD compatibility -->
   </ItemGroup>
   <ItemGroup>
     <Content Update="Views\Pages\SelectedMerchantList.cshtml">
